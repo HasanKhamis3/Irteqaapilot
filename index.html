@@ -3,2529 +3,527 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام التقارير</title>
+    <title>نظام إتقان - تقرير جودة التعليم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
     <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --light-bg: #f8f9fa;
-            --dark-text: #2c3e50;
-            --light-text: #ecf0f1;
-            --success-color: #27ae60;
-            --warning-color: #f39c12;
-            --danger-color: #e74c3c;
-            --gds-color: #9b59b6;
-            --tbo-color: #e67e22;
-            --expedia-color: #1abc9c;
-            --database-color: #34495e;
-        }
+        :root { --primary: #1e4078; --text: #000000; --bg: #f7f9fc; --border-color: #000000; }
+        * { box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+        body { margin: 0; background: var(--bg); color: var(--text); }
         
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fa;
-            margin: 0;
-            padding: 0;
-            color: var(--dark-text);
-            line-height: 1.6;
-        }
+        /* --- UI Layout Styles (Non-Print) --- */
+        .app-container { display: flex; min-height: 100vh; }
+        .sidebar { width: 260px; background: white; border-left: 1px solid #e0e0e0; position: fixed; right: 0; top: 0; height: 100%; z-index: 100; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid #f0f4f8; display: flex; gap: 10px; align-items: center; }
+        .sidebar-header i { font-size: 1.8rem; color: var(--primary); }
+        .nav-links { list-style: none; padding: 20px 0; margin: 0; }
+        .nav-links li { margin-bottom: 5px; cursor: pointer; }
+        .nav-links a { display: flex; align-items: center; padding: 12px 25px; color: #777; text-decoration: none; font-weight: 600; border-right: 4px solid transparent; transition:0.3s;}
+        .nav-links a:hover, .nav-links a.active { color: var(--primary); background: #f0f4f8; border-right-color: var(--primary); }
+        .nav-links a i { margin-left: 10px; width: 25px; text-align: center; }
+
+        .main-content { margin-right: 260px; flex: 1; padding: 30px; }
+        .section-card { background: white; border-radius: 10px; padding: 25px; margin-bottom: 20px; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .section-card.active { display: block; }
         
-        .container {
+        /* Buttons & Forms */
+        .btn { padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-primary { background: var(--primary); color: white; }
+        .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 10px; }
+        
+        /* --- A4 REPORT STYLES (Print & Preview) --- */
+        .report-preview-container {
+            background: #525659;
+            padding: 40px;
+            overflow: auto;
+            max-height: 800px;
             display: flex;
-            min-height: 100vh;
-        }
-        
-        .sidebar {
-            width: 250px;
-            background-color: var(--primary-color);
-            color: var(--light-text);
-            padding: 20px 0;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-        }
-        
-        .content {
-            flex: 1;
-            padding: 30px;
-            background-color: #fff;
-            overflow-y: auto;
-            position: relative;
-        }
-        
-        .logo {
-            text-align: center;
-            padding: 20px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 20px;
-        }
-        
-        .logo h2 {
-            color: var(--light-text);
-            margin: 10px 0 0;
-        }
-        
-        .nav {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .nav a {
-            color: var(--light-text);
-            text-decoration: none;
-            padding: 12px 25px;
-            margin: 2px 0;
-            transition: all 0.3s;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            position: relative;
-        }
-        
-        .nav a:hover, .nav a.active {
-            background-color: rgba(255,255,255,0.1);
-        }
-        
-        .nav a.active:after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 0;
-            height: 100%;
-            width: 4px;
-            background-color: var(--secondary-color);
-        }
-        
-        .nav a i {
-            margin-right: 12px;
-            font-size: 16px;
-            width: 20px;
-            text-align: center;
-        }
-        
-        h1 {
-            color: var(--primary-color);
-            margin-bottom: 30px;
-            font-weight: 600;
-            border-bottom: 2px solid var(--secondary-color);
-            padding-bottom: 10px;
-            display: flex;
-            align-items: center;
-        }
-        
-        h1 i {
-            margin-right: 15px;
-            color: var(--secondary-color);
-        }
-        
-        h2 {
-            color: var(--primary-color);
-            margin-top: 0;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-        }
-        
-        h2 i {
-            margin-right: 10px;
-            color: var(--secondary-color);
-        }
-        
-        /* أنماط صفحة الملفات */
-        .upload-section {
-            margin-bottom: 30px;
-            padding: 25px;
-            border-radius: 8px;
-            background-color: var(--light-bg);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            border-left: 4px solid var(--secondary-color);
-        }
-        
-        .upload-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        label {
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-        }
-        
-        label i {
-            margin-right: 8px;
-            color: var(--secondary-color);
-        }
-        
-        input[type="file"], input[type="text"], select, input[type="date"] {
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            background-color: #fff;
-            transition: all 0.3s;
-            font-size: 14px;
-        }
-        
-        input[type="file"]:focus, input[type="text"]:focus, select:focus, input[type="date"]:focus {
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-            outline: none;
-        }
-        
-        .file-input-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        
-        .file-input-wrapper input[type="file"] {
-            flex: 1;
-            padding: 10px;
-        }
-        
-        button, .btn {
-            background-color: var(--secondary-color);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
             justify-content: center;
-            text-decoration: none;
-            height: 36px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
-        button:hover, .btn:hover {
-            background-color: #2980b9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        .a4-page {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm; /* Standard Word Margins */
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            position: relative;
+            color: black;
+            font-size: 14px; /* Matches Word Body Text */
+            line-height: 1.4;
         }
-        
-        button:active, .btn:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 3px rgba(0,0,0,0.1);
-        }
-        
-        button i, .btn i {
-            margin-right: 8px;
-            font-size: 14px;
-        }
-        
-        .btn-edit {
-            background-color: var(--warning-color);
-        }
-        
-        .btn-edit:hover {
-            background-color: #e67e22;
-        }
-        
-        .btn-delete {
-            background-color: var(--danger-color);
-        }
-        
-        .btn-delete:hover {
-            background-color: #c0392b;
-        }
-        
-        .btn-success {
-            background-color: var(--success-color);
-            padding: 8px 15px;
-            font-size: 14px;
-        }
-        
-        .btn-success:hover {
-            background-color: #219653;
-        }
-        
-        .btn-refresh {
-            background-color: var(--gds-color);
-        }
-        
-        .btn-refresh:hover {
-            background-color: #8e44ad;
-        }
-        
-        .btn-database {
-            background-color: var(--database-color);
-        }
-        
-        .btn-database:hover {
-            background-color: #2c3e50;
-        }
-        
-        .btn-clear {
-            background-color: var(--danger-color);
-        }
-        
-        .btn-clear:hover {
-            background-color: #c0392b;
-        }
-        
-        .btn-export {
-            background-color: var(--expedia-color);
-        }
-        
-        .btn-export:hover {
-            background-color: #16a085;
-        }
-        
-        .bank-section {
-            margin-bottom: 25px;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            border-left: 4px solid var(--secondary-color);
-        }
-        
-        .bank-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .bank-name {
-            flex: 1;
-            min-width: 200px;
-            max-width: 300px;
-            padding: 10px 15px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            background-color: #fff;
-            font-size: 16px;
-        }
-        
-        .bank-actions {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .add-bank {
-            margin-top: 25px;
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-        
-        .add-bank input[type="text"] {
-            flex: 1;
-            max-width: 300px;
-            padding: 10px 15px;
-        }
-        
-        /* أنماط صفحة المقارنة */
-        .comparison-header {
+
+        /* Report Header Section */
+        .rpt-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
+            padding-bottom: 10px;
+        }
+        .rpt-header-side { width: 30%; text-align: center; font-size: 12px; font-weight: bold; }
+        .rpt-header-center { width: 30%; text-align: center; }
+        .rpt-logo { height: 75px; object-fit: contain; } /* Bahrain Emblem Size */
+        .rpt-logo-min { height: 60px; object-fit: contain; } 
+
+        /* Report Titles */
+        .rpt-title-box {
+            border: 1px solid #000;
+            background-color: #f2f2f2; /* Light Gray Shading */
+            padding: 8px;
+            text-align: center;
+            margin: 15px auto;
+            width: 90%;
+            font-weight: bold;
+            font-size: 16px;
         }
         
-        .comparison-tabs {
-            display: flex;
-            border-bottom: 1px solid #ddd;
-            margin-bottom: 20px;
+        .rpt-school-info {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 25px;
+            font-size: 14px;
         }
-        
-        .comparison-tab {
-            padding: 12px 25px;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-            font-weight: 500;
-            transition: all 0.3s;
-            position: relative;
+
+        .rpt-section-title {
+            font-weight: bold;
+            text-decoration: underline;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 15px;
         }
-        
-        .comparison-tab.active {
-            border-bottom-color: var(--secondary-color);
-            color: var(--secondary-color);
-        }
-        
-        .comparison-tab:hover:not(.active) {
-            background-color: rgba(52, 152, 219, 0.1);
-        }
-        
-        .comparison-content {
-            display: none;
-        }
-        
-        .comparison-content.active {
-            display: block;
-        }
-        
-        .date-range {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .date-range-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        table {
+
+        /* Report Tables */
+        .rpt-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+            font-size: 12px;
+            page-break-inside: auto;
         }
-        
-        th, td {
-            padding: 15px;
-            text-align: right;
-            border-bottom: 1px solid #eee;
+        .rpt-table th, .rpt-table td {
+            border: 1px solid #000; /* Solid Black Borders */
+            padding: 6px;
+            text-align: center;
+            vertical-align: middle;
         }
-        
-        th {
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: 500;
-            position: sticky;
-            top: 0;
-        }
-        
-        tr:nth-child(even) {
-            background-color: var(--light-bg);
-        }
-        
-        tr:hover {
-            background-color: rgba(52, 152, 219, 0.05);
-        }
-        
-        .match {
-            color: var(--success-color);
+        .rpt-table th {
+            background-color: #d9d9d9; /* Standard Word Table Header Gray */
             font-weight: bold;
         }
-        
-        .mismatch {
-            color: var(--danger-color);
-            font-weight: bold;
-        }
-        
-        .gds-row {
-            border-left: 4px solid var(--gds-color);
-        }
-        
-        .tbo-row {
-            border-left: 4px solid var(--tbo-color);
-        }
-        
-        .expedia-row {
-            border-left: 4px solid var(--expedia-color);
-        }
-        
-        .report-row {
-            border-left: 4px solid var(--primary-color);
-        }
-        
-        .section-title {
+        .rpt-table .align-right { text-align: right; }
+        .rpt-table tr { page-break-inside: avoid; }
+
+        /* Report Signatures */
+        .rpt-signature-row {
             display: flex;
-            align-items: center;
-            margin: 30px 0 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
+            justify-content: space-between;
+            margin-top: 50px;
+            margin-bottom: 30px;
+            page-break-inside: avoid;
         }
-        
-        .section-title i {
-            margin-right: 10px;
-            font-size: 20px;
+        .rpt-sig-box { text-align: center; width: 40%; }
+        .rpt-sig-title { font-weight: bold; margin-bottom: 40px; }
+        .rpt-sig-name { font-weight: bold; font-family: 'Tajawal', sans-serif; }
+
+        /* Performance Chart Image in Report */
+        .rpt-chart-img {
+            display: block;
+            margin: 20px auto;
+            max-width: 80%;
+            max-height: 300px;
+            border: 1px solid #ccc;
         }
-        
-        .gds-title {
-            color: var(--gds-color);
-        }
-        
-        .tbo-title {
-            color: var(--tbo-color);
-        }
-        
-        .expedia-title {
-            color: var(--expedia-color);
-        }
-        
-        .report-title {
-            color: var(--primary-color);
-        }
-        
-        .badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
-            color: white;
-        }
-        
-        .badge-gds {
-            background-color: var(--gds-color);
-        }
-        
-        .badge-tbo {
-            background-color: var(--tbo-color);
-        }
-        
-        .badge-expedia {
-            background-color: var(--expedia-color);
-        }
-        
-        /* رسائل التنبيه */
-        .alert-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            max-width: 400px;
-            width: 100%;
-        }
-        
-        .alert {
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            animation: slideIn 0.3s ease-out;
-        }
-        
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        
-        .alert-success {
-            background-color: rgba(39, 174, 96, 0.9);
-            border-left: 4px solid var(--success-color);
-            color: white;
-        }
-        
-        .alert-warning {
-            background-color: rgba(243, 156, 18, 0.9);
-            border-left: 4px solid var(--warning-color);
-            color: white;
-        }
-        
-        .alert-danger {
-            background-color: rgba(231, 76, 60, 0.9);
-            border-left: 4px solid var(--danger-color);
-            color: white;
-        }
-        
-        .alert i {
-            margin-right: 10px;
-            font-size: 20px;
-        }
-        
-        /* أنماط صفحة قاعدة البيانات */
-        .database-actions {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .search-box {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex: 1;
-            min-width: 300px;
-        }
-        
-        .search-box input {
-            flex: 1;
-            max-width: 400px;
-            padding: 10px 15px;
-        }
-        
-        /* أنماط إضافية */
-        .file-info {
-            margin-top: 8px;
-            font-size: 14px;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px;
-            background-color: rgba(52, 152, 219, 0.1);
-            border-radius: 6px;
-            border: 1px dashed var(--secondary-color);
-        }
-        
-        .file-info i {
-            color: var(--secondary-color);
-        }
-        
-        .file-name {
-            font-weight: 500;
-            flex: 1;
-        }
-        
-        .file-size {
-            color: #666;
-            font-size: 13px;
-        }
-        
-        .file-status {
-            margin-left: 10px;
-            font-size: 12px;
-            padding: 3px 8px;
-            border-radius: 4px;
-            background-color: var(--success-color);
-            color: white;
-        }
-        
-        .upload-progress {
-            display: none;
-            margin-top: 10px;
-        }
-        
-        .progress-bar {
-            height: 6px;
-            background-color: #e0e0e0;
-            border-radius: 3px;
-            overflow: hidden;
-            margin-top: 5px;
-        }
-        
-        .progress {
-            height: 100%;
-            background-color: var(--success-color);
-            width: 0;
-            transition: width 0.3s;
-        }
-        
-        .uploaded-files {
-            margin-top: 20px;
-            border-top: 1px solid #eee;
-            padding-top: 15px;
-        }
-        
-        .uploaded-file {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            border: 1px solid #eee;
-        }
-        
-        .uploaded-file i {
-            margin-right: 10px;
-            color: var(--secondary-color);
-            font-size: 20px;
-        }
-        
-        .uploaded-file-info {
-            flex: 1;
-        }
-        
-        .uploaded-file-name {
-            font-weight: 500;
-            margin-bottom: 5px;
-        }
-        
-        .uploaded-file-details {
-            display: flex;
-            gap: 15px;
-            font-size: 13px;
-            color: #666;
-        }
-        
-        .uploaded-file-actions {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .uploaded-file-actions button {
-            padding: 5px 10px;
-            font-size: 12px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .fa-spin {
-            animation: spin 1s linear infinite;
-        }
-        
-        /* التجاوب */
-        @media (max-width: 992px) {
-            .container {
-                flex-direction: column;
-            }
-            
-            .sidebar {
+
+        /* Print Media Query */
+        @media print {
+            body * { visibility: hidden; }
+            .a4-page, .a4-page * { visibility: visible; }
+            .a4-page {
+                position: absolute;
+                left: 0; top: 0;
                 width: 100%;
-                padding: 10px 0;
+                margin: 0;
+                padding: 15mm; /* Print Margins */
+                box-shadow: none;
+                border: none;
             }
-            
-            .nav {
-                flex-direction: row;
-                overflow-x: auto;
-            }
-            
-            .nav a {
-                padding: 12px 15px;
-                white-space: nowrap;
-            }
-            
-            .nav a.active:after {
-                right: auto;
-                bottom: 0;
-                top: auto;
-                width: 100%;
-                height: 4px;
-            }
-            
-            .content {
-                padding: 20px;
-            }
-            
-            .comparison-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .date-range {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .alert-container {
-                top: 10px;
-                right: 10px;
-                max-width: calc(100% - 20px);
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .bank-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-            
-            .bank-name {
-                width: 100%;
-                max-width: 100%;
-            }
-            
-            .comparison-tabs {
-                overflow-x: auto;
-            }
-            
-            table {
-                display: block;
-                overflow-x: auto;
-            }
-            
-            .add-bank {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .add-bank input[type="text"] {
-                width: 100%;
-                max-width: 100%;
-            }
-            
-            .database-actions, .search-box {
-                flex-direction: column;
-            }
-            
-            .search-box input {
-                max-width: 100%;
-            }
-            
-            .uploaded-file {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .uploaded-file-actions {
-                margin-top: 10px;
-                width: 100%;
-                justify-content: flex-end;
-            }
+            .sidebar, .top-header, .filter-container, .btn, .custom-tabs { display: none !important; }
+            @page { size: A4; margin: 0; }
         }
     </style>
 </head>
 <body>
-    <!-- حاوية رسائل التنبيه -->
-    <div class="alert-container" id="alert-container"></div>
-    
-    <div class="container">
-        <!-- القائمة الجانبية -->
-        <div class="sidebar">
-            <div class="logo">
-                <i class="fas fa-chart-line fa-3x"></i>
-                <h2>نظام التقارير</h2>
-            </div>
-            
-            <div class="nav">
-                <a href="#" id="comparison-link" class="active">
-                    <i class="fas fa-exchange-alt"></i> المقارنة والملفات
-                </a>
-                <a href="#" id="database-link">
-                    <i class="fas fa-database"></i> قاعدة البيانات
-                </a>
-            </div>
-        </div>
 
-        <!-- المحتوى الرئيسي -->
-        <div class="content">
-            <!-- صفحة المقارنة والملفات -->
-            <div id="comparison-page">
-                <div class="comparison-header">
-                    <h1><i class="fas fa-exchange-alt"></i> المقارنة والملفات</h1>
-                    <div>
-                        <button onclick="refreshComparison()" class="btn-refresh">
-                            <i class="fas fa-sync-alt"></i> تحديث
-                        </button>
-                        <button onclick="clearComparison()" class="btn-clear">
-                            <i class="fas fa-trash"></i> مسح
-                        </button>
-                        <button onclick="exportComparisonToExcel()" class="btn-export">
-                            <i class="fas fa-file-excel"></i> تصدير
-                        </button>
-                        <button onclick="saveToDatabase()" class="btn-database">
-                            <i class="fas fa-save"></i> حفظ
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="comparison-tabs">
-                    <div class="comparison-tab active" data-tab="files">
-                        <i class="fas fa-file-upload"></i> الملفات
-                    </div>
-                    <div class="comparison-tab" data-tab="flights">
-                        <i class="fas fa-plane"></i> التذاكر
-                    </div>
-                    <div class="comparison-tab" data-tab="hotels">
-                        <i class="fas fa-hotel"></i> الفنادق
-                    </div>
-                </div>
-                
-                <!-- قسم الملفات -->
-                <div id="files-comparison" class="comparison-content active">
-                    <!-- قسم البنوك -->
-                    <div class="upload-section">
-                        <h2><i class="fas fa-university"></i> تقرير المبيعات اليومية - Admin Daily Report</h2>
-                        
-                        <div id="banks-container">
-                            <!-- بنك BAJ -->
-                            <div class="bank-section" data-bank="BAJ">
-                                <div class="bank-header">
-                                    <input type="text" value="BAJ" class="bank-name">
-                                    <div class="bank-actions">
-                                        <button class="btn-edit" onclick="updateBankName(this)">
-                                            <i class="fas fa-edit"></i> تعديل
-                                        </button>
-                                        <button class="btn-delete" onclick="deleteBank(this)">
-                                            <i class="fas fa-trash"></i> حذف
-                                        </button>
-                                    </div>
-                                </div>
-                                <form class="upload-form" id="admin-baj-form">
-                                    <input type="hidden" name="bank" value="BAJ">
-                                    <div class="form-group">
-                                        <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
-                                        <div class="file-input-wrapper">
-                                            <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                            <button type="submit" class="btn-success">
-                                                <i class="fas fa-upload"></i> رفع
-                                            </button>
-                                        </div>
-                                        <div id="baj-file-info" class="file-info" style="display:none;">
-                                            <i class="fas fa-file-excel"></i>
-                                            <span class="file-name"></span>
-                                            <span class="file-size"></span>
-                                            <span class="file-status">جاهز للرفع</span>
-                                        </div>
-                                        <div class="upload-progress" id="baj-upload-progress">
-                                            <div>جاري الرفع...</div>
-                                            <div class="progress-bar">
-                                                <div class="progress" id="baj-progress-bar"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                                <div class="uploaded-files" id="baj-uploaded-files">
-                                    <!-- سيتم ملؤها بالملفات المرفوعة -->
-                                </div>
-                            </div>
-                            
-                            <!-- بنك BAB -->
-                            <div class="bank-section" data-bank="BAB">
-                                <div class="bank-header">
-                                    <input type="text" value="BAB" class="bank-name">
-                                    <div class="bank-actions">
-                                        <button class="btn-edit" onclick="updateBankName(this)">
-                                            <i class="fas fa-edit"></i> تعديل
-                                        </button>
-                                        <button class="btn-delete" onclick="deleteBank(this)">
-                                            <i class="fas fa-trash"></i> حذف
-                                        </button>
-                                    </div>
-                                </div>
-                                <form class="upload-form" id="admin-bab-form">
-                                    <input type="hidden" name="bank" value="BAB">
-                                    <div class="form-group">
-                                        <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
-                                        <div class="file-input-wrapper">
-                                            <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                            <button type="submit" class="btn-success">
-                                                <i class="fas fa-upload"></i> رفع
-                                            </button>
-                                        </div>
-                                        <div id="bab-file-info" class="file-info" style="display:none;">
-                                            <i class="fas fa-file-excel"></i>
-                                            <span class="file-name"></span>
-                                            <span class="file-size"></span>
-                                            <span class="file-status">جاهز للرفع</span>
-                                        </div>
-                                        <div class="upload-progress" id="bab-upload-progress">
-                                            <div>جاري الرفع...</div>
-                                            <div class="progress-bar">
-                                                <div class="progress" id="bab-progress-bar"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                                <div class="uploaded-files" id="bab-uploaded-files">
-                                    <!-- سيتم ملؤها بالملفات المرفوعة -->
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="add-bank">
-                            <input type="text" id="new-bank-name" placeholder="اسم البنك الجديد">
-                            <button onclick="addNewBank()" class="btn">
-                                <i class="fas fa-plus"></i> إضافة بنك جديد
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- باقي التقارير المشتركة -->
-                    <div class="upload-section">
-                        <h2><i class="fas fa-ticket-alt"></i> تقرير مبيعات التذاكر - GDS Daily Report</h2>
-                        <form class="upload-form" id="gds-form">
-                            <div class="form-group">
-                                <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
-                                <div class="file-input-wrapper">
-                                    <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                    <button type="submit" class="btn-success">
-                                        <i class="fas fa-upload"></i> رفع
-                                    </button>
-                                </div>
-                                <div id="gds-file-info" class="file-info" style="display:none;">
-                                    <i class="fas fa-file-excel"></i>
-                                    <span class="file-name"></span>
-                                    <span class="file-size"></span>
-                                    <span class="file-status">جاهز للرفع</span>
-                                </div>
-                                <div class="upload-progress" id="gds-upload-progress">
-                                    <div>جاري الرفع...</div>
-                                    <div class="progress-bar">
-                                        <div class="progress" id="gds-progress-bar"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                        <div class="uploaded-files" id="gds-uploaded-files">
-                            <!-- سيتم ملؤها بالملفات المرفوعة -->
-                        </div>
-                    </div>
-                    
-                    <div class="upload-section">
-                        <h2><i class="fas fa-hotel"></i> تقرير مبيعات اكسبيديا - Expedia Daily Report</h2>
-                        <form class="upload-form" id="expedia-form">
-                            <div class="form-group">
-                                <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
-                                <div class="file-input-wrapper">
-                                    <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                    <button type="submit" class="btn-success">
-                                        <i class="fas fa-upload"></i> رفع
-                                    </button>
-                                </div>
-                                <div id="expedia-file-info" class="file-info" style="display:none;">
-                                    <i class="fas fa-file-excel"></i>
-                                    <span class="file-name"></span>
-                                    <span class="file-size"></span>
-                                    <span class="file-status">جاهز للرفع</span>
-                                </div>
-                                <div class="upload-progress" id="expedia-upload-progress">
-                                    <div>جاري الرفع...</div>
-                                    <div class="progress-bar">
-                                        <div class="progress" id="expedia-progress-bar"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                        <div class="uploaded-files" id="expedia-uploaded-files">
-                            <!-- سيتم ملؤها بالملفات المرفوعة -->
-                        </div>
-                    </div>
-                    
-                    <div class="upload-section">
-                        <h2><i class="fas fa-plane"></i> تقرير مبيعات TBO طيران - TBO Flight Daily Report</h2>
-                        <form class="upload-form" id="tbo-flight-form">
-                            <div class="form-group">
-                                <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
-                                <div class="file-input-wrapper">
-                                    <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                    <button type="submit" class="btn-success">
-                                        <i class="fas fa-upload"></i> رفع
-                                    </button>
-                                </div>
-                                <div id="tbo-flight-file-info" class="file-info" style="display:none;">
-                                    <i class="fas fa-file-excel"></i>
-                                    <span class="file-name"></span>
-                                    <span class="file-size"></span>
-                                    <span class="file-status">جاهز للرفع</span>
-                                </div>
-                                <div class="upload-progress" id="tbo-flight-upload-progress">
-                                    <div>جاري الرفع...</div>
-                                    <div class="progress-bar">
-                                        <div class="progress" id="tbo-flight-progress-bar"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                        <div class="uploaded-files" id="tbo-flight-uploaded-files">
-                            <!-- سيتم ملؤها بالملفات المرفوعة -->
-                        </div>
-                    </div>
-                    
-                    <div class="upload-section">
-                        <h2><i class="fas fa-bed"></i> تقرير مبيعات TBO فنادق - TBO Hotel Daily Report</h2>
-                        <form class="upload-form" id="tbo-hotel-form">
-                            <div class="form-group">
-                                <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
-                                <div class="file-input-wrapper">
-                                    <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                    <button type="submit" class="btn-success">
-                                        <i class="fas fa-upload"></i> رفع
-                                    </button>
-                                </div>
-                                <div id="tbo-hotel-file-info" class="file-info" style="display:none;">
-                                    <i class="fas fa-file-excel"></i>
-                                    <span class="file-name"></span>
-                                    <span class="file-size"></span>
-                                    <span class="file-status">جاهز للرفع</span>
-                                </div>
-                                <div class="upload-progress" id="tbo-hotel-upload-progress">
-                                    <div>جاري الرفع...</div>
-                                    <div class="progress-bar">
-                                        <div class="progress" id="tbo-hotel-progress-bar"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                        <div class="uploaded-files" id="tbo-hotel-uploaded-files">
-                            <!-- سيتم ملؤها بالملفات المرفوعة -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- مقارنة التذاكر -->
-                <div id="flights-comparison" class="comparison-content">
-                    <div class="date-range">
-                        <div class="date-range-group">
-                            <label for="flights-from-date">من تاريخ:</label>
-                            <input type="date" id="flights-from-date">
-                        </div>
-                        <div class="date-range-group">
-                            <label for="flights-to-date">إلى تاريخ:</label>
-                            <input type="date" id="flights-to-date">
-                        </div>
-                        <button onclick="filterFlightsByDate()" class="btn">
-                            <i class="fas fa-filter"></i> تصفية
-                        </button>
-                    </div>
-                    
-                    <!-- BAJ Bank -->
-                    <div class="section-title">
-                        <i class="fas fa-university"></i> BAJ - تقرير المبيعات اليومية
-                    </div>
-                    
-                    <table id="flights-table">
-                        <thead>
-                            <tr>
-                                <th>Booking Ref</th>
-                                <th>Booking Date</th>
-                                <th>Redemption Type</th>
-                                <th>Supplier</th>
-                                <th>Flight PNR</th>
-                                <th>Flight Tickets</th>
-                                <th>GDS PNR</th>
-                                <th>TBO PNR</th>
-                                <th>التطابق</th>
-                            </tr>
-                        </thead>
-                        <tbody id="flights-data">
-                            <!-- سيتم ملؤها بالبيانات ديناميكياً -->
-                        </tbody>
-                    </table>
-                    
-                    <div class="section-title gds-title">
-                        <i class="fas fa-ticket-alt"></i> PNR غير المتطابقة مع GDS
-                    </div>
-                    
-                    <table id="gds-mismatch-table">
-                        <thead>
-                            <tr>
-                                <th>Flight PNR</th>
-                                <th>GDS PNR</th>
-                                <th>البنك</th>
-                                <th>الحالة</th>
-                            </tr>
-                        </thead>
-                        <tbody id="gds-mismatch-data">
-                            <!-- سيتم ملؤها بالبيانات ديناميكياً -->
-                        </tbody>
-                    </table>
-                    
-                    <div class="section-title tbo-title">
-                        <i class="fas fa-plane"></i> PNR غير المتطابقة مع TBO
-                    </div>
-                    
-                    <table id="tbo-mismatch-table">
-                        <thead>
-                            <tr>
-                                <th>Flight PNR</th>
-                                <th>TBO PNR</th>
-                                <th>البنك</th>
-                                <th>الحالة</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbo-mismatch-data">
-                            <!-- سيتم ملؤها بالبيانات ديناميكياً -->
-                        </tbody>
-                    </table>
-                    
-                    <div class="section-title report-title">
-                        <i class="fas fa-file-alt"></i> PNR غير المتطابقة مع التقرير
-                    </div>
-                    
-                    <table id="report-mismatch-table">
-                        <thead>
-                            <tr>
-                                <th>Flight PNR</th>
-                                <th>التقرير PNR</th>
-                                <th>البنك</th>
-                                <th>الحالة</th>
-                            </tr>
-                        </thead>
-                        <tbody id="report-mismatch-data">
-                            <!-- سيتم ملؤها بالبيانات ديناميكياً -->
-                        </tbody>
-                    </table>
-                </div>
-                
-                <!-- مقارنة الفنادق -->
-                <div id="hotels-comparison" class="comparison-content">
-                    <div class="date-range">
-                        <div class="date-range-group">
-                            <label for="hotels-from-date">من تاريخ:</label>
-                            <input type="date" id="hotels-from-date">
-                        </div>
-                        <div class="date-range-group">
-                            <label for="hotels-to-date">إلى تاريخ:</label>
-                            <input type="date" id="hotels-to-date">
-                        </div>
-                        <button onclick="filterHotelsByDate()" class="btn">
-                            <i class="fas fa-filter"></i> تصفية
-                        </button>
-                    </div>
-                    
-                    <!-- BAJ Bank -->
-                    <div class="section-title">
-                        <i class="fas fa-university"></i> BAJ - تقرير المبيعات اليومية
-                    </div>
-                    
-                    <table id="hotels-table">
-                        <thead>
-                            <tr>
-                                <th>Booking Ref</th>
-                                <th>Booking Date</th>
-                                <th>Redemption Type</th>
-                                <th>Supplier</th>
-                                <th>Hotel Itineraries</th>
-                                <th>Expedia Itinerary</th>
-                                <th>TBO Confirmation</th>
-                                <th>التطابق</th>
-                            </tr>
-                        </thead>
-                        <tbody id="hotels-data">
-                            <!-- سيتم ملؤها بالبيانات ديناميكياً -->
-                        </tbody>
-                    </table>
-                    
-                    <div class="section-title expedia-title">
-                        <i class="fas fa-hotel"></i> Itineraries غير المتطابقة مع Expedia
-                    </div>
-                    
-                    <table id="expedia-mismatch-table">
-                        <thead>
-                            <tr>
-                                <th>Hotel Itinerary</th>
-                                <th>Expedia Itinerary</th>
-                                <th>البنك</th>
-                                <th>الحالة</th>
-                            </tr>
-                        </thead>
-                        <tbody id="expedia-mismatch-data">
-                            <!-- سيتم ملؤها بالبيانات ديناميكياً -->
-                        </tbody>
-                    </table>
-                    
-                    <div class="section-title tbo-title">
-                        <i class="fas fa-bed"></i> Confirmations غير المتطابقة مع TBO
-                    </div>
-                    
-                    <table id="tbo-hotel-mismatch-table">
-                        <thead>
-                            <tr>
-                                <th>Hotel Itinerary</th>
-                                <th>TBO Confirmation</th>
-                                <th>البنك</th>
-                                <th>الحالة</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbo-hotel-mismatch-data">
-                            <!-- سيتم ملؤها بالبيانات ديناميكياً -->
-                        </tbody>
-                    </table>
-                    
-                    <div class="section-title report-title">
-                        <i class="fas fa-file-alt"></i> Itineraries غير المتطابقة مع التقرير
-                    </div>
-                    
-                    <table id="report-hotel-mismatch-table">
-                        <thead>
-                            <tr>
-                                <th>Hotel Itinerary</th>
-                                <th>التقرير Itinerary</th>
-                                <th>البنك</th>
-                                <th>الحالة</th>
-                            </tr>
-                        </thead>
-                        <tbody id="report-hotel-mismatch-data">
-                            <!-- سيتم ملؤها بالبيانات ديناميكياً -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- صفحة قاعدة البيانات -->
-            <div id="database-page" style="display:none;">
-                <h1><i class="fas fa-database"></i> قاعدة البيانات</h1>
-                
-                <div class="database-actions">
-                    <div class="search-box">
-                        <input type="text" id="search-query" placeholder="ابحث في قاعدة البيانات...">
-                        <button onclick="searchDatabase()" class="btn">
-                            <i class="fas fa-search"></i> بحث
-                        </button>
-                    </div>
-                    <button onclick="exportToExcel()" class="btn-success">
-                        <i class="fas fa-file-excel"></i> تصدير إلى Excel
-                    </button>
-                </div>
-                
-                <table id="database-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>النوع</th>
-                            <th>البنك</th>
-                            <th>Booking Ref</th>
-                            <th>التاريخ</th>
-                            <th>الحالة</th>
-                            <th>تاريخ الحفظ</th>
-                            <th>الإجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody id="database-data">
-                        <!-- سيتم ملؤها بالبيانات ديناميكياً -->
-                    </tbody>
-                </table>
-            </div>
+    <div id="loginPage" style="position:fixed; width:100%; height:100%; background:#1e4078; display:flex; justify-content:center; align-items:center; z-index:999;">
+        <div style="background:white; padding:40px; border-radius:10px; text-align:center; width:350px;">
+            <i class="fas fa-graduation-cap" style="font-size:3rem; color:#1e4078; margin-bottom:15px;"></i>
+            <h2 style="margin:0 0 20px 0;">نظام إتقان</h2>
+            <button class="btn btn-primary" style="width:100%;" onclick="startApp()">تسجيل الدخول</button>
         </div>
     </div>
 
-    <script>
-        // بيانات وهمية للمقارنة (يمكن استبدالها ببيانات حقيقية من السيرفر)
-        let sampleFlightsData = [
-            {
-                bookingRef: "REF1234",
-                bookingDate: "2023-10-15",
-                redemptionType: "Standard",
-                supplier: "Emirates",
-                flightPNR: "ABC123",
-                tickets: 2,
-                gdsPNR: "XYZ456",
-                tboPNR: "",
-                match: false,
-                mismatchType: "GDS",
-                bank: "BAJ"
-            },
-            {
-                bookingRef: "REF5678",
-                bookingDate: "2023-10-16",
-                redemptionType: "Upgrade",
-                supplier: "Qatar",
-                flightPNR: "GHI987",
-                tickets: 1,
-                gdsPNR: "",
-                tboPNR: "MNO321",
-                match: true,
-                bank: "BAJ"
-            }
-        ];
-        
-        let sampleHotelsData = [
-            {
-                bookingRef: "HREF4321",
-                bookingDate: "2023-10-15",
-                redemptionType: "Premium",
-                supplier: "Hilton",
-                hotelItinerary: "HIT123",
-                expediaItinerary: "HIT456",
-                tboConfirmation: "",
-                match: false,
-                mismatchType: "Expedia",
-                bank: "BAJ"
-            },
-            {
-                bookingRef: "HREF8765",
-                bookingDate: "2023-10-17",
-                redemptionType: "Standard",
-                supplier: "Marriott",
-                hotelItinerary: "HIT987",
-                expediaItinerary: "",
-                tboConfirmation: "HIT987",
-                match: true,
-                bank: "BAJ"
-            }
-        ];
-        
-        // قاعدة البيانات الوهمية
-        let database = [
-            {
-                id: 1,
-                type: "تذاكر",
-                bank: "BAJ",
-                bookingRef: "REF1234",
-                date: "2023-10-15",
-                status: "غير متطابق (GDS)",
-                saveDate: "2023-10-15 14:30:25"
-            },
-            {
-                id: 2,
-                type: "فنادق",
-                bank: "BAJ",
-                bookingRef: "HREF4321",
-                date: "2023-10-15",
-                status: "غير متطابق (Expedia)",
-                saveDate: "2023-10-15 15:45:12"
-            }
-        ];
-        
-        // تخزين الملفات المرفوعة
-        let uploadedFiles = {
-            'admin-baj-form': [
-                {
-                    name: "baj_report_20231015.xlsx",
-                    size: 24576,
-                    date: "2023-10-15 14:30:25",
-                    formId: "admin-baj-form"
-                }
-            ],
-            'admin-bab-form': [],
-            'gds-form': [
-                {
-                    name: "gds_report_20231015.xlsx",
-                    size: 18432,
-                    date: "2023-10-15 14:35:40",
-                    formId: "gds-form"
-                }
-            ],
-            'expedia-form': [
-                {
-                    name: "expedia_report_20231015.xlsx",
-                    size: 20480,
-                    date: "2023-10-15 15:40:18",
-                    formId: "expedia-form"
-                }
-            ],
-            'tbo-flight-form': [],
-            'tbo-hotel-form': []
-        };
-        
-        // عرض معلومات الملف المختار
-        function showFileInfo(input) {
-            if (input.files && input.files.length > 0) {
-                const file = input.files[0];
-                const formId = input.closest('form').id;
-                const fileInfoDiv = document.getElementById(`${formId}-file-info`);
-                const fileNameSpan = fileInfoDiv.querySelector('.file-name');
-                const fileSizeSpan = fileInfoDiv.querySelector('.file-size');
-                const fileStatusSpan = fileInfoDiv.querySelector('.file-status');
-                
-                fileNameSpan.textContent = file.name;
-                fileSizeSpan.textContent = formatFileSize(file.size);
-                fileStatusSpan.textContent = 'جاهز للرفع';
-                fileStatusSpan.style.backgroundColor = '#27ae60';
-                fileInfoDiv.style.display = 'flex';
-            }
-        }
+    <div id="app" class="app-container" style="display:none;">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-graduation-cap"></i>
+                <div><b>إتقان</b><br><small>مدرسة مدينة حمد</small></div>
+            </div>
+            <ul class="nav-links">
+                <li><a onclick="showSection('dashboard')" class="active"><i class="fas fa-home"></i> لوحة التحكم</a></li>
+                <li><a onclick="showSection('visits')"><i class="fas fa-clipboard-check"></i> الزيارات الصفية</a></li>
+                <li><a onclick="showSection('report')"><i class="fas fa-file-word"></i> تقرير الجودة (Word)</a></li>
+            </ul>
+        </aside>
 
-        // تنسيق حجم الملف
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
+        <main class="main-content">
+            <header style="display:flex; justify-content:space-between; margin-bottom:30px;">
+                <h2>لوحة التحكم</h2>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span>مرحباً، <b>مديرة المدرسة</b></span>
+                    <button class="btn" style="background:#eee;" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i></button>
+                </div>
+            </header>
 
-        // عرض الصفحة المطلوبة
-        function showPage(pageId) {
-            document.getElementById('comparison-page').style.display = 'none';
-            document.getElementById('database-page').style.display = 'none';
-            document.getElementById(pageId).style.display = 'block';
-            
-            // تحديث القائمة النشطة
-            document.querySelectorAll('.nav a').forEach(link => {
-                link.classList.remove('active');
-            });
-            document.getElementById(`${pageId.replace('-page', '-link')}`).classList.add('active');
-            
-            // إذا كانت صفحة المقارنة، عرض تبويب الملفات افتراضيًا
-            if (pageId === 'comparison-page') {
-                showComparisonTab('files');
-                loadComparisonData();
-            }
-            
-            // إذا كانت صفحة قاعدة البيانات، تحميل البيانات
-            if (pageId === 'database-page') {
-                loadDatabase();
-            }
-        }
+            <div id="dashboard" class="section-card active">
+                <h3>ملخص البيانات</h3>
+                <p>مرحباً بك في نظام تتبع جودة التعليم. انتقل إلى "تقرير الجودة" لإصدار التقرير المطابق للقالب.</p>
+                <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:20px; margin-top:20px;">
+                    <div style="background:#eef4ff; padding:20px; border-radius:8px; border-right:4px solid var(--primary);">
+                        <h2>70</h2>
+                        <p>مجموع الزيارات</p>
+                    </div>
+                     <div style="background:#e8f7ec; padding:20px; border-radius:8px; border-right:4px solid #28a745;">
+                        <h2>7</h2>
+                        <p>معلمين متميزين</p>
+                    </div>
+                </div>
+            </div>
 
-        // عرض تبويب المقارنة المطلوب
-        function showComparisonTab(tabId) {
-            document.querySelectorAll('.comparison-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            
-            document.querySelectorAll('.comparison-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            document.getElementById(`${tabId}-comparison`).classList.add('active');
-            document.querySelector(`.comparison-tab[data-tab="${tabId}"]`).classList.add('active');
-            
-            // تحميل البيانات عند تغيير التبويب
-            if (tabId === 'flights' || tabId === 'hotels') {
-                loadComparisonData();
-            }
-        }
+            <div id="visits" class="section-card">
+                <h3>سجل الزيارات الصفية</h3>
+                <p>هنا يتم تسجيل الزيارات (بيانات محاكاة للمثال).</p>
+            </div>
 
-        // معالجة إرسال النماذج
-        function setupFormHandlers() {
-            document.querySelectorAll('.upload-form').forEach(form => {
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const formId = this.id;
-                    uploadFile(formId);
-                });
-            });
-        }
+            <div id="report" class="section-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background:#f8f9fa; padding:15px; border-radius:8px;">
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <label>اختر شهر التقرير:</label>
+                        <select id="reportMonth" class="form-control" style="width:auto; margin:0;">
+                            <option value="09">سبتمبر</option>
+                            <option value="10">أكتوبر</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="generateReport()">إصدار التقرير</button>
+                    </div>
+                    <div>
+                        <button class="btn" style="background:#28a745; color:white;" onclick="window.print()"><i class="fas fa-print"></i> طباعة / حفظ PDF</button>
+                    </div>
+                </div>
 
-        // رفع الملفات
-        function uploadFile(formId) {
-            const form = document.getElementById(formId);
-            const fileInput = form.querySelector('input[type="file"]');
-            const submitButton = form.querySelector('button[type="submit"]');
-            const fileInfoDiv = document.getElementById(`${formId}-file-info`);
-            const fileStatusSpan = fileInfoDiv?.querySelector('.file-status');
-            const uploadProgressDiv = document.getElementById(`${formId}-upload-progress`);
-            const progressBar = document.getElementById(`${formId}-progress-bar`);
-            
-            if (!fileInput.files || fileInput.files.length === 0) {
-                showAlert('الرجاء اختيار ملف أولاً', 'danger');
-                return;
-            }
-            
-            // تعطيل الزر أثناء الرفع
-            submitButton.disabled = true;
-            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الرفع...';
-            
-            // إظهار شريط التقدم
-            if (uploadProgressDiv) uploadProgressDiv.style.display = 'block';
-            if (progressBar) progressBar.style.width = '0%';
-            
-            // تحديث حالة الملف
-            if (fileStatusSpan) {
-                fileStatusSpan.textContent = 'جاري الرفع...';
-                fileStatusSpan.style.backgroundColor = '#f39c12';
-            }
-            
-            // محاكاة عملية الرفع مع شريط التقدم
-            let progress = 0;
-            const progressInterval = setInterval(() => {
-                progress += 5;
-                if (progressBar) progressBar.style.width = `${progress}%`;
-                
-                if (progress >= 100) {
-                    clearInterval(progressInterval);
-                    uploadComplete(formId, fileInput.files[0]);
-                }
-            }, 100);
-        }
-
-        // اكتمال عملية الرفع
-        function uploadComplete(formId, file) {
-            const form = document.getElementById(formId);
-            const fileInput = form.querySelector('input[type="file"]');
-            const submitButton = form.querySelector('button[type="submit"]');
-            const fileInfoDiv = document.getElementById(`${formId}-file-info`);
-            const fileStatusSpan = fileInfoDiv?.querySelector('.file-status');
-            const uploadProgressDiv = document.getElementById(`${formId}-upload-progress`);
-            const uploadedFilesDiv = document.getElementById(`${formId}-uploaded-files`);
-            
-            // إعادة تمكين الزر
-            submitButton.disabled = false;
-            submitButton.innerHTML = '<i class="fas fa-upload"></i> رفع';
-            
-            // إخفاء شريط التقدم
-            if (uploadProgressDiv) uploadProgressDiv.style.display = 'none';
-            
-            // تحديث حالة الملف
-            if (fileStatusSpan) {
-                fileStatusSpan.textContent = 'تم الرفع بنجاح';
-                fileStatusSpan.style.backgroundColor = '#27ae60';
-            }
-            
-            // إضافة الملف إلى قائمة الملفات المرفوعة
-            const now = new Date();
-            const uploadTime = now.toLocaleString('ar-SA');
-            
-            if (!uploadedFiles[formId]) {
-                uploadedFiles[formId] = [];
-            }
-            
-            uploadedFiles[formId].push({
-                name: file.name,
-                size: file.size,
-                date: uploadTime,
-                formId: formId
-            });
-            
-            // عرض الملف المرفوع
-            renderUploadedFiles(formId);
-            
-            // إنشاء بيانات وهمية بناءً على نوع الملف
-            if (formId.includes('admin')) {
-                // بيانات بنك
-                const bankName = form.querySelector('input[name="bank"]').value;
-                generateSampleBankData(bankName);
-            } else if (formId.includes('gds')) {
-                generateSampleGDSData();
-            } else if (formId.includes('expedia')) {
-                generateSampleExpediaData();
-            } else if (formId.includes('tbo-flight')) {
-                generateSampleTBOFlightData();
-            } else if (formId.includes('tbo-hotel')) {
-                generateSampleTBOHotelData();
-            }
-            
-            showAlert('تم رفع الملف بنجاح', 'success');
-        }
-
-        // عرض الملفات المرفوعة
-        function renderUploadedFiles(formId) {
-            const uploadedFilesDiv = document.getElementById(`${formId}-uploaded-files`);
-            if (!uploadedFilesDiv) return;
-            
-            uploadedFilesDiv.innerHTML = '';
-            
-            if (uploadedFiles[formId] && uploadedFiles[formId].length > 0) {
-                uploadedFiles[formId].forEach((file, index) => {
-                    const fileElement = document.createElement('div');
-                    fileElement.className = 'uploaded-file';
-                    fileElement.innerHTML = `
-                        <i class="fas fa-file-excel"></i>
-                        <div class="uploaded-file-info">
-                            <div class="uploaded-file-name">${file.name}</div>
-                            <div class="uploaded-file-details">
-                                <span>${formatFileSize(file.size)}</span>
-                                <span>${file.date}</span>
-                            </div>
-                        </div>
-                        <div class="uploaded-file-actions">
-                            <button onclick="viewUploadedFile('${formId}', ${index})" class="btn">
-                                <i class="fas fa-eye"></i> عرض
-                            </button>
-                            <button onclick="removeUploadedFile('${formId}', ${index})" class="btn-delete">
-                                <i class="fas fa-trash"></i> حذف
-                            </button>
-                        </div>
-                    `;
-                    uploadedFilesDiv.appendChild(fileElement);
-                });
-            }
-        }
-
-        // عرض تفاصيل الملف المرفوع
-        function viewUploadedFile(formId, index) {
-            const file = uploadedFiles[formId][index];
-            alert(`تفاصيل الملف:\n\nالاسم: ${file.name}\nالحجم: ${formatFileSize(file.size)}\nتاريخ الرفع: ${file.date}`);
-        }
-
-        // حذف ملف مرفوع
-        function removeUploadedFile(formId, index) {
-            if (confirm('هل أنت متأكد من حذف هذا الملف؟')) {
-                uploadedFiles[formId].splice(index, 1);
-                renderUploadedFiles(formId);
-                showAlert('تم حذف الملف بنجاح', 'success');
-            }
-        }
-
-        // توليد بيانات بنك وهمية
-        function generateSampleBankData(bankName) {
-            sampleFlightsData = [
-                {
-                    bookingRef: "REF" + Math.floor(1000 + Math.random() * 9000),
-                    bookingDate: "2023-10-" + (10 + Math.floor(Math.random() * 10),
-                    redemptionType: ["Standard", "Upgrade", "Premium"][Math.floor(Math.random() * 3)],
-                    supplier: ["Emirates", "Qatar", "Etihad", "Saudia"][Math.floor(Math.random() * 4)],
-                    flightPNR: "ABC" + Math.floor(100 + Math.random() * 900),
-                    tickets: 1 + Math.floor(Math.random() * 4),
-                    gdsPNR: Math.random() > 0.5 ? "ABC" + Math.floor(100 + Math.random() * 900) : "",
-                    tboPNR: Math.random() > 0.5 ? "" : "ABC" + Math.floor(100 + Math.random() * 900),
-                    match: Math.random() > 0.3,
-                    mismatchType: Math.random() > 0.5 ? "GDS" : "TBO",
-                    bank: bankName
-                },
-                {
-                    bookingRef: "REF" + Math.floor(1000 + Math.random() * 9000),
-                    bookingDate: "2023-10-" + (10 + Math.floor(Math.random() * 10),
-                    redemptionType: ["Standard", "Upgrade", "Premium"][Math.floor(Math.random() * 3)],
-                    supplier: ["Emirates", "Qatar", "Etihad", "Saudia"][Math.floor(Math.random() * 4)],
-                    flightPNR: "XYZ" + Math.floor(100 + Math.random() * 900),
-                    tickets: 1 + Math.floor(Math.random() * 4),
-                    gdsPNR: Math.random() > 0.5 ? "XYZ" + Math.floor(100 + Math.random() * 900) : "",
-                    tboPNR: Math.random() > 0.5 ? "" : "XYZ" + Math.floor(100 + Math.random() * 900),
-                    match: Math.random() > 0.3,
-                    mismatchType: Math.random() > 0.5 ? "GDS" : "TBO",
-                    bank: bankName
-                }
-            ];
-            
-            sampleHotelsData = [
-                {
-                    bookingRef: "HREF" + Math.floor(1000 + Math.random() * 9000),
-                    bookingDate: "2023-10-" + (10 + Math.floor(Math.random() * 10),
-                    redemptionType: ["Standard", "Upgrade", "Premium"][Math.floor(Math.random() * 3)],
-                    supplier: ["Hilton", "Marriott", "Sheraton", "Intercontinental"][Math.floor(Math.random() * 4)],
-                    hotelItinerary: "HIT" + Math.floor(100 + Math.random() * 900),
-                    expediaItinerary: Math.random() > 0.5 ? "HIT" + Math.floor(100 + Math.random() * 900) : "",
-                    tboConfirmation: Math.random() > 0.5 ? "" : "HIT" + Math.floor(100 + Math.random() * 900),
-                    match: Math.random() > 0.3,
-                    mismatchType: Math.random() > 0.5 ? "Expedia" : "TBO",
-                    bank: bankName
-                }
-            ];
-            
-            // إذا كانت صفحة المقارنة مفتوحة، قم بتحديث البيانات
-            if (document.getElementById('comparison-page').style.display !== 'none') {
-                loadComparisonData();
-            }
-        }
-
-        // توليد بيانات GDS وهمية
-        function generateSampleGDSData() {
-            // يمكنك إضافة بيانات خاصة بـ GDS هنا إذا لزم الأمر
-            showAlert('تم معالجة ملف GDS بنجاح', 'success');
-        }
-
-        // توليد بيانات Expedia وهمية
-        function generateSampleExpediaData() {
-            // يمكنك إضافة بيانات خاصة بـ Expedia هنا إذا لزم الأمر
-            showAlert('تم معالجة ملف Expedia بنجاح', 'success');
-        }
-
-        // توليد بيانات TBO Flight وهمية
-        function generateSampleTBOFlightData() {
-            // يمكنك إضافة بيانات خاصة بـ TBO Flight هنا إذا لزم الأمر
-            showAlert('تم معالجة ملف TBO Flight بنجاح', 'success');
-        }
-
-        // توليد بيانات TBO Hotel وهمية
-        function generateSampleTBOHotelData() {
-            // يمكنك إضافة بيانات خاصة بـ TBO Hotel هنا إذا لزم الأمر
-            showAlert('تم معالجة ملف TBO Hotel بنجاح', 'success');
-        }
-
-        // تحميل بيانات المقارنة
-        function loadComparisonData() {
-            // تعبئة بيانات التذاكر
-            const flightsTable = document.getElementById('flights-data');
-            if (flightsTable) {
-                flightsTable.innerHTML = '';
-                sampleFlightsData.forEach(item => {
-                    const rowClass = !item.match ? (item.mismatchType === 'GDS' ? 'gds-row' : 'tbo-row') : '';
-                    
-                    const matchStatus = item.match ? 
-                        '<td class="match"><i class="fas fa-check-circle"></i> متطابق</td>' : 
-                        `<td class="mismatch"><i class="fas fa-times-circle"></i> غير متطابق (${item.mismatchType})</td>`;
-                    
-                    flightsTable.innerHTML += `
-                        <tr class="${rowClass}">
-                            <td>${item.bookingRef}</td>
-                            <td>${item.bookingDate}</td>
-                            <td>${item.redemptionType}</td>
-                            <td>${item.supplier}</td>
-                            <td>${item.flightPNR}</td>
-                            <td>${item.tickets}</td>
-                            <td>${item.gdsPNR || '-'}</td>
-                            <td>${item.tboPNR || '-'}</td>
-                            ${matchStatus}
-                        </tr>
-                    `;
-                });
-            }
-            
-            // تعبئة بيانات الفنادق
-            const hotelsTable = document.getElementById('hotels-data');
-            if (hotelsTable) {
-                hotelsTable.innerHTML = '';
-                sampleHotelsData.forEach(item => {
-                    const rowClass = !item.match ? (item.mismatchType === 'Expedia' ? 'expedia-row' : 'tbo-row') : '';
-                    
-                    const matchStatus = item.match ? 
-                        '<td class="match"><i class="fas fa-check-circle"></i> متطابق</td>' : 
-                        `<td class="mismatch"><i class="fas fa-times-circle"></i> غير متطابق (${item.mismatchType})</td>`;
-                    
-                    hotelsTable.innerHTML += `
-                        <tr class="${rowClass}">
-                            <td>${item.bookingRef}</td>
-                            <td>${item.bookingDate}</td>
-                            <td>${item.redemptionType}</td>
-                            <td>${item.supplier}</td>
-                            <td>${item.hotelItinerary}</td>
-                            <td>${item.expediaItinerary || '-'}</td>
-                            <td>${item.tboConfirmation || '-'}</td>
-                            ${matchStatus}
-                        </tr>
-                    `;
-                });
-            }
-            
-            // تعبئة بيانات عدم التطابق
-            fillMismatchData();
-        }
-
-        // تعبئة بيانات عدم التطابق
-        function fillMismatchData() {
-            // GDS غير المتطابقة
-            const gdsMismatch = sampleFlightsData.filter(item => !item.match && item.mismatchType === 'GDS');
-            const gdsMismatchTable = document.getElementById('gds-mismatch-data');
-            if (gdsMismatchTable) {
-                gdsMismatchTable.innerHTML = '';
-                gdsMismatch.forEach(item => {
-                    gdsMismatchTable.innerHTML += `
-                        <tr class="gds-row">
-                            <td>${item.flightPNR}</td>
-                            <td>${item.gdsPNR || '-'}</td>
-                            <td>${item.bank || 'BAJ'}</td>
-                            <td class="mismatch">غير متطابق</td>
-                        </tr>
-                    `;
-                });
-            }
-            
-            // TBO غير المتطابقة (تذاكر)
-            const tboMismatch = sampleFlightsData.filter(item => !item.match && item.mismatchType === 'TBO');
-            const tboMismatchTable = document.getElementById('tbo-mismatch-data');
-            if (tboMismatchTable) {
-                tboMismatchTable.innerHTML = '';
-                tboMismatch.forEach(item => {
-                    tboMismatchTable.innerHTML += `
-                        <tr class="tbo-row">
-                            <td>${item.flightPNR}</td>
-                            <td>${item.tboPNR || '-'}</td>
-                            <td>${item.bank || 'BAJ'}</td>
-                            <td class="mismatch">غير متطابق</td>
-                        </tr>
-                    `;
-                });
-            }
-            
-            // التقرير غير المتطابق (تذاكر)
-            const reportMismatch = sampleFlightsData.filter(item => !item.match && (item.mismatchType === 'GDS' || item.mismatchType === 'TBO'));
-            const reportMismatchTable = document.getElementById('report-mismatch-data');
-            if (reportMismatchTable) {
-                reportMismatchTable.innerHTML = '';
-                reportMismatch.forEach(item => {
-                    reportMismatchTable.innerHTML += `
-                        <tr class="report-row">
-                            <td>${item.flightPNR}</td>
-                            <td>${item.mismatchType === 'GDS' ? item.gdsPNR : item.tboPNR || '-'}</td>
-                            <td>${item.bank || 'BAJ'}</td>
-                            <td class="mismatch">غير متطابق (${item.mismatchType})</td>
-                        </tr>
-                    `;
-                });
-            }
-            
-            // Expedia غير المتطابقة
-            const expediaMismatch = sampleHotelsData.filter(item => !item.match && item.mismatchType === 'Expedia');
-            const expediaMismatchTable = document.getElementById('expedia-mismatch-data');
-            if (expediaMismatchTable) {
-                expediaMismatchTable.innerHTML = '';
-                expediaMismatch.forEach(item => {
-                    expediaMismatchTable.innerHTML += `
-                        <tr class="expedia-row">
-                            <td>${item.hotelItinerary}</td>
-                            <td>${item.expediaItinerary || '-'}</td>
-                            <td>${item.bank || 'BAJ'}</td>
-                            <td class="mismatch">غير متطابق</td>
-                        </tr>
-                    `;
-                });
-            }
-            
-            // TBO غير المتطابقة (فنادق)
-            const tboHotelMismatch = sampleHotelsData.filter(item => !item.match && item.mismatchType === 'TBO');
-            const tboHotelMismatchTable = document.getElementById('tbo-hotel-mismatch-data');
-            if (tboHotelMismatchTable) {
-                tboHotelMismatchTable.innerHTML = '';
-                tboHotelMismatch.forEach(item => {
-                    tboHotelMismatchTable.innerHTML += `
-                        <tr class="tbo-row">
-                            <td>${item.hotelItinerary}</td>
-                            <td>${item.tboConfirmation || '-'}</td>
-                            <td>${item.bank || 'BAJ'}</td>
-                            <td class="mismatch">غير متطابق</td>
-                        </tr>
-                    `;
-                });
-            }
-            
-            // التقرير غير المتطابق (فنادق)
-            const reportHotelMismatch = sampleHotelsData.filter(item => !item.match && (item.mismatchType === 'Expedia' || item.mismatchType === 'TBO'));
-            const reportHotelMismatchTable = document.getElementById('report-hotel-mismatch-data');
-            if (reportHotelMismatchTable) {
-                reportHotelMismatchTable.innerHTML = '';
-                reportHotelMismatch.forEach(item => {
-                    reportHotelMismatchTable.innerHTML += `
-                        <tr class="report-row">
-                            <td>${item.hotelItinerary}</td>
-                            <td>${item.mismatchType === 'Expedia' ? item.expediaItinerary : item.tboConfirmation || '-'}</td>
-                            <td>${item.bank || 'BAJ'}</td>
-                            <td class="mismatch">غير متطابق (${item.mismatchType})</td>
-                        </tr>
-                    `;
-                });
-            }
-        }
-
-        // تحديث بيانات المقارنة
-        function refreshComparison() {
-            loadComparisonData();
-            showAlert('تم تحديث بيانات المقارنة بنجاح', 'success');
-        }
-
-        // مسح بيانات المقارنة
-        function clearComparison() {
-            if (confirm('هل أنت متأكد من مسح جميع بيانات المقارنة؟')) {
-                sampleFlightsData = [];
-                sampleHotelsData = [];
-                loadComparisonData();
-                showAlert('تم مسح بيانات المقارنة بنجاح', 'success');
-            }
-        }
-
-        // تصدير بيانات المقارنة إلى Excel
-        function exportComparisonToExcel() {
-            if (sampleFlightsData.length === 0 && sampleHotelsData.length === 0) {
-                showAlert('لا توجد بيانات لتصديرها', 'warning');
-                return;
-            }
-            
-            // محاكاة عملية التصدير
-            let exportData = [];
-            
-            // إضافة بيانات التذاكر
-            if (sampleFlightsData.length > 0) {
-                exportData.push(['=== بيانات التذاكر ===']);
-                exportData.push(['Booking Ref', 'Booking Date', 'Redemption Type', 'Supplier', 'Flight PNR', 'Tickets', 'GDS PNR', 'TBO PNR', 'Status']);
-                
-                sampleFlightsData.forEach(item => {
-                    exportData.push([
-                        item.bookingRef,
-                        item.bookingDate,
-                        item.redemptionType,
-                        item.supplier,
-                        item.flightPNR,
-                        item.tickets,
-                        item.gdsPNR || '-',
-                        item.tboPNR || '-',
-                        item.match ? 'متطابق' : `غير متطابق (${item.mismatchType})`
-                    ]);
-                });
-                
-                exportData.push([]); // سطر فارغ لفصل البيانات
-            }
-            
-            // إضافة بيانات الفنادق
-            if (sampleHotelsData.length > 0) {
-                exportData.push(['=== بيانات الفنادق ===']);
-                exportData.push(['Booking Ref', 'Booking Date', 'Redemption Type', 'Supplier', 'Hotel Itinerary', 'Expedia Itinerary', 'TBO Confirmation', 'Status']);
-                
-                sampleHotelsData.forEach(item => {
-                    exportData.push([
-                        item.bookingRef,
-                        item.bookingDate,
-                        item.redemptionType,
-                        item.supplier,
-                        item.hotelItinerary,
-                        item.expediaItinerary || '-',
-                        item.tboConfirmation || '-',
-                        item.match ? 'متطابق' : `غير متطابق (${item.mismatchType})`
-                    ]);
-                });
-            }
-            
-            // إنشاء ملف Excel وهمي للتنزيل
-            const csvContent = exportData.map(row => row.join(',')).join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.setAttribute('href', url);
-            link.setAttribute('download', 'مقارنة_البيانات_' + new Date().toISOString().slice(0, 10) + '.csv');
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showAlert('تم تصدير بيانات المقارنة إلى ملف Excel بنجاح', 'success');
-        }
-
-        // تصفية بيانات التذاكر حسب النطاق الزمني
-        function filterFlightsByDate() {
-            const fromDate = document.getElementById('flights-from-date').value;
-            const toDate = document.getElementById('flights-to-date').value;
-            
-            if (!fromDate || !toDate) {
-                showAlert('الرجاء تحديد تاريخ البداية والنهاية', 'danger');
-                return;
-            }
-            
-            // تصفية بيانات التذاكر
-            const filteredFlights = sampleFlightsData.filter(item => {
-                const itemDate = new Date(item.bookingDate);
-                const from = new Date(fromDate);
-                const to = new Date(toDate);
-                return itemDate >= from && itemDate <= to;
-            });
-            
-            if (filteredFlights.length === 0) {
-                showAlert('لا توجد بيانات في النطاق الزمني المحدد', 'warning');
-                return;
-            }
-            
-            // عرض البيانات المصفاة
-            const flightsTable = document.getElementById('flights-data');
-            if (flightsTable) {
-                flightsTable.innerHTML = '';
-                filteredFlights.forEach(item => {
-                    const rowClass = !item.match ? (item.mismatchType === 'GDS' ? 'gds-row' : 'tbo-row') : '';
-                    
-                    const matchStatus = item.match ? 
-                        '<td class="match"><i class="fas fa-check-circle"></i> متطابق</td>' : 
-                        `<td class="mismatch"><i class="fas fa-times-circle"></i> غير متطابق (${item.mismatchType})</td>`;
-                    
-                    flightsTable.innerHTML += `
-                        <tr class="${rowClass}">
-                            <td>${item.bookingRef}</td>
-                            <td>${item.bookingDate}</td>
-                            <td>${item.redemptionType}</td>
-                            <td>${item.supplier}</td>
-                            <td>${item.flightPNR}</td>
-                            <td>${item.tickets}</td>
-                            <td>${item.gdsPNR || '-'}</td>
-                            <td>${item.tboPNR || '-'}</td>
-                            ${matchStatus}
-                        </tr>
-                    `;
-                });
-            }
-            
-            showAlert(`تم تصفية بيانات التذاكر من ${fromDate} إلى ${toDate}`, 'success');
-        }
-
-        // تصفية بيانات الفنادق حسب النطاق الزمني
-        function filterHotelsByDate() {
-            const fromDate = document.getElementById('hotels-from-date').value;
-            const toDate = document.getElementById('hotels-to-date').value;
-            
-            if (!fromDate || !toDate) {
-                showAlert('الرجاء تحديد تاريخ البداية والنهاية', 'danger');
-                return;
-            }
-            
-            // تصفية بيانات الفنادق
-            const filteredHotels = sampleHotelsData.filter(item => {
-                const itemDate = new Date(item.bookingDate);
-                const from = new Date(fromDate);
-                const to = new Date(toDate);
-                return itemDate >= from && itemDate <= to;
-            });
-            
-            if (filteredHotels.length === 0) {
-                showAlert('لا توجد بيانات في النطاق الزمني المحدد', 'warning');
-                return;
-            }
-            
-            // عرض البيانات المصفاة
-            const hotelsTable = document.getElementById('hotels-data');
-            if (hotelsTable) {
-                hotelsTable.innerHTML = '';
-                filteredHotels.forEach(item => {
-                    const rowClass = !item.match ? (item.mismatchType === 'Expedia' ? 'expedia-row' : 'tbo-row') : '';
-                    
-                    const matchStatus = item.match ? 
-                        '<td class="match"><i class="fas fa-check-circle"></i> متطابق</td>' : 
-                        `<td class="mismatch"><i class="fas fa-times-circle"></i> غير متطابق (${item.mismatchType})</td>`;
-                    
-                    hotelsTable.innerHTML += `
-                        <tr class="${rowClass}">
-                            <td>${item.bookingRef}</td>
-                            <td>${item.bookingDate}</td>
-                            <td>${item.redemptionType}</td>
-                            <td>${item.supplier}</td>
-                            <td>${item.hotelItinerary}</td>
-                            <td>${item.expediaItinerary || '-'}</td>
-                            <td>${item.tboConfirmation || '-'}</td>
-                            ${matchStatus}
-                        </tr>
-                    `;
-                });
-            }
-            
-            showAlert(`تم تصفية بيانات الفنادق من ${fromDate} إلى ${toDate}`, 'success');
-        }
-
-        // حفظ البيانات إلى قاعدة البيانات
-        function saveToDatabase() {
-            if (sampleFlightsData.length === 0 && sampleHotelsData.length === 0) {
-                showAlert('لا توجد بيانات لحفظها', 'warning');
-                return;
-            }
-            
-            const now = new Date();
-            const saveDate = now.toISOString().split('T')[0] + ' ' + now.toTimeString().split(' ')[0];
-            
-            // حفظ بيانات التذاكر
-            sampleFlightsData.forEach(item => {
-                database.push({
-                    id: database.length + 1,
-                    type: 'تذاكر',
-                    bank: item.bank || 'BAJ',
-                    bookingRef: item.bookingRef,
-                    date: item.bookingDate,
-                    status: item.match ? 'متطابق' : `غير متطابق (${item.mismatchType})`,
-                    saveDate: saveDate,
-                    details: item
-                });
-            });
-            
-            // حفظ بيانات الفنادق
-            sampleHotelsData.forEach(item => {
-                database.push({
-                    id: database.length + 1,
-                    type: 'فنادق',
-                    bank: item.bank || 'BAJ',
-                    bookingRef: item.bookingRef,
-                    date: item.bookingDate,
-                    status: item.match ? 'متطابق' : `غير متطابق (${item.mismatchType})`,
-                    saveDate: saveDate,
-                    details: item
-                });
-            });
-            
-            showAlert('تم حفظ البيانات في قاعدة البيانات بنجاح', 'success');
-            
-            // إذا كانت صفحة قاعدة البيانات مفتوحة، قم بتحديثها
-            if (document.getElementById('database-page').style.display !== 'none') {
-                loadDatabase();
-            }
-        }
-
-        // تحميل بيانات قاعدة البيانات
-        function loadDatabase() {
-            const databaseTable = document.getElementById('database-data');
-            if (!databaseTable) return;
-            
-            databaseTable.innerHTML = '';
-            
-            if (database.length === 0) {
-                databaseTable.innerHTML = `
-                    <tr>
-                        <td colspan="8" style="text-align: center;">لا توجد بيانات في قاعدة البيانات</td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            database.forEach(item => {
-                const statusClass = item.status.includes('غير متطابق') ? 'mismatch' : 'match';
-                
-                databaseTable.innerHTML += `
-                    <tr>
-                        <td>${item.id}</td>
-                        <td>${item.type}</td>
-                        <td>${item.bank}</td>
-                        <td>${item.bookingRef}</td>
-                        <td>${item.date}</td>
-                        <td class="${statusClass}">${item.status}</td>
-                        <td>${item.saveDate}</td>
-                        <td>
-                            <button onclick="viewDetails(${item.id})" class="btn">
-                                <i class="fas fa-eye"></i> عرض
-                            </button>
-                            <button onclick="deleteRecord(${item.id})" class="btn-delete">
-                                <i class="fas fa-trash"></i> حذف
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        // عرض تفاصيل السجل
-        function viewDetails(id) {
-            const record = database.find(item => item.id === id);
-            if (record) {
-                alert(`تفاصيل السجل ${id}:\n\n` + 
-                      `النوع: ${record.type}\n` +
-                      `البنك: ${record.bank}\n` +
-                      `Booking Ref: ${record.bookingRef}\n` +
-                      `التاريخ: ${record.date}\n` +
-                      `الحالة: ${record.status}\n` +
-                      `تاريخ الحفظ: ${record.saveDate}`);
-            }
-        }
-
-        // حذف سجل من قاعدة البيانات
-        function deleteRecord(id) {
-            if (confirm('هل أنت متأكد من حذف هذا السجل؟')) {
-                database = database.filter(item => item.id !== id);
-                loadDatabase();
-                showAlert('تم حذف السجل بنجاح', 'success');
-            }
-        }
-
-        // البحث في قاعدة البيانات
-        function searchDatabase() {
-            const query = document.getElementById('search-query').value.toLowerCase();
-            if (!query) {
-                loadDatabase();
-                return;
-            }
-            
-            const results = database.filter(item => 
-                (item.bookingRef && item.bookingRef.toLowerCase().includes(query)) ||
-                (item.bank && item.bank.toLowerCase().includes(query)) ||
-                (item.type && item.type.toLowerCase().includes(query)) ||
-                (item.status && item.status.toLowerCase().includes(query))
-            );
-            
-            const databaseTable = document.getElementById('database-data');
-            if (!databaseTable) return;
-            
-            databaseTable.innerHTML = '';
-            
-            if (results.length === 0) {
-                databaseTable.innerHTML = `
-                    <tr>
-                        <td colspan="8" style="text-align: center;">لا توجد نتائج للبحث</td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            results.forEach(item => {
-                const statusClass = item.status.includes('غير متطابق') ? 'mismatch' : 'match';
-                
-                databaseTable.innerHTML += `
-                    <tr>
-                        <td>${item.id}</td>
-                        <td>${item.type}</td>
-                        <td>${item.bank}</td>
-                        <td>${item.bookingRef}</td>
-                        <td>${item.date}</td>
-                        <td class="${statusClass}">${item.status}</td>
-                        <td>${item.saveDate}</td>
-                        <td>
-                            <button onclick="viewDetails(${item.id})" class="btn">
-                                <i class="fas fa-eye"></i> عرض
-                            </button>
-                            <button onclick="deleteRecord(${item.id})" class="btn-delete">
-                                <i class="fas fa-trash"></i> حذف
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        // تصدير البيانات إلى Excel
-        function exportToExcel() {
-            if (database.length === 0) {
-                showAlert('لا توجد بيانات لتصديرها', 'warning');
-                return;
-            }
-            
-            // إنشاء ملف Excel وهمي للتنزيل
-            let csvContent = "ID,النوع,البنك,Booking Ref,التاريخ,الحالة,تاريخ الحفظ\n";
-            
-            database.forEach(item => {
-                csvContent += `${item.id},${item.type},${item.bank},${item.bookingRef},${item.date},${item.status},${item.saveDate}\n`;
-            });
-            
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.setAttribute('href', url);
-            link.setAttribute('download', 'قاعدة_البيانات_' + new Date().toISOString().slice(0, 10) + '.csv');
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showAlert('تم تصدير البيانات إلى Excel بنجاح', 'success');
-        }
-
-        // إضافة بنك جديد
-        function addNewBank() {
-            const bankName = document.getElementById('new-bank-name').value.trim();
-            if (!bankName) {
-                showAlert('الرجاء إدخال اسم البنك', 'danger');
-                return;
-            }
-            
-            const banksContainer = document.getElementById('banks-container');
-            const newBankId = bankName.replace(/\s+/g, '-').toLowerCase();
-            
-            // التحقق من عدم وجود بنك بنفس الاسم
-            const existingBank = Array.from(banksContainer.querySelectorAll('.bank-section')).find(bank => {
-                return bank.querySelector('.bank-name').value.toLowerCase() === bankName.toLowerCase();
-            });
-            
-            if (existingBank) {
-                showAlert('هذا البنك موجود بالفعل', 'warning');
-                return;
-            }
-            
-            const bankHTML = `
-                <div class="bank-section" data-bank="${newBankId}">
-                    <div class="bank-header">
-                        <input type="text" value="${bankName}" class="bank-name">
-                        <div class="bank-actions">
-                            <button class="btn-edit" onclick="updateBankName(this)">
-                                <i class="fas fa-edit"></i> تعديل
-                            </button>
-                            <button class="btn-delete" onclick="deleteBank(this)">
-                                <i class="fas fa-trash"></i> حذف
-                            </button>
+                <div class="report-preview-container">
+                    <div id="a4-content" class="a4-page">
+                        <div style="text-align:center; padding-top:100px; color:#999;">
+                            <i class="fas fa-file-alt" style="font-size:4rem;"></i><br><br>
+                            يرجى الضغط على "إصدار التقرير" لعرض البيانات
                         </div>
                     </div>
-                    <form class="upload-form" id="admin-${newBankId}-form">
-                        <input type="hidden" name="bank" value="${bankName}">
-                        <div class="form-group">
-                            <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
-                            <div class="file-input-wrapper">
-                                <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                <button type="submit" class="btn-success">
-                                    <i class="fas fa-upload"></i> رفع
-                                </button>
-                            </div>
-                            <div id="admin-${newBankId}-form-file-info" class="file-info" style="display:none;">
-                                <i class="fas fa-file-excel"></i>
-                                <span class="file-name"></span>
-                                <span class="file-size"></span>
-                                <span class="file-status">جاهز للرفع</span>
-                            </div>
-                            <div class="upload-progress" id="admin-${newBankId}-form-upload-progress">
-                                <div>جاري الرفع...</div>
-                                <div class="progress-bar">
-                                    <div class="progress" id="admin-${newBankId}-form-progress-bar"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                    <div class="uploaded-files" id="admin-${newBankId}-form-uploaded-files">
-                        <!-- سيتم ملؤها بالملفات المرفوعة -->
+                </div>
+            </div>
+
+            <canvas id="hiddenChart" width="400" height="200" style="display:none;"></canvas>
+
+        </main>
+    </div>
+
+    <script>
+        // --- DATA SIMULATION (Matches "September Report" Source) ---
+        const DB = {
+            settings: {
+                schoolName: 'لمدرسة مدينة حمد الابتدائية للبنات',
+                year: '2025 / 2026م',
+                principal: 'أ. علياء محمد مبارك الدوسري',
+                assistant: 'أ. ليلى سعيد حسن'
+            },
+            visits: [
+                // Senior Leadership Visits (Sample)
+                {t: 'خديجة رضي النشمي', dept: 'التربية الرياضية', date: '2025-09-23', eval: 'يتجاوز التوقعات بكثير', visitor: 'أ. علياء محمد مبارك الدوسري', role: 'مدير المدرسة'},
+                {t: 'منى حبيب الفردان', dept: 'التربية الفنية', date: '2025-09-23', eval: 'يتجاوز التوقعات بكثير', visitor: 'أ. علياء محمد مبارك الدوسري', role: 'مدير المدرسة'},
+                {t: 'نوال علي البلوشي', dept: 'التربية الإسلامية', date: '2025-09-25', eval: 'يفي بالتوقعات تماما', visitor: 'أ. علياء محمد مبارك الدوسري', role: 'مدير المدرسة'},
+                {t: 'فاطمة أحمد أيوب', dept: 'الرياضيات', date: '2025-09-25', eval: 'يتجاوز التوقعات بكثير', visitor: 'أ. علياء محمد مبارك الدوسري', role: 'مدير المدرسة'},
+                 // Middle Leadership Visits (Sample - Adding more to match counts)
+                {t: 'فاطمة سمير القوتي', dept: 'نظام فصل', date: '2025-09-15', eval: 'يتجاوز التوقعات', visitor: 'أ. هيا عبدالله عجلان', role: 'منسق نظام الفصل'},
+                {t: 'ختام عزاوي العلي', dept: 'نظام فصل', date: '2025-09-23', eval: 'يتجاوز التوقعات بكثير', visitor: 'أ. هيا عبدالله عجلان', role: 'منسق نظام الفصل'},
+                {t: 'إيمان محسن عليان', dept: 'اجتماعيات', date: '2025-09-23', eval: 'يتجاوز التوقعات', visitor: 'أ. مريم يعقوب يوسف', role: 'المدير المساعد'},
+                {t: 'ليلى محمد علي', dept: 'اجتماعيات', date: '2025-09-23', eval: 'يفي بالتوقعات جزئيا', visitor: 'أ. مريم يعقوب يوسف', role: 'المدير المساعد'}
+            ],
+            distinguished: [
+                {name: 'نور محمد العصفور', dept: 'الرياضيات والعلوم', eval: 'يتجاوز التوقعات بكثير', reason: 'توظيف مهارات القرن 21 في الحصص بصورة مستمرة، وربط المادة العلمية بالواقع.'},
+                {name: 'هند جاسم المطاوعة', dept: 'الرياضيات والعلوم', eval: 'يتجاوز التوقعات بكثير', reason: 'توظيف أساليب تعليم وتعلم متنوعة تتماشى مع الفروق الفردية، وتوظيف التكنولوجيا.'},
+                {name: 'أ. مريم ناجي محمد', dept: 'نظام الفصل', eval: 'يتجاوز التوقعات بكثير', reason: 'إدارة الموقف التعليمي بفاعلية كبيرة مع إبراز أدوار الطالبات بمختلف الاستراتيجيات.'}
+            ],
+            care: [
+                {name: 'ليلى محمد علي', dept: 'المواد الاجتماعية', eval: 'يفي جزئيا', reason: 'معلمة منقولة حديثاً. تحتاج تطوير في: اتساق التخطيط، توظيف الاستراتيجيات، والتقويم.'},
+                {name: 'حصة فؤاد البورشيد', dept: 'نظام الفصل', eval: 'يفي جزئيا', reason: 'معلمة مستجدة. تحتاج تطوير في: إدارة السلوك، توظيف الاستراتيجيات، وأساليب التقويم.'}
+            ],
+            qualitative: [
+                {dept: 'الرياضيات والعلوم', strength: 'تعزيز مهارات القرن 21. تفعيل الأدوار القيادية.', improve: 'الاستثمار الأمثل لوقت التعلم. توظيف أساليب تقويم فاعلة.'},
+                {dept: 'اللغة العربية', strength: 'تحقيق الأهداف بشكل جيد. توظيف التمايز بصورة فاعلة.', improve: 'التنويع في الأدوار القيادية. توظيف أدوات التمكين الرقمي.'}
+            ],
+            middleTracking: [
+                {dept: 'معلم أول لغة عربية', visits: 7, minutes: 'يوجد', plan: 'يوجد'},
+                {dept: 'منسق رياضيات وعلوم', visits: 9, minutes: 'يوجد', plan: 'يوجد'},
+                {dept: 'معلم أول لغة إنجليزية', visits: 8, minutes: 'يوجد', plan: 'يوجد'},
+                {dept: 'معلم أول تربية إسلامية', visits: 10, minutes: 'يوجد', plan: 'يوجد'},
+                {dept: 'منسق نظام فصل', visits: 8, minutes: 'يوجد', plan: 'يوجد'}
+            ]
+        };
+
+        // --- APP LOGIC ---
+        function startApp() { document.getElementById('loginPage').style.display = 'none'; document.getElementById('app').style.display = 'flex'; }
+        
+        function showSection(id) {
+            document.querySelectorAll('.section-card').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        async function generateReport() {
+            const monthVal = document.getElementById('reportMonth').value;
+            const monthName = monthVal === '09' ? 'سبتمبر' : 'أكتوبر';
+            
+            // 1. Generate Chart Image
+            const chartData = [34, 23, 9, 4]; // Sample data from source
+            const chartImg = await generateChartImage(chartData);
+
+            // 2. Build HTML Structure (Exactly matching the Word Template)
+            let html = `
+                <div class="rpt-header">
+                    <div class="rpt-header-side">
+                        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/44/Ministry_of_Education_%28Bahrain%29.svg/1200px-Ministry_of_Education_%28Bahrain%29.svg.png" class="rpt-logo-min" alt="Ministry Logo">
+                        <div style="margin-top:5px;">Ministry of Education</div>
+                    </div>
+                    <div class="rpt-header-center">
+                         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Emblem_of_Bahrain.svg/800px-Emblem_of_Bahrain.svg.png" class="rpt-logo" alt="Bahrain Emblem">
+                    </div>
+                    <div class="rpt-header-side">
+                        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/44/Ministry_of_Education_%28Bahrain%29.svg/1200px-Ministry_of_Education_%28Bahrain%29.svg.png" class="rpt-logo-min" alt="Ministry Logo">
+                        <div style="margin-top:5px; font-family:'Tajawal'">وزارة التربية والتعليم</div>
+                    </div>
+                </div>
+
+                <div class="rpt-title-box">
+                    تقرير متابعة جودة التعليم والتعلم للقيادة العليا والوسطى
+                </div>
+
+                <div class="rpt-school-info">
+                    ${DB.settings.schoolName}<br>
+                    شهر ${monthName}<br>
+                    العام الدراسي ${DB.settings.year}
+                </div>
+
+                <div class="rpt-section-title">أولاً: متابعة تسليم القيادة الوسطى (الزيارات/محاضر الاجتماعات/الخطة الأسبوعية):</div>
+                <table class="rpt-table">
+                    <thead>
+                        <tr>
+                            <th width="25%">القسم</th>
+                            <th width="25%">عدد استمارات الزيارات المنفذة</th>
+                            <th width="25%">محضر اجتماع (يوجد/لا)</th>
+                            <th width="25%">خطة أسبوعية (يوجد/لا)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${DB.middleTracking.map(item => `
+                        <tr>
+                            <td>${item.dept}</td>
+                            <td>${item.visits}</td>
+                            <td>${item.minutes}</td>
+                            <td>${item.plan}</td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>
+                 <p style="font-size:12px; margin-top:5px;">ملاحظات عامة: يتم التنسيق مع القيادة الوسطى لتنفيذ الزيارات الصفية بحسب ما يتناسب مع ظروف الجداول.</p>
+
+                <div class="rpt-section-title">ثانياً: عدد الزيارات التي نُفذت خلال شهر ${monthName}:</div>
+                <ul style="list-style:none; padding:0; font-weight:bold;">
+                    <li>1- القيادة العليا = 23 زيارة</li>
+                    <li>2- القيادة الوسطى = 47 زيارة</li>
+                    <li style="margin-top:5px; border-top:1px solid #000; display:inline-block; padding-top:5px;">المجموع الكلي = 70 زيارة</li>
+                </ul>
+
+                <div class="rpt-section-title">ثالثاً: بيان أسماء المعلمين المُزارين:</div>
+                <table class="rpt-table">
+                    <thead>
+                        <tr>
+                            <th width="5%">ت</th>
+                            <th width="20%">اسم المعلم</th>
+                            <th width="15%">القسم</th>
+                            <th width="15%">تاريخ الزيارة</th>
+                            <th width="20%">تقييم الزيارة</th>
+                            <th width="25%">اسم الزائر</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${DB.visits.map((v, i) => `
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td>${v.t}</td>
+                            <td>${v.dept}</td>
+                            <td>${v.date}</td>
+                            <td>${v.eval}</td>
+                            <td>${v.visitor}<br><span style="font-size:10px; color:#555;">(${v.role})</span></td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>
+
+                <div class="rpt-section-title">رابعاً: عدد الزيارات الصفية وتقييم الأداء الصفي:</div>
+                <table class="rpt-table">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">القسم</th>
+                            <th rowspan="2">مجموع الزيارات</th>
+                            <th colspan="4">مستويات الأداء</th>
+                        </tr>
+                        <tr>
+                            <th style="font-size:10px;">يتجاوز التوقعات بكثير</th>
+                            <th style="font-size:10px;">يتجاوز التوقعات</th>
+                            <th style="font-size:10px;">يفي بالتوقعات</th>
+                            <th style="font-size:10px;">يفي جزئياً</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>الرياضيات</td><td>11</td><td>7</td><td>3</td><td>1</td><td>-</td></tr>
+                        <tr><td>العلوم</td><td>3</td><td>3</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>نظام فصل</td><td>17</td><td>7</td><td>8</td><td>1</td><td>1</td></tr>
+                        <tr style="background:#f9f9f9; font-weight:bold;">
+                            <td>المجموع الكلي</td>
+                            <td>70</td>
+                            <td>34</td>
+                            <td>23</td>
+                            <td>9</td>
+                            <td>4</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="text-align:center; border:1px solid #000; padding:10px; margin-top:10px;">
+                    <img src="${chartImg}" style="max-width:100%; height:200px;">
+                    <p style="font-size:12px; margin:5px 0 0 0;">رسم بياني يوضح مستويات الأداء</p>
+                </div>
+
+                 <div class="rpt-section-title">سادساً: حصر أسماء المعلمين المتميزين:</div>
+                <table class="rpt-table">
+                    <thead>
+                        <tr>
+                            <th width="5%">م</th>
+                            <th width="20%">اسم المعلم</th>
+                            <th width="15%">القسم</th>
+                            <th width="15%">التقدير</th>
+                            <th width="45%">المبررات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${DB.distinguished.map((d, i) => `
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td>${d.name}</td>
+                            <td>${d.dept}</td>
+                            <td>${d.eval}</td>
+                            <td class="align-right">${d.reason}</td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>
+
+                <div class="rpt-section-title">حصر أسماء المعلمين الأولى بالرعاية:</div>
+                <table class="rpt-table">
+                    <thead>
+                        <tr>
+                            <th width="5%">م</th>
+                            <th width="20%">اسم المعلم</th>
+                            <th width="15%">القسم</th>
+                            <th width="15%">التقدير</th>
+                            <th width="45%">المبررات (جوانب القصور)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                         ${DB.care.map((c, i) => `
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td>${c.name}</td>
+                            <td>${c.dept}</td>
+                            <td>${c.eval}</td>
+                            <td class="align-right">${c.reason}</td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>
+
+                <div class="rpt-section-title">سابعاً: التقرير النوعي (جوانب القوة والتطوير):</div>
+                <table class="rpt-table">
+                    <thead>
+                        <tr>
+                            <th width="15%">القسم</th>
+                            <th width="42%">جوانب القوة</th>
+                            <th width="43%">جوانب بحاجة إلى تطوير</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${DB.qualitative.map(q => `
+                        <tr>
+                            <td>${q.dept}</td>
+                            <td class="align-right">${q.strength}</td>
+                            <td class="align-right">${q.improve}</td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>
+
+                <div class="rpt-signature-row">
+                    <div class="rpt-sig-box">
+                        <div class="rpt-sig-title">إعداد المديرة المساعدة</div>
+                        <div class="rpt-sig-name">${DB.settings.assistant}</div>
+                    </div>
+                    <div class="rpt-sig-box">
+                        <div class="rpt-sig-title">يعتمد، مديرة المدرسة</div>
+                        <div class="rpt-sig-name">${DB.settings.principal}</div>
                     </div>
                 </div>
             `;
-            
-            banksContainer.insertAdjacentHTML('beforeend', bankHTML);
-            document.getElementById('new-bank-name').value = '';
-            
-            // إضافة مكان لتخزين ملفات البنك الجديد
-            uploadedFiles[`admin-${newBankId}-form`] = [];
-            
-            // إعداد معالج الإرسال للنموذج الجديد
-            document.getElementById(`admin-${newBankId}-form`).addEventListener('submit', function(e) {
-                e.preventDefault();
-                uploadFile(`admin-${newBankId}-form`);
-            });
-            
-            // عرض رسالة نجاح
-            showAlert('تم إضافة البنك بنجاح', 'success');
+
+            document.getElementById('a4-content').innerHTML = html;
         }
 
-        // تحديث اسم البنك
-        function updateBankName(button) {
-            const bankHeader = button.parentElement.parentElement;
-            const bankNameInput = bankHeader.querySelector('.bank-name');
-            const newName = bankNameInput.value.trim();
-            
-            if (!newName) {
-                showAlert('الرجاء إدخال اسم صحيح للبنك', 'danger');
-                return;
-            }
-            
-            // تحديث القيمة المخزنة في حقل الإدخال المخفي
-            const form = bankHeader.nextElementSibling;
-            form.querySelector('input[name="bank"]').value = newName;
-            
-            showAlert('تم تحديث اسم البنك بنجاح', 'success');
-        }
-
-        // حذف بنك
-        function deleteBank(button) {
-            if (confirm('هل أنت متأكد من حذف هذا البنك؟ سيتم حذف جميع الملفات المرتبطة به.')) {
-                const bankSection = button.closest('.bank-section');
-                const formId = bankSection.querySelector('form').id;
-                
-                // حذف الملفات المرفوعة لهذا البنك
-                delete uploadedFiles[formId];
-                
-                // حذف العنصر من الواجهة
-                bankSection.remove();
-                showAlert('تم حذف البنك بنجاح', 'success');
-            }
-        }
-
-        // عرض رسالة تنبيه
-        function showAlert(message, type, persistent = false) {
-            const alertTypes = {
-                'success': { icon: 'check-circle', class: 'alert-success' },
-                'warning': { icon: 'exclamation-triangle', class: 'alert-warning' },
-                'danger': { icon: 'times-circle', class: 'alert-danger' }
-            };
-            
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert ${alertTypes[type].class}`;
-            alertDiv.innerHTML = `
-                <i class="fas fa-${alertTypes[type].icon}"></i>
-                <span>${message}</span>
-            `;
-            
-            const alertContainer = document.getElementById('alert-container');
-            alertContainer.appendChild(alertDiv);
-            
-            // إزالة الرسالة بعد 5 ثواني إذا لم تكن ثابتة
-            if (!persistent) {
-                setTimeout(() => {
-                    alertDiv.remove();
-                }, 5000);
-            }
-            
-            return alertDiv;
-        }
-
-        // إعداد معالج الأحداث للروابط
-        document.getElementById('comparison-link').addEventListener('click', function(e) {
-            e.preventDefault();
-            showPage('comparison-page');
-        });
-
-        document.getElementById('database-link').addEventListener('click', function(e) {
-            e.preventDefault();
-            showPage('database-page');
-        });
-
-        // إعداد معالج الأحداث لألسنة المقارنة
-        document.querySelectorAll('.comparison-tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                showComparisonTab(this.dataset.tab);
-            });
-        });
-
-        // عرض صفحة المقارنة افتراضياً عند التحميل
-        window.onload = function() {
-            // إعداد معالجات النماذج
-            setupFormHandlers();
-            
-            showPage('comparison-page');
-            
-            // تعيين التاريخ الافتراضي (اليوم)
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('flights-from-date').value = today;
-            document.getElementById('flights-to-date').value = today;
-            document.getElementById('hotels-from-date').value = today;
-            document.getElementById('hotels-to-date').value = today;
-            
-            // تحميل أي بيانات محفوظة في localStorage
-            loadFromLocalStorage();
-            
-            // عرض البيانات الأولية
-            loadComparisonData();
-            renderUploadedFiles('admin-baj-form');
-            renderUploadedFiles('admin-bab-form');
-            renderUploadedFiles('gds-form');
-            renderUploadedFiles('expedia-form');
-            renderUploadedFiles('tbo-flight-form');
-            renderUploadedFiles('tbo-hotel-form');
-        };
-        
-        // تحميل البيانات من localStorage
-        function loadFromLocalStorage() {
-            const savedBanks = localStorage.getItem('banks');
-            if (savedBanks) {
-                const banks = JSON.parse(savedBanks);
-                banks.forEach(bank => {
-                    addNewBankFromStorage(bank);
-                });
-            }
-            
-            const savedUploads = localStorage.getItem('uploadedFiles');
-            if (savedUploads) {
-                uploadedFiles = JSON.parse(savedUploads);
-                Object.keys(uploadedFiles).forEach(formId => {
-                    if (uploadedFiles[formId].length > 0) {
-                        renderUploadedFiles(formId);
+        // --- Helper to Generate Chart Image ---
+        function generateChartImage(data) {
+            return new Promise((resolve) => {
+                const ctx = document.getElementById('hiddenChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['يفوق التوقعات بكثير', 'يفوق التوقعات', 'يفي بالتوقعات', 'يفي جزئياً'],
+                        datasets: [{
+                            label: 'عدد المعلمين',
+                            data: data,
+                            backgroundColor: ['#28a745', '#17a2b8', '#ffc107', '#dc3545'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        animation: {
+                            onComplete: function() {
+                                resolve(document.getElementById('hiddenChart').toDataURL());
+                            }
+                        },
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true } }
                     }
                 });
-            }
-            
-            const savedDatabase = localStorage.getItem('database');
-            if (savedDatabase) {
-                database = JSON.parse(savedDatabase);
-            }
-        }
-        
-        // إضافة بنك من التخزين المحلي
-        function addNewBankFromStorage(bank) {
-            const banksContainer = document.getElementById('banks-container');
-            const newBankId = bank.id;
-            
-            const bankHTML = `
-                <div class="bank-section" data-bank="${newBankId}">
-                    <div class="bank-header">
-                        <input type="text" value="${bank.name}" class="bank-name">
-                        <div class="bank-actions">
-                            <button class="btn-edit" onclick="updateBankName(this)">
-                                <i class="fas fa-edit"></i> تعديل
-                            </button>
-                            <button class="btn-delete" onclick="deleteBank(this)">
-                                <i class="fas fa-trash"></i> حذف
-                            </button>
-                        </div>
-                    </div>
-                    <form class="upload-form" id="admin-${newBankId}-form">
-                        <input type="hidden" name="bank" value="${bank.name}">
-                        <div class="form-group">
-                            <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
-                            <div class="file-input-wrapper">
-                                <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                <button type="submit" class="btn-success">
-                                    <i class="fas fa-upload"></i> رفع
-                                </button>
-                            </div>
-                            <div id="admin-${newBankId}-form-file-info" class="file-info" style="display:none;">
-                                <i class="fas fa-file-excel"></i>
-                                <span class="file-name"></span>
-                                <span class="file-size"></span>
-                                <span class="file-status">جاهز للرفع</span>
-                            </div>
-                            <div class="upload-progress" id="admin-${newBankId}-form-upload-progress">
-                                <div>جاري الرفع...</div>
-                                <div class="progress-bar">
-                                    <div class="progress" id="admin-${newBankId}-form-progress-bar"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                    <div class="uploaded-files" id="admin-${newBankId}-form-uploaded-files">
-                        <!-- سيتم ملؤها بالملفات المرفوعة -->
-                    </div>
-                </div>
-            `;
-            
-            banksContainer.insertAdjacentHTML('beforeend', bankHTML);
-            
-            // إعداد معالج الإرسال للنموذج الجديد
-            document.getElementById(`admin-${newBankId}-form`).addEventListener('submit', function(e) {
-                e.preventDefault();
-                uploadFile(`admin-${newBankId}-form`);
             });
         }
-        
-        // حفظ البيانات إلى localStorage
-        function saveToLocalStorage() {
-            const banks = Array.from(document.querySelectorAll('.bank-section')).map(bank => {
-                return {
-                    id: bank.dataset.bank,
-                    name: bank.querySelector('.bank-name').value
-                };
-            });
-            
-            localStorage.setItem('banks', JSON.stringify(banks));
-            localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
-            localStorage.setItem('database', JSON.stringify(database));
-        }
-        
-        // حفظ البيانات عند إغلاق الصفحة
-        window.addEventListener('beforeunload', function() {
-            saveToLocalStorage();
-        });
+
+        // Initialize
+        window.onload = function() {
+            // Check session or just load login
+        };
     </script>
 </body>
 </html>
