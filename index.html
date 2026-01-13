@@ -120,7 +120,7 @@
         .modal-footer { padding: 15px 20px; background: #f9f9f9; display: flex; gap: 10px; justify-content: flex-end; }
         
         /* ---------------------------------------------------- */
-        /* --- تنسيقات تقرير جودة التعليم (مطابق للملف المرفق) --- */
+        /* --- تنسيقات تقرير جودة التعليم --- */
         /* ---------------------------------------------------- */
         .report-preview-container {
             background: #525659;
@@ -646,9 +646,9 @@
 
         const DB_KEY = 'Etqan_System_Full_Integrated';
         
-        // بيانات أولية (تحتوي الأقسام الصحيحة للتقرير)
+        // تحديث كلمة المرور في البيانات الأولية
         const INITIAL_DB = {
-            admins: [{id: 999, name: 'مدير النظام', login: 'admin', pass: 'admin', status: 'active', permissions: {dashboard:{view:true,edit:true}, visits:{view:true,edit:true}, "quality-report":{view:true,edit:true}, settings:{view:true,edit:true}}}],
+            admins: [{id: 999, name: 'مدير النظام', login: 'admin', pass: 'Hasan@12', status: 'active', permissions: {dashboard:{view:true,edit:true}, visits:{view:true,edit:true}, "quality-report":{view:true,edit:true}, settings:{view:true,edit:true}}}],
             departments: [
                 {name: 'معلم اول لغة عربية'}, 
                 {name: 'منسق رياضيات وعلوم'}, 
@@ -695,32 +695,55 @@
                 // ضمان وجود الهياكل الأساسية
                 if(!DB.departments) DB.departments = INITIAL_DB.departments;
                 if(!DB.saved_reports) DB.saved_reports = [];
+
+                // تصحيح: إذا كانت كلمة المرور القديمة مخزنة، قم بتحديثها للمسؤول
+                if(DB.admins && DB.admins.length > 0 && DB.admins[0].login === 'admin') {
+                    DB.admins[0].pass = 'Hasan@12';
+                }
             } else {
                 DB = JSON.parse(JSON.stringify(INITIAL_DB));
-                saveDB();
             }
-            // Auto login for demo purposes
-            // login({preventDefault:()=>{}}); 
+            // حفظ التحديثات (مثل كلمة المرور الجديدة)
+            saveDB();
         }
 
         function saveDB() { localStorage.setItem(DB_KEY, JSON.stringify(DB)); }
 
-        // --- المصادقة ---
+        // --- المصادقة (تم إصلاحها للبحث في قاعدة البيانات بدلاً من التحقق الثابت) ---
         function login(e) {
             e.preventDefault();
-            const u = document.getElementById('loginUser').value;
-            const p = document.getElementById('loginPass').value;
-            // Simple check against admins for demo
-            if(u === 'admin' && p === 'admin') {
-                CURRENT_USER = DB.admins[0];
+            const u = document.getElementById('loginUser').value.trim();
+            const p = document.getElementById('loginPass').value.trim();
+            
+            let foundUser = null;
+
+            // البحث في المسؤولين
+            if (DB.admins) foundUser = DB.admins.find(user => user.login === u && user.pass === p);
+
+            // البحث في القيادة العليا (إذا كان لديهم بيانات دخول)
+            if (!foundUser && DB.senior) foundUser = DB.senior.find(user => user.login === u && user.pass === p);
+
+            // البحث في القيادة الوسطى
+            if (!foundUser && DB.middle) foundUser = DB.middle.find(user => user.login === u && user.pass === p);
+            
+            // البحث في المعلمات
+            if (!foundUser && DB.teachers) foundUser = DB.teachers.find(user => user.login === u && user.pass === p);
+
+            if(foundUser) {
+                CURRENT_USER = foundUser;
+                document.getElementById('loginError').style.display = 'none';
                 document.getElementById('loginPage').style.display = 'none';
                 document.getElementById('app').style.display = 'flex';
                 document.getElementById('headerUserName').innerText = CURRENT_USER.name;
+                document.getElementById('headerUserJob').innerText = CURRENT_USER.job || 'المستخدم';
                 showApp();
             } else {
-                alert('بيانات خاطئة. جرب admin / admin');
+                const errDiv = document.getElementById('loginError');
+                errDiv.style.display = 'block';
+                errDiv.innerText = 'بيانات خاطئة. تأكد من اسم المستخدم وكلمة المرور.';
             }
         }
+        
         function logout() { location.reload(); }
 
         function showApp() {
@@ -938,12 +961,6 @@
             const month = document.getElementById('reportMonthSelect').value;
             const monthName = getMonthName(month);
             
-            // في حالة عدم وجود زيارات حقيقية مسجلة، نستخدم بيانات افتراضية للمطابقة مع الصورة
-            // في النظام الحقيقي، ستقوم بحساب DB.visits_middle.filter(...) هنا
-            
-            // بيانات الأقسام (ثابتة للمحاكاة كما في الصورة)
-            // ملاحظة: قمنا بتحديث INITIAL_DB.departments ليتطابق مع الصورة
-            
             // حساب عدد الزيارات (افتراضي للعرض)
             const seniorCount = 23; 
             const middleCount = 47; 
@@ -1014,7 +1031,6 @@
                         <tbody>`;
             
             // تعبئة الجدول بناءً على الأقسام الموجودة في النظام
-            // سنقوم بتوليد أرقام عشوائية بسيطة للمحاكاة إذا لم تكن هناك بيانات حقيقية
             (DB.departments || []).forEach((dept, index) => {
                 // محاكاة الأرقام من الصورة المرفقة للواقعية
                 let visitsNum = 0;
