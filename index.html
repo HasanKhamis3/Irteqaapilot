@@ -1097,7 +1097,7 @@
         SECTIONS.forEach(s => DEFAULT_PERMS[s.id] = {view: true, edit: false});
 
         // Use a new key to ensure clean data start for the user
-        const DB_KEY = 'Irteqaa_System_DB_Final_V6';
+        const DB_KEY = 'Irteqaa_System_DB_Final_V7';
 
         const INITIAL_DB = {
             admins: [{id: 999, name: 'مدير النظام', login: 'admin', pass: 'Hasan@12', status: 'active', job: 'مدير النظام', permissions: JSON.parse(JSON.stringify(DEFAULT_PERMS))}],
@@ -1732,13 +1732,17 @@
         function renderPermList(perms) {
             const list = document.getElementById('permList'); list.innerHTML = '';
             SECTIONS.forEach(s => {
+                if (s.id === 'system-admin') return; // HIDE SYSTEM ADMIN FROM PERMISSIONS UI
                 const p = perms[s.id] || {view: false, edit: false};
                 list.innerHTML += `<div class="perm-item"><span>${s.name}</span><div><label style="margin-left:15px;"><input type="checkbox" class="perm-check-view" data-sec="${s.id}" ${p.view?'checked':''}> معاينة</label><label><input type="checkbox" class="perm-check-edit" data-sec="${s.id}" ${p.edit?'checked':''}> تعديل</label></div></div>`;
             });
         }
         function toggleAllPerms(type, cb) { document.querySelectorAll(`.perm-check-${type}`).forEach(c => c.checked = cb.checked); }
         function submitPermissions() {
-            const newPerms = {}; SECTIONS.forEach(s => { newPerms[s.id] = { view: document.querySelector(`.perm-check-view[data-sec="${s.id}"]`).checked, edit: document.querySelector(`.perm-check-edit[data-sec="${s.id}"]`).checked }; });
+            const newPerms = {}; SECTIONS.forEach(s => { 
+                if(s.id === 'system-admin') return;
+                newPerms[s.id] = { view: document.querySelector(`.perm-check-view[data-sec="${s.id}"]`).checked, edit: document.querySelector(`.perm-check-edit[data-sec="${s.id}"]`).checked }; 
+            });
             if (IS_BULK_PERM_MODE) {
                 const checkboxes = document.querySelectorAll('.user-select-cb:checked'); const ids = Array.from(checkboxes).map(x => parseInt(x.value));
                 DB[CURRENT_TAB].forEach(u => { if(ids.includes(u.id)) u.permissions = JSON.parse(JSON.stringify(newPerms)); }); addSystemLog('تعديل صلاحيات جماعي', `لـ ${ids.length} مستخدمين`);
