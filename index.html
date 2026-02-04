@@ -1097,11 +1097,11 @@
         SECTIONS.forEach(s => DEFAULT_PERMS[s.id] = {view: true, edit: false});
 
         // Use a new key to ensure clean data start for the user
-        const DB_KEY = 'Irteqaa_System_DB_Final_V5';
+        const DB_KEY = 'Irteqaa_System_DB_Final_V6';
 
         const INITIAL_DB = {
             admins: [{id: 999, name: 'مدير النظام', login: 'admin', pass: 'Hasan@12', status: 'active', job: 'مدير النظام', permissions: JSON.parse(JSON.stringify(DEFAULT_PERMS))}],
-            senior: [{id: 1, name: 'علياء محمد مبارك الدوسري', job: 'مديرة المدرسة', phone: '39669118', login: '39669118', pass: '39669118', status: 'active', permissions: JSON.parse(JSON.stringify(DEFAULT_PERMS)), dateAdded: '2025/01/01', brandId: 1}],
+            senior: [{id: 1, name: 'علياء محمد مبارك الدوسري', job: 'مديرة المدرسة', phone: '39669118', login: '39669118', pass: '39669118', status: 'active', permissions: JSON.parse(JSON.stringify(DEFAULT_PERMS)), dateAdded: '2025/01/01', brandId: 1, allowedBrands: [1]}],
             middle: [], teachers: [], departments: [],
             visits_senior: [], visits_middle: [],
             distinguished: [], care_needed: [], qualitative_reports: [], saved_reports: [],
@@ -1198,11 +1198,39 @@
                 });
                 if (found && found.status === 'active') { 
                     CURRENT_USER = found; 
-                    // Load last brand or default
+                    
+                    // -- Permission & Brand Context Logic --
                     const lastBrandId = localStorage.getItem('Irteqaa_CurrentBrand');
-                    const validBrand = DB.brands.find(b => b.id == lastBrandId && b.status === 'active');
-                    CURRENT_BRAND = validBrand || DB.brands[0];
-                    showApp(); 
+                    let targetBrand = null;
+
+                    // 1. Is Admin? Access all.
+                    if (isAdminUser()) {
+                        targetBrand = DB.brands.find(b => b.id == lastBrandId && b.status === 'active') || DB.brands[0];
+                    } else {
+                        // 2. Is Regular User? Check Allowed Brands
+                        // Note: For this prototype, if `allowedBrands` is undefined, we fallback to strict `brandId` matching
+                        const allowedIds = found.allowedBrands || (found.brandId ? [found.brandId] : []);
+                        
+                        // Check if last accessed brand is allowed
+                        if (lastBrandId && allowedIds.includes(parseInt(lastBrandId))) {
+                            targetBrand = DB.brands.find(b => b.id == lastBrandId && b.status === 'active');
+                        }
+                        
+                        // Fallback: Pick first allowed brand
+                        if (!targetBrand && allowedIds.length > 0) {
+                            targetBrand = DB.brands.find(b => b.id === allowedIds[0] && b.status === 'active');
+                        }
+                    }
+
+                    if (targetBrand) {
+                        CURRENT_BRAND = targetBrand;
+                        showApp();
+                    } else {
+                        alert("لا توجد جهة (براند) مصرح لك بالدخول إليها.");
+                        localStorage.removeItem('Irteqaa_Session');
+                        document.getElementById('loginPage').style.display = 'flex';
+                    }
+
                 } else { 
                     localStorage.removeItem('Irteqaa_Session');
                     document.getElementById('loginPage').style.display = 'flex'; 
@@ -1239,10 +1267,25 @@
                 if (userFound.status !== 'active') { errBox.innerText = "نعتذر منك، هذا الحساب غير نشط حالياً."; errBox.style.display = 'block'; return; }
                 CURRENT_USER = userFound; 
                 localStorage.setItem('Irteqaa_Session', userFound.id); 
-                CURRENT_BRAND = DB.brands[0]; // Default on login
-                localStorage.setItem('Irteqaa_CurrentBrand', CURRENT_BRAND.id);
-                addSystemLog('تسجيل دخول', `المستخدم: ${userFound.name}`); 
-                showApp();
+                
+                // Determine Brand on Login
+                let targetBrandId = null;
+                if(userFound.id === 999) {
+                    targetBrandId = DB.brands[0].id;
+                } else {
+                    const allowedIds = userFound.allowedBrands || (userFound.brandId ? [userFound.brandId] : []);
+                    if(allowedIds.length > 0) targetBrandId = allowedIds[0];
+                }
+
+                if(targetBrandId) {
+                    localStorage.setItem('Irteqaa_CurrentBrand', targetBrandId);
+                    addSystemLog('تسجيل دخول', `المستخدم: ${userFound.name}`); 
+                    // Reload to initialize system with correct brand context
+                    location.reload(); 
+                } else {
+                    errBox.innerText = "لا يوجد براند مخصص لهذا المستخدم."; errBox.style.display = 'block';
+                }
+
             } else { errBox.innerText = "بيانات غير صحيحة."; errBox.style.display = 'block'; }
         }
         
@@ -1352,7 +1395,15 @@
             dropdown.innerHTML = '';
             
             DB.brands.forEach(b => {
-                if(b.status === 'active' || isAdminUser()) {
+                let hasAccess = false;
+                if (isAdminUser()) {
+                    hasAccess = true;
+                } else {
+                    const allowedIds = CURRENT_USER.allowedBrands || (CURRENT_USER.brandId ? [CURRENT_USER.brandId] : []);
+                    if (allowedIds.includes(b.id)) hasAccess = true;
+                }
+
+                if (hasAccess && b.status === 'active') {
                     const activeClass = (b.id === CURRENT_BRAND.id) ? 'active' : '';
                     dropdown.innerHTML += `
                     <div class="brand-item ${activeClass}" onclick="switchBrand(${b.id})">
@@ -1368,7 +1419,6 @@
             if(newBrand) {
                 CURRENT_BRAND = newBrand;
                 localStorage.setItem('Irteqaa_CurrentBrand', id);
-                updateBrandUI();
                 // 3. Auto Refresh (The core requirement)
                 location.reload();
             }
@@ -1638,7 +1688,8 @@
                     status:'active', 
                     lastUpdated:new Date().toLocaleString('en-GB'), 
                     lastUpdatedBy:CURRENT_USER.name,
-                    brandId: CURRENT_BRAND.id // ** CRITICAL: Bind to current Brand **
+                    brandId: CURRENT_BRAND.id, // ** CRITICAL: Bind to current Brand **
+                    allowedBrands: [CURRENT_BRAND.id] // Auto-allow current brand
                 }; 
 
                 if(CURRENT_TAB!=='departments'){
@@ -1718,7 +1769,8 @@
                                     id: Date.now() + index, name: name, status: 'active',
                                     permissions: JSON.parse(JSON.stringify(DEFAULT_PERMS)),
                                     dateAdded: dateAdded, lastUpdated: new Date().toLocaleString('en-GB'), lastUpdatedBy: CURRENT_USER ? CURRENT_USER.name : 'Import',
-                                    brandId: CURRENT_BRAND.id // BIND TO BRAND
+                                    brandId: CURRENT_BRAND.id, // BIND TO BRAND
+                                    allowedBrands: [CURRENT_BRAND.id]
                                 };
                                 
                                 if (CURRENT_TAB === 'departments') { 
