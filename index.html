@@ -1369,8 +1369,8 @@
                 CURRENT_BRAND = newBrand;
                 localStorage.setItem('Irteqaa_CurrentBrand', id);
                 updateBrandUI();
-                navigate('dashboard'); // Force reload of current context
-                addSystemLog('تغيير الجهة', `تم الانتقال إلى ${newBrand.name}`);
+                // 3. Auto Refresh (The core requirement)
+                location.reload();
             }
         }
 
@@ -1865,6 +1865,7 @@
                 const statusBadge = isActive ? `<span class="status-badge status-active">نشط</span>` : `<span class="status-badge status-inactive">معطل</span>`;
                 const isDefault = (b.id === 1);
                 const deleteBtn = isDefault ? '' : `<button class="action-btn btn-delete" onclick="deleteBrand(${b.id})"><i class="fas fa-trash"></i></button>`;
+                // ADD RESET BUTTON
                 const resetBtn = `<button class="action-btn btn-reset" onclick="resetBrandData(${b.id})" title="إعادة تهيئة"><i class="fas fa-redo"></i> تهيئة</button>`;
                 
                 tbody.innerHTML += `
@@ -1974,7 +1975,7 @@
             saveDB();
             if(!silent) alert('تمت إعادة تهيئة بيانات البراند بنجاح.');
             // Refresh current view if we are inside that brand
-            if(CURRENT_BRAND.id === brandId) navigate('dashboard');
+            if(CURRENT_BRAND.id === brandId) location.reload();
         }
 
         window.onload = function() { initSystem(); };
