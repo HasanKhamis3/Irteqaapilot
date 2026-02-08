@@ -64,7 +64,11 @@
         }
 
         .nav-links { list-style: none; padding: 20px 0; margin: 0; }
-        .nav-links li { margin-bottom: 5px; display: none; }
+        /* FIX: Changed display from 'none' to 'block' to ensure visibility */
+        .nav-links li { margin-bottom: 5px; display: block; } 
+        /* Hide System Admin by default, JS will show it for admins */
+        #nav-system-admin { display: none; }
+        
         .nav-links a { display: flex; align-items: center; padding: 12px 25px; color: #666; text-decoration: none; transition: 0.3s; font-weight: 600; border-right: 4px solid transparent; cursor: pointer; }
         .nav-links a:hover, .nav-links a.active { color: var(--primary); background: #f0f7ff; border-right-color: var(--primary); }
         .nav-links a i { margin-left: 12px; width: 25px; text-align: center; font-size: 1.1rem; }
@@ -84,7 +88,6 @@
             background: linear-gradient(135deg, #1e4078 0%, #0d1b33 100%); 
             display: flex; justify-content: center; align-items: center; 
             z-index: 9999; 
-            /* Subtle pattern overlay */
             background-image: radial-gradient(#ffffff 1px, transparent 1px);
             background-size: 40px 40px;
             background-color: #1e4078;
@@ -374,7 +377,7 @@
                 <li id="nav-qualitative"><a onclick="navigate('qualitative')" data-page="qualitative"><i class="fas fa-file-alt"></i> التقرير النوعي</a></li>
                 <li id="nav-quality-report"><a onclick="navigate('quality-report')" data-page="quality-report"><i class="fas fa-file-word"></i> تقرير جودة التعليم</a></li>
                 <li id="nav-user-management"><a onclick="navigate('user-management')" data-page="user-management"><i class="fas fa-users-cog"></i> إدارة المستخدمين</a></li>
-                <li id="nav-system-admin" style="display:none;"><a onclick="navigate('system-admin')" data-page="system-admin"><i class="fas fa-shield-alt"></i> إعدادات مدير النظام</a></li>
+                <li id="nav-system-admin"><a onclick="navigate('system-admin')" data-page="system-admin"><i class="fas fa-shield-alt"></i> إعدادات مدير النظام</a></li>
                 <li id="nav-settings"><a onclick="navigate('settings')" data-page="settings"><i class="fas fa-cog"></i> الإعدادات</a></li>
             </ul>
         </aside>
@@ -1215,7 +1218,7 @@
         SECTIONS.forEach(s => DEFAULT_PERMS[s.id] = {view: true, edit: false});
 
         // Use a new key to ensure clean data start for the user
-        const DB_KEY = 'Irteqaa_System_DB_Final_V9';
+        const DB_KEY = 'Irteqaa_System_DB_Final_V10';
 
         const INITIAL_DB = {
             admins: [{id: 999, name: 'مدير النظام', login: 'admin', pass: 'Hasan@12', status: 'active', job: 'مدير النظام', permissions: JSON.parse(JSON.stringify(DEFAULT_PERMS))}],
@@ -1278,7 +1281,6 @@
             if (storedDB) {
                 try {
                     DB = JSON.parse(storedDB);
-                    // Ensure structure integrity
                     if(!DB.brands) DB.brands = JSON.parse(JSON.stringify(INITIAL_DB.brands));
                     if(!DB.admins) DB.admins = JSON.parse(JSON.stringify(INITIAL_DB.admins));
                     if(!DB.senior) DB.senior = [];
@@ -1508,6 +1510,7 @@
                     if (sec.id === 'system-admin') {
                         el.style.display = isAdminUser() ? 'block' : 'none';
                     } else {
+                        // FIX: Ensure display is set based on permission, but don't hide system-admin logic again here
                         el.style.display = (perms[sec.id] && perms[sec.id].view === false) ? 'none' : 'block';
                     }
                 }
