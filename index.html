@@ -1053,7 +1053,7 @@
                                 <option value="admin_support">إداري للنظام</option>
                             </select>
                             
-                            <label style="color:var(--primary); font-weight:bold; margin-bottom:5px;">مدة صلاحية الحساب</label>
+                            <label style="color:var(--primary); font-weight:bold; margin-bottom:5px; margin-top:15px; display:block;">مدة صلاحية الحساب</label>
                             <div style="display: flex; gap: 10px; background: #f9f9f9; padding: 10px; border-radius: 6px; border: 1px solid #eee;">
                                 <div style="flex:1;">
                                     <label style="font-size:0.8rem; color:#777;">تاريخ البدء</label>
@@ -1467,12 +1467,12 @@
                 // === DATE CHECK FOR VALIDITY ===
                 const today = new Date().toISOString().split('T')[0];
                 if (userFound.accessStartDate && userFound.accessStartDate > today) {
-                    errBox.innerText = "عذراً، لم يبدأ تاريخ تفعيل حسابك بعد."; 
+                    errBox.innerText = "عذراً، لم يبدأ تاريخ تفعيل حسابك بعد. يرجى التواصل مع المشرف."; 
                     errBox.style.display = 'block'; 
                     return;
                 }
                 if (userFound.accessEndDate && userFound.accessEndDate < today) {
-                    errBox.innerText = "عذراً، انتهت صلاحية حسابك. يرجى التواصل مع المشرف لاستعادة الصلاحية."; 
+                    errBox.innerText = "عذراً، انتهت مدة الصلاحية. يرجى التواصل مع المشرف لاستعادة الصلاحية."; 
                     errBox.style.display = 'block'; 
                     return;
                 }
