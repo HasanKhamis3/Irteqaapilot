@@ -1067,19 +1067,7 @@
                                 <option value="admin_support">إداري للنظام</option>
                             </select>
                             
-                            <label style="color:var(--primary); font-weight:bold; margin-bottom:5px; margin-top:15px; display:block;">مدة صلاحية الحساب</label>
-                            <div style="display: flex; gap: 10px; background: #f9f9f9; padding: 10px; border-radius: 6px; border: 1px solid #eee;">
-                                <div style="flex:1;">
-                                    <label style="font-size:0.8rem; color:#777;">تاريخ البدء</label>
-                                    <input type="date" id="addStartDate" class="form-control" style="margin-bottom:0;">
-                                </div>
-                                <div style="flex:1;">
-                                    <label style="font-size:0.8rem; color:#777;">تاريخ الانتهاء</label>
-                                    <input type="date" id="addEndDate" class="form-control" style="margin-bottom:0;">
-                                </div>
                             </div>
-                            <small style="color:#777; font-size:0.8rem; display:block; margin-top:5px;">* اترك التواريخ فارغة لصلاحية دائمة.</small>
-                        </div>
                     </div>
                 </form>
             </div>
@@ -1397,20 +1385,7 @@
                 });
                 if (found && found.status === 'active') { 
                     
-                    // CHECK USER EXPIRY
-                    const today = new Date().toISOString().split('T')[0];
-                    if (found.accessStartDate && found.accessStartDate > today) {
-                        alert("عذراً، لم يبدأ تاريخ تفعيل حسابك بعد.");
-                        localStorage.removeItem('Irteqaa_Session');
-                        document.getElementById('loginPage').style.display = 'flex';
-                        return;
-                    }
-                    if (found.accessEndDate && found.accessEndDate < today) {
-                        alert("عذراً، انتهت صلاحية حسابك. يرجى التواصل مع المشرف لاستعادة الصلاحية.");
-                        localStorage.removeItem('Irteqaa_Session');
-                        document.getElementById('loginPage').style.display = 'flex';
-                        return;
-                    }
+                    // CHECK USER EXPIRY REMOVED AS REQUESTED
 
                     CURRENT_USER = found; 
                     
@@ -1439,8 +1414,9 @@
                             logout();
                             return;
                         }
-                        if (targetBrand.endDate && targetBrand.endDate < today) {
-                            alert("يرجى التواصل مع المشرف."); // تم تعديل الرسالة حسب الطلب
+                        // Modified Logic: Allow Admin (ID 999) to proceed even if expired
+                        if (targetBrand.endDate && targetBrand.endDate < today && !isAdminUser()) {
+                            alert("يرجى التواصل مع المشرف."); 
                             logout();
                             return;
                         }
@@ -1491,18 +1467,7 @@
                     return; 
                 }
 
-                // === USER DATE CHECK ===
-                const today = new Date().toISOString().split('T')[0];
-                if (userFound.accessStartDate && userFound.accessStartDate > today) {
-                    errBox.innerText = "عذراً، لم يبدأ تاريخ تفعيل حسابك بعد. يرجى التواصل مع المشرف."; 
-                    errBox.style.display = 'block'; 
-                    return;
-                }
-                if (userFound.accessEndDate && userFound.accessEndDate < today) {
-                    errBox.innerText = "عذراً، انتهت مدة صلاحية حسابك. يرجى التواصل مع المشرف لاستعادة الصلاحية."; 
-                    errBox.style.display = 'block'; 
-                    return;
-                }
+                // === USER DATE CHECK REMOVED AS REQUESTED ===
 
                 CURRENT_USER = userFound; 
                 localStorage.setItem('Irteqaa_Session', userFound.id); 
@@ -1520,13 +1485,15 @@
                     // === BRAND DATE CHECK ===
                     const brand = DB.brands.find(b => b.id === targetBrandId);
                     if (brand) {
+                        const today = new Date().toISOString().split('T')[0];
                         if (brand.startDate && brand.startDate > today) {
                             errBox.innerText = "عذراً، لم يبدأ تاريخ تفعيل اشتراك الجهة (البراند) بعد."; 
                             errBox.style.display = 'block'; 
                             return;
                         }
-                        if (brand.endDate && brand.endDate < today) {
-                            errBox.innerText = "يرجى التواصل مع المشرف."; // تم تعديل الرسالة لتكون لطيفة وغير محددة السبب
+                        // Modified Logic: Allow Admin to bypass expiry check
+                        if (brand.endDate && brand.endDate < today && !isAdminUser()) {
+                            errBox.innerText = "يرجى التواصل مع المشرف."; 
                             errBox.style.display = 'block'; 
                             return;
                         }
@@ -1672,6 +1639,7 @@
             if(newBrand) {
                 // Check Brand Expiry before switching
                 const today = new Date().toISOString().split('T')[0];
+                // Modified Logic: Allow Admin (ID 999) to switch even if expired
                 if (newBrand.endDate && newBrand.endDate < today && !isAdminUser()) {
                     alert("يرجى التواصل مع المشرف.");
                     return;
@@ -1925,8 +1893,7 @@
                 document.getElementById('addLogin').value=u.login||''; 
                 document.getElementById('addPass').value=u.pass||'';
                 document.getElementById('addRole').value=u.role||'';
-                document.getElementById('addStartDate').value=u.accessStartDate||'';
-                document.getElementById('addEndDate').value=u.accessEndDate||'';
+                // REMOVED VALIDITY DATES FROM EDIT
             } 
         }
         function closeModal(id) { document.getElementById(id).style.display='none'; }
@@ -1967,9 +1934,7 @@
                 u.login=document.getElementById('addLogin').value; 
                 u.pass=document.getElementById('addPass').value; 
                 u.role=document.getElementById('addRole').value;
-                // === SAVE VALIDITY DATES ===
-                u.accessStartDate = document.getElementById('addStartDate').value;
-                u.accessEndDate = document.getElementById('addEndDate').value;
+                // REMOVED VALIDITY DATES FROM SAVE
             } 
             
             if(!edit)DB[CURRENT_TAB].push(u); 
@@ -1991,8 +1956,6 @@
                     <div class="info-item"><label>الحالة</label><span style="color:${u.status==='active'?'green':'red'}">${u.status==='active'?'مفعل':'معطل'}</span></div>
                     <div class="info-item"><label>اسم الدخول</label><span style="background:#eee; padding:2px 5px; border-radius:4px;">${u.login || '-'}</span></div>
                     ${(CURRENT_TAB !== 'departments' && CURRENT_TAB !== 'teachers') ? `<div class="info-item"><label>الصلاحية الإضافية</label><span>${roleTxt}</span></div>` : ''}
-                    <div class="info-item"><label>تاريخ البدء</label><span>${u.accessStartDate || 'غير محدد'}</span></div>
-                    <div class="info-item"><label>تاريخ الانتهاء</label><span>${u.accessEndDate || 'غير محدد'}</span></div>
                 </div>
                 <div class="view-footer-info"><div>آخر تحديث بواسطة: <strong>${u.lastUpdatedBy || 'N/A'}</strong></div><div>${u.lastUpdated || '-'}</div></div>
             `;
