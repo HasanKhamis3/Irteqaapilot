@@ -1440,7 +1440,7 @@
                             return;
                         }
                         if (targetBrand.endDate && targetBrand.endDate < today) {
-                            alert("عذراً، انتهت مدة صلاحية اشتراك الجهة (البراند). يرجى التواصل مع المشرف.");
+                            alert("يرجى التواصل مع المشرف."); // تم تعديل الرسالة حسب الطلب
                             logout();
                             return;
                         }
@@ -1526,7 +1526,7 @@
                             return;
                         }
                         if (brand.endDate && brand.endDate < today) {
-                            errBox.innerText = "عذراً، انتهت مدة صلاحية اشتراك الجهة (البراند). يرجى التواصل مع المشرف."; 
+                            errBox.innerText = "يرجى التواصل مع المشرف."; // تم تعديل الرسالة لتكون لطيفة وغير محددة السبب
                             errBox.style.display = 'block'; 
                             return;
                         }
@@ -1673,7 +1673,7 @@
                 // Check Brand Expiry before switching
                 const today = new Date().toISOString().split('T')[0];
                 if (newBrand.endDate && newBrand.endDate < today && !isAdminUser()) {
-                    alert("عذراً، انتهت مدة صلاحية اشتراك هذه الجهة.");
+                    alert("يرجى التواصل مع المشرف.");
                     return;
                 }
 
@@ -1809,14 +1809,14 @@
                 const statusBadge = isActive ? `<span class="status-badge status-active">مفعل</span>` : `<span class="status-badge status-inactive">معطل</span>`;
                 let row = `<td><input type="checkbox" class="custom-checkbox user-select-cb" value="${u.id}" ${canEditUsers ? '' : 'disabled'}></td><td>${idx+1}</td><td>${u.name}</td>`;
                 if (CURRENT_TAB === 'departments') {
-                     row += `<td>${statusBadge}</td><td><div style="display:flex; justify-content:center; gap:2px; flex-wrap:wrap;">`;
+                      row += `<td>${statusBadge}</td><td><div style="display:flex; justify-content:center; gap:2px; flex-wrap:wrap;">`;
                 } else if (CURRENT_TAB === 'teachers') {
-                     row += `<td>${u.dept || '-'}</td><td>${statusBadge}</td><td><div style="display:flex; justify-content:center; gap:2px; flex-wrap:wrap;">`;
+                      row += `<td>${u.dept || '-'}</td><td>${statusBadge}</td><td><div style="display:flex; justify-content:center; gap:2px; flex-wrap:wrap;">`;
                 } else {
-                     let roleTxt = '-';
-                     if(u.role === 'supervisor') roleTxt = '<span class="role-badge role-super">مشرف</span>';
-                     if(u.role === 'admin_support') roleTxt = '<span class="role-badge role-admin">إداري</span>';
-                     row += `<td>${u.job || '-'}</td><td>${roleTxt}</td><td>${statusBadge}</td><td><div style="display:flex; justify-content:center; gap:2px; flex-wrap:wrap;">`;
+                      let roleTxt = '-';
+                      if(u.role === 'supervisor') roleTxt = '<span class="role-badge role-super">مشرف</span>';
+                      if(u.role === 'admin_support') roleTxt = '<span class="role-badge role-admin">إداري</span>';
+                      row += `<td>${u.job || '-'}</td><td>${roleTxt}</td><td>${statusBadge}</td><td><div style="display:flex; justify-content:center; gap:2px; flex-wrap:wrap;">`;
                 }
                 
                 if(canEditUsers) { row += `<button class="action-btn btn-move" onclick="moveUser(${u.id}, 'up')" title="نقل لأعلى"><i class="fas fa-arrow-up"></i></button><button class="action-btn btn-move" onclick="moveUser(${u.id}, 'down')" title="نقل لأسفل"><i class="fas fa-arrow-down"></i></button>`; }
@@ -2187,10 +2187,23 @@
             if(!isAdminUser()) return;
             const tbody = document.getElementById('brandsTableBody');
             tbody.innerHTML = '';
+            
             DB.brands.forEach((b, idx) => {
-                const isActive = b.status === 'active';
-                const statusBadge = isActive ? `<span class="status-badge status-active">نشط</span>` : `<span class="status-badge status-inactive">معطل</span>`;
                 const isDefault = (b.id === 1);
+                
+                // === LOGIC UPDATE FOR EXPIRATION STATUS ===
+                const today = new Date().toISOString().split('T')[0];
+                const isExpired = b.endDate && b.endDate < today;
+                const isActive = b.status === 'active';
+                
+                let statusBadge;
+                if(isExpired) {
+                    statusBadge = `<span class="status-badge status-inactive">منتهية الصلاحية</span>`;
+                } else {
+                    statusBadge = isActive ? `<span class="status-badge status-active">نشط</span>` : `<span class="status-badge status-inactive">معطل</span>`;
+                }
+                // ==========================================
+
                 const deleteBtn = isDefault ? '' : `<button class="action-btn btn-delete" onclick="deleteBrand(${b.id})"><i class="fas fa-trash"></i></button>`;
                 // ADD RESET BUTTON
                 const resetBtn = `<button class="action-btn btn-reset" onclick="resetBrandData(${b.id})" title="إعادة تهيئة"><i class="fas fa-redo"></i> تهيئة</button>`;
