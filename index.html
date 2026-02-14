@@ -181,9 +181,10 @@
         .action-btn:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .action-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 
-        .filter-container { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #eee; }
+        .filter-container { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #eee; flex-wrap: wrap; }
         .filter-label { font-weight: bold; color: #555; }
-        .filter-select { padding: 8px 15px; border: 1px solid #ddd; border-radius: 6px; outline: none; min-width: 150px; font-weight: bold; color: var(--primary); }
+        .filter-select { padding: 8px 15px; border: 1px solid #ddd; border-radius: 6px; outline: none; min-width: 200px; font-weight: bold; color: var(--primary); }
+        .custom-date-box { display: none; align-items: center; gap: 10px; background: #eef4ff; padding: 5px 10px; border-radius: 6px; }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 5000; }
         .modal-box { background: white; width: 600px; border-radius: 8px; overflow: hidden; animation: slideDown 0.3s; max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column; }
@@ -216,7 +217,7 @@
             .a4-page { position: relative; left: 0; top: 0; margin: 0; padding: 0; width: 100%; box-shadow: none; height: auto; margin-bottom: 0; }
             .sidebar, .top-header, .filter-container, .btn, .custom-tabs, .report-preview-container { display: none !important; }
             .report-preview-container { display: block !important; background: white !important; padding: 0 !important; overflow: visible !important; max-height: none !important; }
-            #a4-report-content { display: block !important; }
+            .report-preview-container > #a4-report-content { display: block !important; }
         }
 
         .setting-content-pane { display: none; animation: fadeIn 0.3s; }
@@ -343,24 +344,13 @@
             </header>
 
             <div id="dashboard" class="section-card active">
-                <div class="filter-container" style="justify-content: space-between;">
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <label class="filter-label"><i class="fas fa-calendar-alt"></i> تصفية البيانات حسب الشهر:</label>
-                        <select id="dashMonthFilter" class="filter-select" onchange="renderDashboard()">
-                            <option value="all">كل الأشهر</option>
-                            <option value="01">يناير</option>
-                            <option value="02">فبراير</option>
-                            <option value="03">مارس</option>
-                            <option value="04">أبريل</option>
-                            <option value="05">مايو</option>
-                            <option value="06">يونيو</option>
-                            <option value="07">يوليو</option>
-                            <option value="08">أغسطس</option>
-                            <option value="09">سبتمبر</option>
-                            <option value="10">أكتوبر</option>
-                            <option value="11">نوفمبر</option>
-                            <option value="12">ديسمبر</option>
-                        </select>
+                <div class="filter-container">
+                    <label class="filter-label"><i class="fas fa-calendar-alt"></i> عرض البيانات حسب:</label>
+                    <select id="dashMonthFilter" class="filter-select" onchange="handleDateFilterChange('dash', renderDashboard)"></select>
+                    <div id="dash_CustomDateInputs" class="custom-date-box">
+                        <span>من:</span><input type="date" id="dash_StartDate" class="form-control" style="width:140px; margin:0;">
+                        <span>إلى:</span><input type="date" id="dash_EndDate" class="form-control" style="width:140px; margin:0;">
+                        <button class="btn btn-primary" style="padding:5px 15px; width:auto;" onclick="renderDashboard()">بحث</button>
                     </div>
                 </div>
                 <div class="dashboard-stats-grid">
@@ -386,22 +376,13 @@
                     </div>
                 </div>
                 <div class="filter-container">
-                    <label class="filter-label"><i class="fas fa-filter"></i> تصفية حسب الشهر:</label>
-                    <select id="visitMonthFilter" class="filter-select" onchange="renderVisitsTable()">
-                        <option value="all">كل الأشهر</option>
-                        <option value="01">يناير</option>
-                        <option value="02">فبراير</option>
-                        <option value="03">مارس</option>
-                        <option value="04">أبريل</option>
-                        <option value="05">مايو</option>
-                        <option value="06">يونيو</option>
-                        <option value="07">يوليو</option>
-                        <option value="08">أغسطس</option>
-                        <option value="09">سبتمبر</option>
-                        <option value="10">أكتوبر</option>
-                        <option value="11">نوفمبر</option>
-                        <option value="12">ديسمبر</option>
-                    </select>
+                    <label class="filter-label"><i class="fas fa-calendar-alt"></i> عرض البيانات حسب:</label>
+                    <select id="visitMonthFilter" class="filter-select" onchange="handleDateFilterChange('visit', renderVisitsTable)"></select>
+                    <div id="visit_CustomDateInputs" class="custom-date-box">
+                        <span>من:</span><input type="date" id="visit_StartDate" class="form-control" style="width:140px; margin:0;">
+                        <span>إلى:</span><input type="date" id="visit_EndDate" class="form-control" style="width:140px; margin:0;">
+                        <button class="btn btn-primary" style="padding:5px 15px; width:auto;" onclick="renderVisitsTable()">بحث</button>
+                    </div>
                 </div>
                 <div class="custom-tabs">
                     <div class="custom-tab active" onclick="setVisitTab('senior', this)">زيارات القيادة العليا</div>
@@ -416,22 +397,13 @@
             <div id="performance" class="section-card">
                 <h3 style="color:var(--primary); margin-bottom:20px;">تقييم الأداء الصفي</h3>
                 <div class="filter-container">
-                    <label class="filter-label"><i class="fas fa-calendar-alt"></i> اختر الشهر:</label>
-                    <select id="perfMonthFilter" class="filter-select" onchange="renderPerformanceChart()">
-                        <option value="all">كل الأشهر</option>
-                        <option value="01">يناير</option>
-                        <option value="02">فبراير</option>
-                        <option value="03">مارس</option>
-                        <option value="04">أبريل</option>
-                        <option value="05">مايو</option>
-                        <option value="06">يونيو</option>
-                        <option value="07">يوليو</option>
-                        <option value="08">أغسطس</option>
-                        <option value="09">سبتمبر</option>
-                        <option value="10">أكتوبر</option>
-                        <option value="11">نوفمبر</option>
-                        <option value="12">ديسمبر</option>
-                    </select>
+                    <label class="filter-label"><i class="fas fa-calendar-alt"></i> عرض البيانات حسب:</label>
+                    <select id="perfMonthFilter" class="filter-select" onchange="handleDateFilterChange('perf', renderPerformanceChart)"></select>
+                    <div id="perf_CustomDateInputs" class="custom-date-box">
+                        <span>من:</span><input type="date" id="perf_StartDate" class="form-control" style="width:140px; margin:0;">
+                        <span>إلى:</span><input type="date" id="perf_EndDate" class="form-control" style="width:140px; margin:0;">
+                        <button class="btn btn-primary" style="padding:5px 15px; width:auto;" onclick="renderPerformanceChart()">بحث</button>
+                    </div>
                 </div>
                 <div style="padding:20px; background:#fff; border:1px solid #eee; border-radius:8px;">
                     <canvas id="perfChart" width="400" height="150"></canvas>
@@ -441,22 +413,13 @@
             <div id="distinguished" class="section-card">
                 <h3 style="color:var(--primary); margin-bottom:20px;">المعلمين المتميزين والأولى بالرعاية</h3>
                 <div class="filter-container">
-                    <label class="filter-label"><i class="fas fa-filter"></i> تصفية حسب الشهر:</label>
-                    <select id="distMonthFilter" class="filter-select" onchange="renderDistinguishedTables()">
-                        <option value="all">كل الأشهر</option>
-                        <option value="01">يناير</option>
-                        <option value="02">فبراير</option>
-                        <option value="03">مارس</option>
-                        <option value="04">أبريل</option>
-                        <option value="05">مايو</option>
-                        <option value="06">يونيو</option>
-                        <option value="07">يوليو</option>
-                        <option value="08">أغسطس</option>
-                        <option value="09">سبتمبر</option>
-                        <option value="10">أكتوبر</option>
-                        <option value="11">نوفمبر</option>
-                        <option value="12">ديسمبر</option>
-                    </select>
+                    <label class="filter-label"><i class="fas fa-calendar-alt"></i> عرض البيانات حسب:</label>
+                    <select id="distMonthFilter" class="filter-select" onchange="handleDateFilterChange('dist', renderDistinguishedTables)"></select>
+                    <div id="dist_CustomDateInputs" class="custom-date-box">
+                        <span>من:</span><input type="date" id="dist_StartDate" class="form-control" style="width:140px; margin:0;">
+                        <span>إلى:</span><input type="date" id="dist_EndDate" class="form-control" style="width:140px; margin:0;">
+                        <button class="btn btn-primary" style="padding:5px 15px; width:auto;" onclick="renderDistinguishedTables()">بحث</button>
+                    </div>
                 </div>
                 <div style="margin-bottom:20px;">
                     <button class="btn btn-restricted" style="background:#2c5aa0; color:white; width:auto;" onclick="openDistinguishedModal('distinguished')"><i class="fas fa-plus-circle"></i> إضافة معلم متميز</button>
@@ -478,22 +441,13 @@
                     </div>
                 </div>
                 <div class="filter-container">
-                    <label class="filter-label"><i class="fas fa-filter"></i> تصفية حسب الشهر:</label>
-                    <select id="qualMonthFilter" class="filter-select" onchange="renderQualitativeTable()">
-                        <option value="all">كل الأشهر</option>
-                        <option value="01">يناير</option>
-                        <option value="02">فبراير</option>
-                        <option value="03">مارس</option>
-                        <option value="04">أبريل</option>
-                        <option value="05">مايو</option>
-                        <option value="06">يونيو</option>
-                        <option value="07">يوليو</option>
-                        <option value="08">أغسطس</option>
-                        <option value="09">سبتمبر</option>
-                        <option value="10">أكتوبر</option>
-                        <option value="11">نوفمبر</option>
-                        <option value="12">ديسمبر</option>
-                    </select>
+                    <label class="filter-label"><i class="fas fa-calendar-alt"></i> عرض البيانات حسب:</label>
+                    <select id="qualMonthFilter" class="filter-select" onchange="handleDateFilterChange('qual', renderQualitativeTable)"></select>
+                    <div id="qual_CustomDateInputs" class="custom-date-box">
+                        <span>من:</span><input type="date" id="qual_StartDate" class="form-control" style="width:140px; margin:0;">
+                        <span>إلى:</span><input type="date" id="qual_EndDate" class="form-control" style="width:140px; margin:0;">
+                        <button class="btn btn-primary" style="padding:5px 15px; width:auto;" onclick="renderQualitativeTable()">بحث</button>
+                    </div>
                 </div>
                 <table class="custom-table"><thead><tr><th width="5%">#</th><th width="15%">التاريخ</th><th width="15%">الأقسام الأكاديمية</th><th width="25%">جوانب القوة</th><th width="25%">جوانب بحاجة إلى تطوير</th></tr></thead><tbody id="qualitativeTableBody"></tbody></table>
             </div>
@@ -633,6 +587,7 @@
         const DB_KEY = 'Irteqaa_System_DB_Final_V10';
         const INITIAL_DB = { admins: [{id: 999, name: 'مدير النظام', login: 'admin', pass: 'Hasan@12', status: 'active', job: 'مدير النظام', permissions: JSON.parse(JSON.stringify(DEFAULT_PERMS))}], senior: [{id: 1, name: 'علياء محمد مبارك الدوسري', job: 'مديرة المدرسة', phone: '39669118', login: '39669118', pass: '39669118', status: 'active', permissions: JSON.parse(JSON.stringify(DEFAULT_PERMS)), dateAdded: '2025/01/01', brandId: 1, allowedBrands: [1]}], middle: [], teachers: [], departments: [], visits_senior: [], visits_middle: [], distinguished: [], care_needed: [], qualitative_reports: [], saved_reports: [], settings: { schoolName: 'مدرسة مدينة حمد الابتدائية للبنات', schoolYear: '2025 / 2026م', evaluation_criteria: [], evaluation_grades: [{name:'ممتاز', status:'active'}, {name:'جيد جداً', status:'active'}, {name:'جيد', status:'active'}, {name:'مقبول', status:'active'}, {name:'ضعيف', status:'active'}, {name:'يتجاوز التوقعات كثيراً', status:'active'}, {name:'يتجاوز التوقعات', status:'active'}, {name:'يفي بالتوقعات', status:'active'}, {name:'يفي بالتوقعات جزئيا', status:'active'}], visitor_order_senior: [], visitor_order_middle: [] }, brands: [{id: 1, name: 'الفرع الرئيسي', email: 'main@school.bh', status: 'active'}], logs: [] };
         SECTIONS.forEach(sec => { INITIAL_DB.admins[0].permissions[sec.id] = {view: true, edit: true}; });
+        const MONTH_NAMES_AR = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
 
         let DB = {}, CURRENT_USER = null, CURRENT_BRAND = null, CURRENT_TAB = 'senior', CURRENT_VISIT_TAB = 'senior', EDITING_PERM_ID = null, IS_BULK_PERM_MODE = false, CURRENT_PICKER_TYPE = null, performanceChartInstance = null, dashBarChartInst = null, dashPieChartInst = null, CURRENT_IMPORT_TARGET = null;
 
@@ -645,14 +600,165 @@
         function togglePass(fieldId, icon) { const input = document.getElementById(fieldId); if (input.type === "password") { input.type = "text"; icon.classList.remove("fa-eye"); icon.classList.add("fa-eye-slash"); } else { input.type = "password"; icon.classList.remove("fa-eye-slash"); icon.classList.add("fa-eye"); } }
         function logout() { if(CURRENT_USER) addSystemLog('تسجيل خروج', `المستخدم: ${CURRENT_USER.name}`); localStorage.removeItem('Irteqaa_Session'); saveDB(); location.reload(); }
         function navigate(pageId) { const perms = CURRENT_USER.permissions || DEFAULT_PERMS; if (perms[pageId] && perms[pageId].view === false) { alert("عذراً، ليس لديك صلاحية للوصول إلى هذه الصفحة."); return; } document.querySelectorAll('.section-card').forEach(d => d.classList.remove('active')); document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active')); const target = document.getElementById(pageId); const link = document.querySelector(`a[data-page="${pageId}"]`); if (target) target.classList.add('active'); if (link) link.classList.add('active'); const activeSection = SECTIONS.find(s => s.id === pageId); if(activeSection) document.getElementById('pageTitle').innerText = activeSection.name; if(pageId === 'dashboard') renderDashboard(); if(pageId === 'settings') loadSettings(); if(pageId === 'visits') renderVisitsTable(); if(pageId === 'performance') renderPerformanceChart(); if(pageId === 'distinguished') renderDistinguishedTables(); if(pageId === 'qualitative') renderQualitativeTable(); if(pageId === 'quality-report') { const d = new Date(); document.getElementById('reportMonthSelect').value = String(d.getMonth()+1).padStart(2,'0'); } if(pageId === 'system-admin') renderBrandsTable(); }
-        function showApp() { document.getElementById('loginPage').style.display = 'none'; document.getElementById('app').style.display = 'flex'; document.getElementById('headerUserName').innerText = CURRENT_USER.name; document.getElementById('headerUserJob').innerText = CURRENT_USER.job || CURRENT_USER.dept || 'مستخدم'; updateBrandUI(); const adminBtns = document.querySelectorAll('.admin-only-btn'); adminBtns.forEach(btn => { btn.style.display = isAdminUser() ? 'inline-block' : 'none'; }); applySidebarPermissions(); renderTable(); const now = new Date(); const currentMonth = String(now.getMonth() + 1).padStart(2, '0'); if(document.getElementById('dashMonthFilter')) document.getElementById('dashMonthFilter').value = currentMonth; if(document.getElementById('qualMonthFilter')) document.getElementById('qualMonthFilter').value = currentMonth; navigate('dashboard'); }
+        function showApp() { document.getElementById('loginPage').style.display = 'none'; document.getElementById('app').style.display = 'flex'; document.getElementById('headerUserName').innerText = CURRENT_USER.name; document.getElementById('headerUserJob').innerText = CURRENT_USER.job || CURRENT_USER.dept || 'مستخدم'; updateBrandUI(); const adminBtns = document.querySelectorAll('.admin-only-btn'); adminBtns.forEach(btn => { btn.style.display = isAdminUser() ? 'inline-block' : 'none'; }); applySidebarPermissions(); renderTable(); navigate('dashboard'); populateDateFilters(); }
         function applySidebarPermissions() { const perms = CURRENT_USER.permissions || DEFAULT_PERMS; SECTIONS.forEach(sec => { const el = document.getElementById('nav-' + sec.id); if(el) { if (sec.id === 'system-admin') { el.style.display = isAdminUser() ? 'block' : 'none'; } else { el.style.display = (perms[sec.id] && perms[sec.id].view === false) ? 'none' : 'block'; } } }); }
         function toggleBrandDropdown() { document.getElementById('brandDropdown').classList.toggle('show'); }
         window.onclick = function(event) { if (!event.target.matches('.brand-btn') && !event.target.closest('.brand-btn')) { var dropdowns = document.getElementsByClassName("brand-dropdown"); for (var i = 0; i < dropdowns.length; i++) { var openDropdown = dropdowns[i]; if (openDropdown.classList.contains('show')) { openDropdown.classList.remove('show'); } } } }
         function updateBrandUI() { if(!CURRENT_BRAND) return; document.getElementById('currentBrandLabel').innerText = CURRENT_BRAND.name; const dropdown = document.getElementById('brandDropdown'); dropdown.innerHTML = ''; DB.brands.forEach(b => { let hasAccess = false; if (isAdminUser()) { hasAccess = true; } else { const allowedIds = CURRENT_USER.allowedBrands || (CURRENT_USER.brandId ? [CURRENT_USER.brandId] : []); if (allowedIds.includes(b.id)) hasAccess = true; } if (hasAccess && b.status === 'active') { const activeClass = (b.id === CURRENT_BRAND.id) ? 'active' : ''; dropdown.innerHTML += `<div class="brand-item ${activeClass}" onclick="switchBrand(${b.id})"><div class="brand-icon">${b.name.charAt(0)}</div><div class="brand-label">${b.name}</div></div>`; } }); }
         function switchBrand(id) { const newBrand = DB.brands.find(b => b.id === id); if(newBrand) { const today = new Date().toISOString().split('T')[0]; if (newBrand.endDate && newBrand.endDate < today && !isAdminUser()) { alert("يرجى التواصل مع المشرف."); return; } CURRENT_BRAND = newBrand; localStorage.setItem('Irteqaa_CurrentBrand', id); location.reload(); } }
         function filterByContext(list) { if(!list) return []; return list.filter(item => { const itemBrandId = item.brandId || 1; if(item.id === 999) return false; return itemBrandId === CURRENT_BRAND.id; }); }
-        function renderDashboard() { const filter = document.getElementById('dashMonthFilter').value; let seniorVisits = filterByContext(DB.visits_senior || []); let middleVisits = filterByContext(DB.visits_middle || []); let allVisits = [...seniorVisits, ...middleVisits]; const isRestricted = !isAdminUser() && !DB.senior.some(u => u.id === CURRENT_USER.id); if (isRestricted) { const userDept = CURRENT_USER.dept; if(userDept) { allVisits = allVisits.filter(x => x.dept === userDept); } } if (filter !== 'all') { allVisits = allVisits.filter(x => x.date.split('-')[1] === filter); } const total = allVisits.length; let exceedsLot = 0, exceeds = 0, meets = 0, partially = 0; allVisits.forEach(v => { if(v.eval.includes('يتجاوز التوقعات بكثير') || v.eval.includes('ممتاز')) exceedsLot++; else if(v.eval.includes('يتجاوز التوقعات') || v.eval.includes('جيد جداً')) exceeds++; else if(v.eval.includes('يفي بالتوقعات') || v.eval.includes('جيد')) meets++; else partially++; }); animateValue('stat_total', parseInt(document.getElementById('stat_total').innerText), total, 1000); animateValue('stat_exceeds_lot', parseInt(document.getElementById('stat_exceeds_lot').innerText), exceedsLot, 1000); animateValue('stat_exceeds', parseInt(document.getElementById('stat_exceeds').innerText), exceeds, 1000); animateValue('stat_meets', parseInt(document.getElementById('stat_meets').innerText), meets, 1000); animateValue('stat_partially', parseInt(document.getElementById('stat_partially').innerText), partially, 1000); const hasData = allVisits.length > 0; const deptCounts = {}; allVisits.forEach(v => { deptCounts[v.dept] = (deptCounts[v.dept] || 0) + 1; }); const deptLabels = Object.keys(deptCounts); const deptData = Object.values(deptCounts); if (dashBarChartInst) dashBarChartInst.destroy(); dashBarChartInst = new Chart(document.getElementById('dashBarChart').getContext('2d'), { type: 'bar', data: { labels: hasData ? deptLabels : ['لا توجد زيارات'], datasets: [{ label: 'عدد الزيارات', data: hasData ? deptData : [0], backgroundColor: hasData ? '#1e4078' : '#e9ecef', borderRadius: 5 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } } }); const evalCounts = {}; allVisits.forEach(v => { evalCounts[v.eval] = (evalCounts[v.eval] || 0) + 1; }); const evalLabels = Object.keys(evalCounts); const evalData = Object.values(evalCounts); if (dashPieChartInst) dashPieChartInst.destroy(); dashPieChartInst = new Chart(document.getElementById('dashPieChart').getContext('2d'), { type: 'doughnut', data: { labels: hasData ? evalLabels : ['لا توجد زيارات'], datasets: [{ data: hasData ? evalData : [1], backgroundColor: hasData ? ['#28a745', '#17a2b8', '#ffc107', '#dc3545', '#6610f2'] : ['#e9ecef'], borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } } }); }
+
+        // Date Handling Utilities
+        function updateDateFilterOptions(data, selectId) {
+            const select = document.getElementById(selectId);
+            const currentSelection = select.value; // Preserve if possible
+            select.innerHTML = '';
+            
+            // Default Options
+            select.innerHTML += `<option value="current">الشهر الحالي</option>`;
+            
+            // Extract unique Month-Year from data
+            const months = new Set();
+            data.forEach(item => {
+                if(item.date) {
+                    // Expecting format YYYY-MM-DD
+                    const d = new Date(item.date);
+                    if(!isNaN(d)) {
+                        const m = d.getMonth();
+                        const y = d.getFullYear();
+                        months.add(`${y}-${String(m+1).padStart(2, '0')}`);
+                    }
+                }
+            });
+            
+            // Convert to array and sort descending
+            const sortedMonths = Array.from(months).sort().reverse();
+            
+            sortedMonths.forEach(ym => {
+                const [year, month] = ym.split('-');
+                const label = `${MONTH_NAMES_AR[parseInt(month)-1]} ${year}`;
+                select.innerHTML += `<option value="${ym}">${label}</option>`;
+            });
+
+            select.innerHTML += `<option value="all">كل الأشهر (الكل)</option>`;
+            select.innerHTML += `<option value="custom">تواريخ محددة</option>`;
+            
+            // Set default to current if nothing selected, else try to restore or default to current
+            if (currentSelection && (currentSelection === 'current' || currentSelection === 'all' || currentSelection === 'custom' || sortedMonths.includes(currentSelection))) {
+                select.value = currentSelection;
+            } else {
+                select.value = 'current';
+            }
+        }
+
+        function handleDateFilterChange(prefix, renderCallback) {
+            const select = document.getElementById(prefix + 'MonthFilter');
+            const customBox = document.getElementById(prefix + '_CustomDateInputs');
+            
+            if(select.value === 'custom') {
+                customBox.style.display = 'inline-flex';
+            } else {
+                customBox.style.display = 'none';
+                if(renderCallback) renderCallback();
+            }
+        }
+
+        function getFilteredData(fullData, prefix) {
+            const select = document.getElementById(prefix + 'MonthFilter');
+            const mode = select ? select.value : 'current';
+            
+            if(mode === 'all') return fullData;
+            
+            if(mode === 'current') {
+                const now = new Date();
+                const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
+                const currentYear = String(now.getFullYear());
+                return fullData.filter(item => {
+                    if(!item.date) return false;
+                    return item.date.startsWith(`${currentYear}-${currentMonth}`);
+                });
+            }
+            
+            if(mode === 'custom') {
+                const startStr = document.getElementById(prefix + '_StartDate').value;
+                const endStr = document.getElementById(prefix + '_EndDate').value;
+                if(!startStr || !endStr) return fullData; // or return empty? Let's return full if incomplete
+                return fullData.filter(item => {
+                    if(!item.date) return false;
+                    return item.date >= startStr && item.date <= endStr;
+                });
+            }
+            
+            // Specific Month (YYYY-MM)
+            return fullData.filter(item => {
+                if(!item.date) return false;
+                return item.date.startsWith(mode);
+            });
+        }
+        
+        function populateDateFilters() {
+            // Dashboard
+            const allVisits = [...filterByContext(DB.visits_senior), ...filterByContext(DB.visits_middle)];
+            updateDateFilterOptions(allVisits, 'dashMonthFilter');
+            
+            // Visits
+            const visitData = (CURRENT_VISIT_TAB === 'senior') ? filterByContext(DB.visits_senior) : filterByContext(DB.visits_middle);
+            updateDateFilterOptions(visitData, 'visitMonthFilter');
+            
+            // Performance
+            updateDateFilterOptions(allVisits, 'perfMonthFilter');
+            
+            // Distinguished
+            const distData = [...filterByContext(DB.distinguished), ...filterByContext(DB.care_needed)];
+            updateDateFilterOptions(distData, 'distMonthFilter');
+            
+            // Qualitative
+            updateDateFilterOptions(filterByContext(DB.qualitative_reports), 'qualMonthFilter');
+        }
+
+        function renderDashboard() { 
+            let seniorVisits = filterByContext(DB.visits_senior || []); 
+            let middleVisits = filterByContext(DB.visits_middle || []); 
+            let allVisitsRaw = [...seniorVisits, ...middleVisits]; 
+            
+            // Update Filter Options if needed (optional, depends if we want dynamic updates or just load once)
+            // updateDateFilterOptions(allVisitsRaw, 'dashMonthFilter');
+            
+            const isRestricted = !isAdminUser() && !DB.senior.some(u => u.id === CURRENT_USER.id); 
+            if (isRestricted) { 
+                const userDept = CURRENT_USER.dept; 
+                if(userDept) { allVisitsRaw = allVisitsRaw.filter(x => x.dept === userDept); } 
+            } 
+            
+            const filteredVisits = getFilteredData(allVisitsRaw, 'dash');
+            
+            const total = filteredVisits.length; 
+            let exceedsLot = 0, exceeds = 0, meets = 0, partially = 0; 
+            filteredVisits.forEach(v => { 
+                if(v.eval.includes('يتجاوز التوقعات بكثير') || v.eval.includes('ممتاز')) exceedsLot++; 
+                else if(v.eval.includes('يتجاوز التوقعات') || v.eval.includes('جيد جداً')) exceeds++; 
+                else if(v.eval.includes('يفي بالتوقعات') || v.eval.includes('جيد')) meets++; 
+                else partially++; 
+            }); 
+            animateValue('stat_total', parseInt(document.getElementById('stat_total').innerText), total, 1000); 
+            animateValue('stat_exceeds_lot', parseInt(document.getElementById('stat_exceeds_lot').innerText), exceedsLot, 1000); 
+            animateValue('stat_exceeds', parseInt(document.getElementById('stat_exceeds').innerText), exceeds, 1000); 
+            animateValue('stat_meets', parseInt(document.getElementById('stat_meets').innerText), meets, 1000); 
+            animateValue('stat_partially', parseInt(document.getElementById('stat_partially').innerText), partially, 1000); 
+            const hasData = filteredVisits.length > 0; 
+            const deptCounts = {}; 
+            filteredVisits.forEach(v => { deptCounts[v.dept] = (deptCounts[v.dept] || 0) + 1; }); 
+            const deptLabels = Object.keys(deptCounts); 
+            const deptData = Object.values(deptCounts); 
+            if (dashBarChartInst) dashBarChartInst.destroy(); 
+            dashBarChartInst = new Chart(document.getElementById('dashBarChart').getContext('2d'), { type: 'bar', data: { labels: hasData ? deptLabels : ['لا توجد زيارات'], datasets: [{ label: 'عدد الزيارات', data: hasData ? deptData : [0], backgroundColor: hasData ? '#1e4078' : '#e9ecef', borderRadius: 5 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } } }); 
+            const evalCounts = {}; 
+            filteredVisits.forEach(v => { evalCounts[v.eval] = (evalCounts[v.eval] || 0) + 1; }); 
+            const evalLabels = Object.keys(evalCounts); 
+            const evalData = Object.values(evalCounts); 
+            if (dashPieChartInst) dashPieChartInst.destroy(); 
+            dashPieChartInst = new Chart(document.getElementById('dashPieChart').getContext('2d'), { type: 'doughnut', data: { labels: hasData ? evalLabels : ['لا توجد زيارات'], datasets: [{ data: hasData ? evalData : [1], backgroundColor: hasData ? ['#28a745', '#17a2b8', '#ffc107', '#dc3545', '#6610f2'] : ['#e9ecef'], borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } } }); 
+        }
         function animateValue(id, start, end, duration) { if (start === end) return; const obj = document.getElementById(id); let startTimestamp = null; const step = (timestamp) => { if (!startTimestamp) startTimestamp = timestamp; const progress = Math.min((timestamp - startTimestamp) / duration, 1); obj.innerHTML = Math.floor(progress * (end - start) + start); if (progress < 1) { window.requestAnimationFrame(step); } }; window.requestAnimationFrame(step); }
         function setTab(tab, el) { CURRENT_TAB = tab; document.querySelectorAll('#user-management .custom-tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); if(document.getElementById('selectAll')) document.getElementById('selectAll').checked = false; renderTable(); }
         function renderTable() { const headRow = document.getElementById('tableHeadRow'); const tbody = document.getElementById('usersTableBody'); const addBtn = document.getElementById('addBtnMain'); const bulkPermBtn = document.getElementById('bulkPermBtn'); tbody.innerHTML = ''; const canEditUsers = canEdit('user-management'); const actionButtons = document.getElementById('userActionButtons'); const noEditMsg = document.getElementById('noEditPermissionMsg'); if(canEditUsers) { actionButtons.style.display = 'flex'; noEditMsg.style.display = 'none'; } else { actionButtons.style.display = 'none'; noEditMsg.style.display = 'block'; } let headerHTML = `<th width="5%"><input type="checkbox" id="selectAll" class="custom-checkbox" onchange="toggleSelectAll(this)" ${canEditUsers?'':'disabled'}></th>`; if (CURRENT_TAB === 'departments') { headerHTML += `<th width="10%">الترتيب</th><th width="40%">اسم القسم</th><th width="15%">الحالة</th><th width="30%">الإدارة</th>`; addBtn.innerText = "إضافة قسم جديد"; if(bulkPermBtn) bulkPermBtn.style.display = 'none'; } else if (CURRENT_TAB === 'teachers') { headerHTML += `<th width="5%">#</th><th width="25%">الاسم</th><th width="15%">القسم</th><th width="15%">الحالة</th><th width="35%">الإجراءات</th>`; addBtn.innerText = "إضافة اسم جديد"; if(bulkPermBtn) bulkPermBtn.style.display = 'inline-flex'; } else { headerHTML += `<th width="5%">#</th><th width="25%">الاسم</th><th width="15%">الوظيفة</th><th width="15%">صلاحية إضافية</th><th width="10%">الحالة</th><th width="25%">الإجراءات</th>`; addBtn.innerText = "إضافة اسم جديد"; if(bulkPermBtn) bulkPermBtn.style.display = 'inline-flex'; } headRow.innerHTML = headerHTML; let list = filterByContext(DB[CURRENT_TAB] || []); list.forEach((u, idx) => { const isActive = u.status === 'active'; const statusBadge = isActive ? `<span class="status-badge status-active">مفعل</span>` : `<span class="status-badge status-inactive">معطل</span>`; let row = `<td><input type="checkbox" class="custom-checkbox user-select-cb" value="${u.id}" ${canEditUsers ? '' : 'disabled'}></td><td>${idx+1}</td><td>${u.name}</td>`; if (CURRENT_TAB === 'departments') { row += `<td>${statusBadge}</td><td><div style="display:flex; justify-content:center; gap:2px; flex-wrap:wrap;">`; } else if (CURRENT_TAB === 'teachers') { row += `<td>${u.dept || '-'}</td><td>${statusBadge}</td><td><div style="display:flex; justify-content:center; gap:2px; flex-wrap:wrap;">`; } else { let roleTxt = '-'; if(u.role === 'supervisor') roleTxt = '<span class="role-badge role-super">مشرف</span>'; if(u.role === 'admin_support') roleTxt = '<span class="role-badge role-admin">إداري</span>'; row += `<td>${u.job || '-'}</td><td>${roleTxt}</td><td>${statusBadge}</td><td><div style="display:flex; justify-content:center; gap:2px; flex-wrap:wrap;">`; } if(canEditUsers) { row += `<button class="action-btn btn-move" onclick="moveItem('${CURRENT_TAB}', ${u.id}, 'up')" title="نقل لأعلى"><i class="fas fa-arrow-up"></i></button><button class="action-btn btn-move" onclick="moveItem('${CURRENT_TAB}', ${u.id}, 'down')" title="نقل لأسفل"><i class="fas fa-arrow-down"></i></button>`; } if (CURRENT_TAB === 'departments') { if(canEditUsers) { row += `<button class="action-btn btn-toggle ${isActive?'':'off'}" onclick="toggleStatus(${u.id})"><i class="fas fa-power-off"></i> ${isActive?'تعطيل':'تفعيل'}</button><button class="action-btn btn-edit" onclick="editUser(${u.id})"><i class="fas fa-edit"></i> تعديل</button><button class="action-btn btn-delete" onclick="deleteUser(${u.id})"><i class="fas fa-trash"></i> حذف</button>`; } } else { row += `<button class="action-btn btn-view" onclick="viewUser(${u.id})"><i class="fas fa-eye"></i> معاينة</button>`; if (canEditUsers) { row += `<button class="action-btn btn-toggle ${isActive?'':'off'}" onclick="toggleStatus(${u.id})"><i class="fas fa-power-off"></i> ${isActive?'تعطيل':'تفعيل'}</button><button class="action-btn btn-edit" onclick="editUser(${u.id})"><i class="fas fa-edit"></i> تعديل</button><button class="action-btn btn-delete" onclick="deleteUser(${u.id})"><i class="fas fa-trash"></i> حذف</button><button class="action-btn btn-perm" onclick="openPerms(${u.id})"><i class="fas fa-key"></i> صلاحيات</button>`; } } row += `</div></td>`; const tr = document.createElement('tr'); tr.innerHTML = row; tbody.appendChild(tr); }); }
@@ -679,10 +785,13 @@
             if(!canEdit('user-management')) return; 
             const u = DB[CURRENT_TAB].find(x => x.id === id); 
             if(!u) return; 
-            document.getElementById('editUserId').value = u.id; 
-            document.getElementById('addName').value = u.name; 
+            
+            // Fix: Populate modal title and fields correctly
             openAddUserModal(); 
+            document.getElementById('editUserId').value = u.id; // Correctly setting ID for UPDATE logic
             document.getElementById('addUserModalTitle').innerText = 'تعديل ' + u.name; 
+            document.getElementById('addName').value = u.name; // Populate Name
+            
             if(CURRENT_TAB === 'teachers'){ 
                 const s = document.getElementById('addDept'); 
                 s.innerHTML = '<option value="">اختر...</option>'; 
@@ -702,16 +811,32 @@
         function saveUserForm() { 
             const n = document.getElementById('addName').value.trim(); 
             if(!n) return alert('الاسم مطلوب'); 
-            const id = document.getElementById('editUserId').value; 
-            const isEdit = (id !== ''); 
+            
+            // Robust logic for Edit vs Add
+            const idRaw = document.getElementById('editUserId').value; 
             let u; 
-            if(isEdit){ 
-                u = DB[CURRENT_TAB].find(x => x.id.toString() === id.toString()); 
-                if(!u) return alert("خطأ في تحديد المستخدم");
+
+            if(idRaw && idRaw.trim() !== "") { 
+                // UPDATE
+                u = DB[CURRENT_TAB].find(x => x.id.toString() === idRaw.toString()); 
+                if(!u) return alert("خطأ: المستخدم غير موجود");
+                
                 u.name = n; 
                 u.lastUpdated = new Date().toLocaleString('en-GB'); 
                 u.lastUpdatedBy = CURRENT_USER.name; 
+                
+                if(CURRENT_TAB === 'teachers') u.dept = document.getElementById('addDept').value; 
+                else if(CURRENT_TAB !== 'departments'){ 
+                    u.job = document.getElementById('addJob').value; 
+                    u.phone = document.getElementById('addPhone').value; 
+                    u.login = document.getElementById('addLogin').value; 
+                    u.pass = document.getElementById('addPass').value; 
+                    u.role = document.getElementById('addRole').value; 
+                } 
+                addSystemLog('تعديل مستخدم', u.name);
+
             } else { 
+                // INSERT
                 u = { 
                     id: Date.now(), 
                     name: n, 
@@ -723,16 +848,19 @@
                     dateAdded: new Date().toLocaleDateString('en-GB'), 
                     permissions: JSON.parse(JSON.stringify(DEFAULT_PERMS))
                 }; 
+                
+                if(CURRENT_TAB === 'teachers') u.dept = document.getElementById('addDept').value; 
+                else if(CURRENT_TAB !== 'departments'){ 
+                    u.job = document.getElementById('addJob').value; 
+                    u.phone = document.getElementById('addPhone').value; 
+                    u.login = document.getElementById('addLogin').value; 
+                    u.pass = document.getElementById('addPass').value; 
+                    u.role = document.getElementById('addRole').value; 
+                } 
+                DB[CURRENT_TAB].push(u); 
+                addSystemLog('إضافة مستخدم', u.name);
             } 
-            if(CURRENT_TAB === 'teachers') u.dept = document.getElementById('addDept').value; 
-            else if(CURRENT_TAB !== 'departments'){ 
-                u.job = document.getElementById('addJob').value; 
-                u.phone = document.getElementById('addPhone').value; 
-                u.login = document.getElementById('addLogin').value; 
-                u.pass = document.getElementById('addPass').value; 
-                u.role = document.getElementById('addRole').value; 
-            } 
-            if(!isEdit) DB[CURRENT_TAB].push(u); 
+            
             saveDB(); renderTable(); closeModal('addUserModal'); 
         }
 
@@ -756,19 +884,19 @@
         function deleteBrand(id) { if(confirm('هل أنت متأكد من حذف هذا البراند؟ سيتم إخفاء جميع البيانات المرتبطة به.')) { DB.brands = DB.brands.filter(x => x.id !== id); resetBrandData(id, true); saveDB(); renderBrandsTable(); updateBrandUI(); if(CURRENT_BRAND.id === id) switchBrand(1); } }
         function resetBrandData(brandId, silent = false) { if(!silent && !confirm('تحذير: سيتم مسح جميع البيانات والمدخلات والمستخدمين والتقارير الخاصة بهذا البراند بشكل نهائي.\nهل أنت متأكد؟')) return; const arraysToClean = [ 'senior', 'middle', 'teachers', 'departments', 'visits_senior', 'visits_middle', 'distinguished', 'care_needed', 'qualitative_reports', 'saved_reports' ]; arraysToClean.forEach(key => { if(DB[key]) { DB[key] = DB[key].filter(item => { if(item.id === 999) return true; const itemBrand = item.brandId || 1; return itemBrand !== brandId; }); } }); saveDB(); if(!silent) alert('تمت إعادة تهيئة بيانات البراند بنجاح.'); if(CURRENT_BRAND.id === brandId) location.reload(); }
 
-        function setVisitTab(tab, el) { CURRENT_VISIT_TAB = tab; document.querySelectorAll('#visits .custom-tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); renderVisitsTable(); }
+        function setVisitTab(tab, el) { CURRENT_VISIT_TAB = tab; document.querySelectorAll('#visits .custom-tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); updateDateFilterOptions((CURRENT_VISIT_TAB === 'senior' ? filterByContext(DB.visits_senior) : filterByContext(DB.visits_middle)), 'visitMonthFilter'); renderVisitsTable(); }
         
         function renderVisitsTable() { 
             const collection = (CURRENT_VISIT_TAB === 'senior') ? 'visits_senior' : 'visits_middle';
             const list = DB[collection] || [];
-            const filtered = filterByContext(list); 
+            const filteredContext = filterByContext(list); 
+            const filtered = getFilteredData(filteredContext, 'visit');
+
             const tbody = document.getElementById('visitsTableBody'); 
             tbody.innerHTML = ''; 
-            const filterMonth = document.getElementById('visitMonthFilter').value; 
             const canEditVisits = canEdit('visits');
 
             filtered.forEach(v => { 
-                if(filterMonth !== 'all' && v.date.split('-')[1] !== filterMonth) return; 
                 let row = `<tr>
                     <td>${v.date}</td>
                     <td>${v.dept}</td>
@@ -791,6 +919,50 @@
                 tbody.innerHTML += row;
             }); 
         }
+        
+        function renderPerformanceChart() {
+            // Same logic using getFilteredData
+            let allVisitsRaw = [...filterByContext(DB.visits_senior), ...filterByContext(DB.visits_middle)];
+            // Optionally filter by dept if restricted user...
+             const isRestricted = !isAdminUser() && !DB.senior.some(u => u.id === CURRENT_USER.id); 
+            if (isRestricted && CURRENT_USER.dept) { allVisitsRaw = allVisitsRaw.filter(x => x.dept === CURRENT_USER.dept); }
+
+            const filtered = getFilteredData(allVisitsRaw, 'perf');
+
+            // Data Processing
+            const criteria = DB.settings.evaluation_criteria || [];
+            const labels = criteria.filter(c => c.status === 'active').map(c => c.name);
+            const dataCounts = new Array(labels.length).fill(0);
+            
+            // This assumes visits have detailed criteria scoring, but the current simplified data model only has a single 'eval' text.
+            // For the sake of the chart working with current data structure, we will count 'eval' occurrences if they match the labels, 
+            // OR if labels represent evaluation grades (Excellent, etc). 
+            // In the initial code, 'perfChart' wasn't fully implemented in logic, so let's make a generic Grade Distribution chart here.
+            
+            const gradeCounts = {};
+            filtered.forEach(v => { gradeCounts[v.eval] = (gradeCounts[v.eval] || 0) + 1; });
+            const chartLabels = Object.keys(gradeCounts);
+            const chartData = Object.values(gradeCounts);
+
+            if (performanceChartInstance) performanceChartInstance.destroy();
+            const ctx = document.getElementById('perfChart').getContext('2d');
+            performanceChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels.length ? chartLabels : ['لا توجد بيانات'],
+                    datasets: [{
+                        label: 'عدد المعلمين',
+                        data: chartLabels.length ? chartData : [0],
+                        backgroundColor: '#1e4078',
+                        barThickness: 40
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                }
+            });
+        }
 
         function openAddVisitModal() { 
             document.getElementById('addVisitForm').reset(); 
@@ -800,8 +972,8 @@
             filterByContext(DB.departments||[]).forEach(d => dSelect.innerHTML += `<option value="${d.name}">${d.name}</option>`); 
             const eSelect = document.getElementById('visitEval'); 
             eSelect.innerHTML = '<option value="">اختر التقدير...</option>'; 
-            const criteria = DB.settings.evaluation_criteria || [];
-            criteria.forEach(c => { if(c.status === 'active') eSelect.innerHTML += `<option value="${c.name}">${c.name}</option>`; });
+            const grades = DB.settings.evaluation_grades || [];
+            grades.forEach(c => { if(c.status === 'active') eSelect.innerHTML += `<option value="${c.name}">${c.name}</option>`; });
             document.getElementById('addVisitModal').style.display='flex'; 
         }
 
@@ -860,11 +1032,38 @@
         }
 
         function deleteVisit(id) { if(confirm('حذف؟')) { if(CURRENT_VISIT_TAB === 'senior') DB.visits_senior = DB.visits_senior.filter(x => x.id !== id); else DB.visits_middle = DB.visits_middle.filter(x => x.id !== id); saveDB(); renderVisitsTable(); } }
-        function renderDistinguishedTables() { const m = document.getElementById('distMonthFilter').value; const distList = filterByContext(DB.distinguished||[]); const careList = filterByContext(DB.care_needed||[]); const t1 = document.getElementById('distinguishedTableBody'); const t2 = document.getElementById('careTableBody'); t1.innerHTML = ''; t2.innerHTML = ''; distList.forEach((d, i) => { if(m !== 'all' && d.date.split('-')[1] !== m) return; t1.innerHTML += `<tr><td>${i+1}</td><td>${d.date}</td><td>${d.teacher}</td><td>${d.dept}</td><td>${d.eval}</td><td class="reason-cell">${d.reason}</td></tr>`; }); careList.forEach((d, i) => { if(m !== 'all' && d.date.split('-')[1] !== m) return; t2.innerHTML += `<tr><td>${i+1}</td><td>${d.date}</td><td>${d.teacher}</td><td>${d.dept}</td><td>${d.eval}</td><td class="reason-cell">${d.reason}</td></tr>`; }); }
+        
+        function renderDistinguishedTables() { 
+            const distListRaw = filterByContext(DB.distinguished||[]);
+            const careListRaw = filterByContext(DB.care_needed||[]);
+            
+            const distList = getFilteredData(distListRaw, 'dist');
+            const careList = getFilteredData(careListRaw, 'dist'); // Using same filter input for both
+
+            const t1 = document.getElementById('distinguishedTableBody'); 
+            const t2 = document.getElementById('careTableBody'); 
+            t1.innerHTML = ''; t2.innerHTML = ''; 
+            
+            distList.forEach((d, i) => { 
+                t1.innerHTML += `<tr><td>${i+1}</td><td>${d.date}</td><td>${d.teacher}</td><td>${d.dept}</td><td>${d.eval}</td><td class="reason-cell">${d.reason}</td></tr>`; 
+            }); 
+            careList.forEach((d, i) => { 
+                t2.innerHTML += `<tr><td>${i+1}</td><td>${d.date}</td><td>${d.teacher}</td><td>${d.dept}</td><td>${d.eval}</td><td class="reason-cell">${d.reason}</td></tr>`; 
+            }); 
+        }
         function openDistinguishedModal(type) { document.getElementById('distType').value = type; document.getElementById('distinguishedForm').reset(); document.getElementById('distinguishedModalTitle').innerText = (type === 'distinguished' ? 'إضافة معلم متميز' : 'إضافة معلم يحتاج رعاية'); const dSelect = document.getElementById('distDept'); dSelect.innerHTML = '<option value="">اختر القسم...</option>'; filterByContext(DB.departments||[]).forEach(d => dSelect.innerHTML += `<option value="${d.name}">${d.name}</option>`); const eSelect = document.getElementById('distEval'); eSelect.innerHTML = '<option value="">اختر التقدير...</option>'; (DB.settings.evaluation_grades||[]).forEach(g => eSelect.innerHTML += `<option value="${g.name}">${g.name}</option>`); document.getElementById('distinguishedModal').style.display='flex'; }
         function onDistinguishedDeptChange() { const dept = document.getElementById('distDept').value; const tSelect = document.getElementById('distTeacher'); tSelect.innerHTML = '<option value="">اختر المعلم/ة...</option>'; if(dept) { filterByContext(DB.teachers||[]).filter(t => t.dept === dept).forEach(t => tSelect.innerHTML += `<option value="${t.name}">${t.name}</option>`); } }
         function saveDistinguishedEntry() { const type = document.getElementById('distType').value; const dept = document.getElementById('distDept').value; const teacher = document.getElementById('distTeacher').value; const date = document.getElementById('distDate').value; const ev = document.getElementById('distEval').value; const reason = document.getElementById('distReason').value; if(!dept || !teacher || !date) return alert('البيانات ناقصة'); const obj = { id: Date.now(), dept, teacher, date, eval: ev, reason, brandId: CURRENT_BRAND.id }; if(type === 'distinguished') DB.distinguished.push(obj); else DB.care_needed.push(obj); saveDB(); renderDistinguishedTables(); closeModal('distinguishedModal'); }
-        function renderQualitativeTable() { const m = document.getElementById('qualMonthFilter').value; const list = filterByContext(DB.qualitative_reports||[]); const tbody = document.getElementById('qualitativeTableBody'); tbody.innerHTML = ''; list.forEach((q, i) => { if(m !== 'all' && q.date.split('-')[1] !== m) return; tbody.innerHTML += `<tr><td>${i+1}</td><td>${q.date}</td><td>${q.dept}</td><td class="reason-cell">${q.strength}</td><td class="reason-cell">${q.improve}</td><td><button class="action-btn btn-delete" onclick="deleteQualitative(${q.id})"><i class="fas fa-trash"></i></button></td></tr>`; }); }
+        
+        function renderQualitativeTable() { 
+            const listRaw = filterByContext(DB.qualitative_reports||[]); 
+            const list = getFilteredData(listRaw, 'qual');
+            const tbody = document.getElementById('qualitativeTableBody'); 
+            tbody.innerHTML = ''; 
+            list.forEach((q, i) => { 
+                tbody.innerHTML += `<tr><td>${i+1}</td><td>${q.date}</td><td>${q.dept}</td><td class="reason-cell">${q.strength}</td><td class="reason-cell">${q.improve}</td><td><button class="action-btn btn-delete" onclick="deleteQualitative(${q.id})"><i class="fas fa-trash"></i></button></td></tr>`; 
+            }); 
+        }
         function openQualitativeModal() { document.getElementById('qualitativeForm').reset(); const dSelect = document.getElementById('qualDept'); dSelect.innerHTML = '<option value="">اختر القسم...</option>'; filterByContext(DB.departments||[]).forEach(d => dSelect.innerHTML += `<option value="${d.name}">${d.name}</option>`); document.getElementById('addQualitativeModal').style.display='flex'; }
         function saveQualitative() { const dept = document.getElementById('qualDept').value; const date = document.getElementById('qualDate').value; const s = document.getElementById('qualStrength').value; const i = document.getElementById('qualImprove').value; if(!dept || !date) return alert('البيانات ناقصة'); DB.qualitative_reports.push({ id: Date.now(), dept, date, strength: s, improve: i, brandId: CURRENT_BRAND.id }); saveDB(); renderQualitativeTable(); closeModal('addQualitativeModal'); }
         function deleteQualitative(id) { if(confirm('حذف؟')) { DB.qualitative_reports = DB.qualitative_reports.filter(x => x.id !== id); saveDB(); renderQualitativeTable(); } }
