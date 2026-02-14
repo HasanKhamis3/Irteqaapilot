@@ -605,7 +605,7 @@
                     <div style="text-align: left; border-top: 1px solid #eee; padding-top: 20px;"><button class="btn btn-primary setting-edit-btn" style="width: 200px;" onclick="saveGeneralSettings()">حفظ الإعدادات</button></div>
                 </div>
 
-                <div id="sig" class="setting-content-pane"><div class="signature-grid"><div class="signature-card"><div class="signature-title">مدير/ة المدرسة</div><div class="form-group"><select id="sig_director" class="form-control" onchange="onSigChange()"><option value="">اختر مدير المدرسة</option></select></div><div style="display:flex; gap:10px; justify-content:center; margin-top:20px;"><button class="btn btn-primary setting-edit-btn" onclick="saveSignatureSettings()">حفظ</button><button class="btn setting-edit-btn" style="background:#dc3545; color:white;" onclick="clearSignature('sig_director')">إزالة</button></div></div><div class="signature-card"><div class="signature-title">المدير/ة المساعد/ة</div><div class="form-group"><select id="sig_assistant" class="form-control" onchange="onSigChange()"><option value="">اختر المدير المساعد</option></select></div><div style="display:flex; gap:10px; justify-content:center; margin-top:20px;"><button class="btn btn-primary setting-edit-btn" onclick="saveSignatureSettings()">حفظ</button><button class="btn setting-edit-btn" style="background:#dc3545; color:white;" onclick="clearSignature('sig_assistant')">إزالة</button></div></div></div></div>
+                <div id="sig" class="setting-content-pane"><div class="signature-grid"><div class="signature-card"><div class="signature-title">مدير/ة المدرسة</div><div class="form-group"><select id="sig_director" class="form-control" onchange="renderSignatureOptions()"><option value="">اختر مدير المدرسة</option></select></div><div style="display:flex; gap:10px; justify-content:center; margin-top:20px;"><button class="btn btn-primary setting-edit-btn" onclick="saveSignatureSettings()">حفظ</button><button class="btn setting-edit-btn" style="background:#dc3545; color:white;" onclick="clearSignature('sig_director')">إزالة</button></div></div><div class="signature-card"><div class="signature-title">المدير/ة المساعد/ة</div><div class="form-group"><select id="sig_assistant" class="form-control" onchange="renderSignatureOptions()"><option value="">اختر المدير المساعد</option></select></div><div style="display:flex; gap:10px; justify-content:center; margin-top:20px;"><button class="btn btn-primary setting-edit-btn" onclick="saveSignatureSettings()">حفظ</button><button class="btn setting-edit-btn" style="background:#dc3545; color:white;" onclick="clearSignature('sig_assistant')">إزالة</button></div></div></div></div>
                 <div id="fot" class="setting-content-pane"><div class="form-group" style="margin-bottom:20px;"><label style="display:block; font-weight:bold; margin-bottom:5px;">النص الذي سيظهر في تذييل كل صفحة</label><textarea id="footer_text" class="form-control" rows="5"></textarea></div><div class="form-group" style="margin-bottom:20px;"><label style="display:block; font-weight:bold; margin-bottom:5px;">محاذاة التذييل</label><select id="footer_align" class="form-control"><option value="center">وسط</option><option value="right">يمين</option><option value="left">يسار</option></select></div><div class="form-group" style="margin-bottom:20px;"><label style="display:block; font-weight:bold; margin-bottom:5px;">حجم الخط</label><select id="footer_fontsize" class="form-control"><option value="10">10 نقطة</option><option value="12">12 نقطة</option><option value="14">14 نقطة</option><option value="16">16 نقطة</option></select></div><div style="text-align:left; margin-top:20px;"><button class="btn setting-edit-btn" style="background:#28a745; color:white; font-weight:bold;" onclick="saveFooterSettings()">حفظ إعدادات التذييل</button></div></div>
                 <div id="eval" class="setting-content-pane"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h3>معايير الزيارة الصفية</h3><div><button class="btn setting-edit-btn" style="background:#dc3545; color:white; font-size:0.8rem;" onclick="deleteSelectedSettings('criteria')">حذف المحدد</button><button class="btn setting-edit-btn" style="background:#2c5aa0; color:white;" onclick="openAddEvalModal()"><i class="fas fa-plus"></i> إضافة معيار</button></div></div><table class="custom-table"><thead><tr><th width="5%"><input type="checkbox" id="selectAllCriteria" class="custom-checkbox" onchange="toggleSelectAllSettings('criteria', this)"></th><th width="10%">#</th><th width="45%">اسم المعيار</th><th width="15%">الحالة</th><th width="25%">الإجراءات</th></tr></thead><tbody id="evalTableBody"></tbody></table><hr style="margin: 40px 0; border-top: 1px solid #ddd;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h3>قائمة التقديرات</h3><div><button class="btn setting-edit-btn" style="background:#dc3545; color:white; font-size:0.8rem;" onclick="deleteSelectedSettings('grades')">حذف المحدد</button><button class="btn setting-edit-btn" style="background:#2c5aa0; color:white;" onclick="openAddGradeModal()"><i class="fas fa-plus"></i> إضافة تقدير</button></div></div><table class="custom-table"><thead><tr><th width="5%"><input type="checkbox" id="selectAllGrades" class="custom-checkbox" onchange="toggleSelectAllSettings('grades', this)"></th><th width="10%">#</th><th width="45%">اسم التقدير</th><th width="15%">الحالة</th><th width="25%">الإجراءات</th></tr></thead><tbody id="gradeTableBody"></tbody></table></div>
                 <div id="vis" class="setting-content-pane"><div class="visitor-section"><div class="visitor-section-title">القيادة العليا</div><ul id="list_visitor_senior" class="visitor-list"></ul><button class="btn-add-visitor setting-edit-btn" onclick="openVisitorPicker('senior')">+ إضافة زائر</button></div><div class="visitor-section"><div class="visitor-section-title">القيادة الوسطى</div><ul id="list_visitor_middle" class="visitor-list"></ul><button class="btn-add-visitor setting-edit-btn" onclick="openVisitorPicker('middle')">+ إضافة زائر</button></div><div style="text-align: left; margin-top: 20px;"><button class="btn btn-toggle setting-edit-btn" onclick="saveVisitorOrder()">حفظ الترتيب</button></div></div>
@@ -723,23 +723,34 @@
             if(DB.settings.footerAlign) document.getElementById('footer_align').value = DB.settings.footerAlign;
             if(DB.settings.footerFontSize) document.getElementById('footer_fontsize').value = DB.settings.footerFontSize;
 
-            const seniors = filterByContext(DB.senior||[]);
-            const dirSelect = document.getElementById('sig_director');
-            const asstSelect = document.getElementById('sig_assistant');
-            dirSelect.innerHTML = '<option value="">اختر مدير المدرسة</option>';
-            asstSelect.innerHTML = '<option value="">اختر المدير المساعد</option>';
-            seniors.forEach(s => {
-                dirSelect.innerHTML += `<option value="${s.id}">${s.name}</option>`;
-                asstSelect.innerHTML += `<option value="${s.id}">${s.name}</option>`;
-            });
-            if(DB.settings.sig_director) dirSelect.value = DB.settings.sig_director;
-            if(DB.settings.sig_assistant) asstSelect.value = DB.settings.sig_assistant;
+            renderSignatureOptions();
 
             const evalBody = document.getElementById('evalTableBody'); evalBody.innerHTML = ''; (DB.settings.evaluation_criteria||[]).forEach((c,i) => evalBody.innerHTML += `<tr><td><input type="checkbox" class="crit-cb" value="${i}"></td><td>${i+1}</td><td>${c.name}</td><td>active</td><td></td></tr>`);
             const gradeBody = document.getElementById('gradeTableBody'); gradeBody.innerHTML = ''; (DB.settings.evaluation_grades||[]).forEach((g,i) => gradeBody.innerHTML += `<tr><td><input type="checkbox" class="grade-cb" value="${i}"></td><td>${i+1}</td><td>${g.name}</td><td>${g.status}</td><td></td></tr>`);
             
             renderVisitorSettings();
             loadSystemLogs();
+        }
+
+        function renderSignatureOptions() {
+            const seniors = filterByContext(DB.senior||[]);
+            const dirSelect = document.getElementById('sig_director');
+            const asstSelect = document.getElementById('sig_assistant');
+            
+            const currentDir = dirSelect.value || DB.settings.sig_director || "";
+            const currentAsst = asstSelect.value || DB.settings.sig_assistant || "";
+
+            dirSelect.innerHTML = '<option value="">اختر مدير المدرسة</option>';
+            asstSelect.innerHTML = '<option value="">اختر المدير المساعد</option>';
+
+            seniors.forEach(s => {
+                if (s.id.toString() !== currentAsst) {
+                    dirSelect.innerHTML += `<option value="${s.id}" ${s.id.toString() === currentDir ? 'selected' : ''}>${s.name}</option>`;
+                }
+                if (s.id.toString() !== currentDir) {
+                    asstSelect.innerHTML += `<option value="${s.id}" ${s.id.toString() === currentAsst ? 'selected' : ''}>${s.name}</option>`;
+                }
+            });
         }
 
         function saveGeneralSettings() { DB.settings.schoolName = document.getElementById('confSchool').value; DB.settings.schoolYear = document.getElementById('confYear').value; saveDB(); alert('تم حفظ الإعدادات'); }
@@ -753,8 +764,8 @@
             DB.settings.sig_assistant = document.getElementById('sig_assistant').value;
             saveDB(); alert('تم حفظ التوقيعات');
         }
-        function clearSignature(id) { document.getElementById(id).value = ''; saveSignatureSettings(); }
-        function onSigChange() { }
+        function clearSignature(id) { document.getElementById(id).value = ''; renderSignatureOptions(); saveSignatureSettings(); }
+        function onSigChange() { renderSignatureOptions(); }
 
         function saveFooterSettings() {
             DB.settings.footerText = document.getElementById('footer_text').value;
@@ -802,12 +813,12 @@
             const mList = document.getElementById('list_visitor_middle'); mList.innerHTML = '';
             
             (DB.settings.visitor_order_senior || []).forEach((id, i) => {
-                let user = DB.senior.find(x => x.id === id) || DB.middle.find(x=>x.id===id);
+                let user = DB.senior.find(x => x.id.toString() === id.toString());
                 if(user) sList.innerHTML += `<li class="visitor-list-item"><span>${user.name}</span><span style="cursor:pointer;color:red;" onclick="removeVisitorFromSetting('senior', ${i})">&times;</span></li>`;
             });
 
             (DB.settings.visitor_order_middle || []).forEach((id, i) => {
-                let user = DB.senior.find(x => x.id === id) || DB.middle.find(x=>x.id===id);
+                let user = DB.middle.find(x => x.id.toString() === id.toString());
                 if(user) mList.innerHTML += `<li class="visitor-list-item"><span>${user.name}</span><span style="cursor:pointer;color:red;" onclick="removeVisitorFromSetting('middle', ${i})">&times;</span></li>`;
             });
         }
@@ -820,15 +831,20 @@
         function filterPickerList() {
             const term = document.getElementById('visitorSearch').value.toLowerCase();
             const div = document.getElementById('pickerList'); div.innerHTML = '';
-            const candidates = [...filterByContext(DB.senior), ...filterByContext(DB.middle)];
             
-            // Logic to exclude names already in the list
-            const currentSelectedIds = (CURRENT_PICKER_TYPE === 'senior') 
-                ? (DB.settings.visitor_order_senior || []) 
-                : (DB.settings.visitor_order_middle || []);
+            let candidates = [];
+            let currentSelected = [];
+
+            if (CURRENT_PICKER_TYPE === 'senior') {
+                candidates = filterByContext(DB.senior || []);
+                currentSelected = (DB.settings.visitor_order_senior || []).map(id => id.toString());
+            } else {
+                candidates = filterByContext(DB.middle || []);
+                currentSelected = (DB.settings.visitor_order_middle || []).map(id => id.toString());
+            }
 
             candidates.forEach(u => {
-                if(u.name.toLowerCase().includes(term) && !currentSelectedIds.includes(u.id)) {
+                if(u.name.toLowerCase().includes(term) && !currentSelected.includes(u.id.toString())) {
                     div.innerHTML += `<div class="picker-item" onclick="addVisitorFromPicker(${u.id})"><span>${u.name}</span><small>${u.job||''}</small></div>`;
                 }
             });
@@ -836,10 +852,10 @@
         function addVisitorFromPicker(id) {
             if(CURRENT_PICKER_TYPE === 'senior') {
                 if(!DB.settings.visitor_order_senior) DB.settings.visitor_order_senior = [];
-                if(!DB.settings.visitor_order_senior.includes(id)) DB.settings.visitor_order_senior.push(id);
+                DB.settings.visitor_order_senior.push(id);
             } else {
                 if(!DB.settings.visitor_order_middle) DB.settings.visitor_order_middle = [];
-                if(!DB.settings.visitor_order_middle.includes(id)) DB.settings.visitor_order_middle.push(id);
+                DB.settings.visitor_order_middle.push(id);
             }
             renderVisitorSettings(); closeModal('visitorPickerModal');
         }
