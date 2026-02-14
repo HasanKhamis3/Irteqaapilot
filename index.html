@@ -408,7 +408,7 @@
                     <div class="custom-tab" onclick="setVisitTab('middle', this)">زيارات القيادة الوسطى</div>
                 </div>
                 <table class="custom-table">
-                    <thead><tr><th width="15%">التاريخ</th><th width="15%">القسم</th><th width="20%">اسم المعلمة</th><th width="15%">التقييم</th><th width="15%">الزائر</th><th width="10%">الوظيفة</th><th width="10%">الإجراءات</th></tr></thead>
+                    <thead><tr><th width="12%">التاريخ</th><th width="12%">القسم</th><th width="18%">اسم المعلمة</th><th width="15%">التقييم</th><th width="15%">الزائر</th><th width="10%">الوظيفة</th><th width="18%">الإجراءات</th></tr></thead>
                     <tbody id="visitsTableBody"></tbody>
                 </table>
             </div>
@@ -618,7 +618,7 @@
     <div id="addUserModal" class="modal-overlay"><div class="modal-box"><div class="modal-header"><span id="addUserModalTitle">إضافة اسم جديد</span> <span onclick="closeModal('addUserModal')" style="cursor:pointer;">&times;</span></div><div class="modal-body"><form id="addUserForm"><input type="hidden" id="editUserId"><label>الاسم الكامل / اسم القسم</label><input type="text" id="addName" class="form-control" required><div id="deptWrapper" class="form-group" style="display:none;"><label>القسم</label><select id="addDept" class="form-control"></select></div><div id="userFields"><label>الوظيفة</label><input type="text" id="addJob" class="form-control"><label>رقم الهاتف</label><input type="text" id="addPhone" class="form-control"><label>اسم الدخول</label><input type="text" id="addLogin" class="form-control"><label>كلمة المرور</label><input type="password" id="addPass" class="form-control"><div id="roleWrapper" style="margin-top:15px; border-top:1px solid #eee; padding-top:10px;"><label style="color:var(--primary); font-weight:bold; margin-bottom:5px;">صلاحية إضافية (اختياري)</label><select id="addRole" class="form-control" style="margin-bottom:15px;"><option value="">مستخدم عادي</option><option value="supervisor">مشرف للنظام</option><option value="admin_support">إداري للنظام</option></select></div></div></form></div><div class="modal-footer"><button class="btn btn-primary" onclick="saveUserForm()">حفظ</button><button class="btn" style="background:#ddd;" onclick="closeModal('addUserModal')">إلغاء</button></div></div></div>
     <div id="distinguishedModal" class="modal-overlay"><div class="modal-box"><div class="modal-header"><span id="distinguishedModalTitle">إضافة</span> <span onclick="closeModal('distinguishedModal')" style="cursor:pointer;">&times;</span></div><div class="modal-body"><form id="distinguishedForm"><input type="hidden" id="distType"><input type="hidden" id="distEditId"><div class="form-group"><label style="font-weight:bold; display:block; margin-bottom:5px;">التاريخ</label><input type="date" class="form-control" id="distDate"></div><div class="form-group"><label style="font-weight:bold; display:block; margin-bottom:5px;">القسم</label><select id="distDept" class="form-control" onchange="onDistinguishedDeptChange()"><option value="">اختر القسم...</option></select></div><div class="form-group"><label style="font-weight:bold; display:block; margin-bottom:5px;">اسم المعلم/ة</label><select id="distTeacher" class="form-control"><option value="">اختر المعلم/ة...</option></select></div><div class="form-group"><label style="font-weight:bold; display:block; margin-bottom:5px;">التقدير</label><select id="distEval" class="form-control"><option value="">اختر التقدير...</option></select></div><div class="form-group"><label style="font-weight:bold; display:block; margin-bottom:5px;">المبررات / ملاحظات</label><textarea id="distReason" class="form-control" rows="4"></textarea></div></form></div><div class="modal-footer"><button class="btn btn-primary" onclick="saveDistinguishedEntry()">حفظ البيانات</button><button class="btn" style="background:#ddd;" onclick="closeModal('distinguishedModal')">إلغاء</button></div></div></div>
     <div id="addQualitativeModal" class="modal-overlay"><div class="modal-box"><div class="modal-header"><span>إضافة تقرير نوعي</span> <span onclick="closeModal('addQualitativeModal')" style="cursor:pointer;">&times;</span></div><div class="modal-body"><form id="qualitativeForm"><input type="hidden" id="qualEditId"><div class="form-group"><label style="font-weight:bold; display:block; margin-bottom:5px;">التاريخ</label><input type="date" class="form-control" id="qualDate"></div><div class="form-group"><label style="font-weight:bold; display:block; margin-bottom:5px;">القسم</label><select id="qualDept" class="form-control"><option value="">اختر القسم...</option></select></div><div class="form-group"><label style="font-weight:bold; display:block; margin-bottom:5px;">جوانب القوة</label><textarea id="qualStrength" class="form-control" rows="4" placeholder="سجل جوانب القوة هنا..."></textarea></div><div class="form-group"><label style="font-weight:bold; display:block; margin-bottom:5px;">جوانب بحاجة إلى تطوير</label><textarea id="qualImprove" class="form-control" rows="4" placeholder="سجل جوانب التطوير هنا..."></textarea></div></form></div><div class="modal-footer"><button class="btn btn-primary" onclick="saveQualitative()">حفظ</button><button class="btn" style="background:#ddd;" onclick="closeModal('addQualitativeModal')">إلغاء</button></div></div></div>
-    <div id="addVisitModal" class="modal-overlay"><div class="modal-box"><div class="modal-header"><span>إضافة زيارة صفية</span> <span onclick="closeModal('addVisitModal')" style="cursor:pointer;">&times;</span></div><div class="modal-body"><form id="addVisitForm"><input type="hidden" id="visitEditId"> <div class="form-group"><label style="font-weight:bold; display:block; margin-bottom:5px;">القسم</label><select id="visitDept" class="form-control" onchange="onVisitDeptChange()"><option value="">اختر القسم...</option></select></div><div class="form-group"><label style="font-weight:bold; display:block; margin-bottom:5px;">المعلم/ة</label><select id="visitTeacher" class="form-control"><option value="">اختر المعلم/ة...</option></select></div><div class="form-group"><label style="font-weight:bold; display:block; margin-bottom:5px;">تاريخ الزيارة</label><input type="date" id="visitDate" class="form-control"></div><div class="form-group"><label style="font-weight:bold; display:block; margin-bottom:5px;">التقييم</label><select id="visitEval" class="form-control"><option value="">اختر التقييم...</option></select></div></form></div><div class="modal-footer"><button class="btn btn-primary" onclick="saveVisit()">حفظ</button><button class="btn" style="background:#ddd;" onclick="closeModal('addVisitModal')">إلغاء</button></div></div></div>
+    <div id="addVisitModal" class="modal-overlay"><div class="modal-box"><div class="modal-header"><span>إضافة زيارة صفية</span> <span onclick="closeModal('addVisitModal')" style="cursor:pointer;">&times;</span></div><div class="modal-body"><form id="addVisitForm"><input type="hidden" id="visitEditId"> <div class="form-group"><label style="font-weight:bold; display:block; margin-bottom:5px;">القسم</label><select id="visitDept" class="form-control" onchange="onVisitDeptChange()"><option value="">اختر القسم...</option></select></div><div class="form-group"><label style="font-weight:bold; display:block; margin-bottom:5px;">المعلم/ة</label><select id="visitTeacher" class="form-control"><option value="">اختر المعلم/ة...</option></select></div><div class="form-group"><label style="font-weight:bold; display:block; margin-bottom:5px;">تاريخ الزيارة</label><input type="date" id="visitDate" class="form-control"></div><div class="form-group"><label style="font-weight:bold; display:block; margin-bottom:5px;">التقييم</label><select id="visitEval" class="form-control"><option value="">اختر التقدير...</option></select></div></form></div><div class="modal-footer"><button class="btn btn-primary" onclick="saveVisit()">حفظ</button><button class="btn" style="background:#ddd;" onclick="closeModal('addVisitModal')">إلغاء</button></div></div></div>
     <div id="viewVisitModal" class="modal-overlay"><div class="modal-box"><div class="modal-header">تفاصيل الزيارة <span onclick="closeModal('viewVisitModal')" style="cursor:pointer;">&times;</span></div><div class="modal-body" id="viewVisitContent"></div><div class="modal-footer"><button class="btn" style="background:#28a745; color:white;" onclick="closeModal('viewVisitModal')">إغلاق</button></div></div></div>
     <div id="addEvalModal" class="modal-overlay"><div class="modal-box"><div class="modal-header"><span>إضافة/تعديل معيار تقييم</span> <span onclick="closeModal('addEvalModal')" style="cursor:pointer;">&times;</span></div><div class="modal-body"><form id="addEvalForm"><input type="hidden" id="editEvalId"><label>اسم المعيار</label><input type="text" id="evalName" class="form-control" required placeholder="مثال: التخطيط الفعال"></form></div><div class="modal-footer"><button class="btn btn-primary" onclick="saveEvalForm()">حفظ</button><button class="btn" style="background:#ddd;" onclick="closeModal('addEvalModal')">إلغاء</button></div></div></div>
     <div id="addGradeModal" class="modal-overlay"><div class="modal-box"><div class="modal-header"><span>إضافة/تعديل تقدير</span> <span onclick="closeModal('addGradeModal')" style="cursor:pointer;">&times;</span></div><div class="modal-body"><form id="addGradeForm"><input type="hidden" id="editGradeId"><label>اسم التقدير</label><input type="text" id="gradeName" class="form-control" required placeholder="مثال: ممتاز"></form></div><div class="modal-footer"><button class="btn btn-primary" onclick="saveGradeForm()">حفظ</button><button class="btn" style="background:#ddd;" onclick="closeModal('addGradeModal')">إلغاء</button></div></div></div>
@@ -655,17 +655,87 @@
         function renderDashboard() { const filter = document.getElementById('dashMonthFilter').value; let seniorVisits = filterByContext(DB.visits_senior || []); let middleVisits = filterByContext(DB.visits_middle || []); let allVisits = [...seniorVisits, ...middleVisits]; const isRestricted = !isAdminUser() && !DB.senior.some(u => u.id === CURRENT_USER.id); if (isRestricted) { const userDept = CURRENT_USER.dept; if(userDept) { allVisits = allVisits.filter(x => x.dept === userDept); } } if (filter !== 'all') { allVisits = allVisits.filter(x => x.date.split('-')[1] === filter); } const total = allVisits.length; let exceedsLot = 0, exceeds = 0, meets = 0, partially = 0; allVisits.forEach(v => { if(v.eval.includes('يتجاوز التوقعات بكثير') || v.eval.includes('ممتاز')) exceedsLot++; else if(v.eval.includes('يتجاوز التوقعات') || v.eval.includes('جيد جداً')) exceeds++; else if(v.eval.includes('يفي بالتوقعات') || v.eval.includes('جيد')) meets++; else partially++; }); animateValue('stat_total', parseInt(document.getElementById('stat_total').innerText), total, 1000); animateValue('stat_exceeds_lot', parseInt(document.getElementById('stat_exceeds_lot').innerText), exceedsLot, 1000); animateValue('stat_exceeds', parseInt(document.getElementById('stat_exceeds').innerText), exceeds, 1000); animateValue('stat_meets', parseInt(document.getElementById('stat_meets').innerText), meets, 1000); animateValue('stat_partially', parseInt(document.getElementById('stat_partially').innerText), partially, 1000); const hasData = allVisits.length > 0; const deptCounts = {}; allVisits.forEach(v => { deptCounts[v.dept] = (deptCounts[v.dept] || 0) + 1; }); const deptLabels = Object.keys(deptCounts); const deptData = Object.values(deptCounts); if (dashBarChartInst) dashBarChartInst.destroy(); dashBarChartInst = new Chart(document.getElementById('dashBarChart').getContext('2d'), { type: 'bar', data: { labels: hasData ? deptLabels : ['لا توجد زيارات'], datasets: [{ label: 'عدد الزيارات', data: hasData ? deptData : [0], backgroundColor: hasData ? '#1e4078' : '#e9ecef', borderRadius: 5 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } } }); const evalCounts = {}; allVisits.forEach(v => { evalCounts[v.eval] = (evalCounts[v.eval] || 0) + 1; }); const evalLabels = Object.keys(evalCounts); const evalData = Object.values(evalCounts); if (dashPieChartInst) dashPieChartInst.destroy(); dashPieChartInst = new Chart(document.getElementById('dashPieChart').getContext('2d'), { type: 'doughnut', data: { labels: hasData ? evalLabels : ['لا توجد زيارات'], datasets: [{ data: hasData ? evalData : [1], backgroundColor: hasData ? ['#28a745', '#17a2b8', '#ffc107', '#dc3545', '#6610f2'] : ['#e9ecef'], borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } } }); }
         function animateValue(id, start, end, duration) { if (start === end) return; const obj = document.getElementById(id); let startTimestamp = null; const step = (timestamp) => { if (!startTimestamp) startTimestamp = timestamp; const progress = Math.min((timestamp - startTimestamp) / duration, 1); obj.innerHTML = Math.floor(progress * (end - start) + start); if (progress < 1) { window.requestAnimationFrame(step); } }; window.requestAnimationFrame(step); }
         function setTab(tab, el) { CURRENT_TAB = tab; document.querySelectorAll('#user-management .custom-tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); if(document.getElementById('selectAll')) document.getElementById('selectAll').checked = false; renderTable(); }
-        function renderTable() { const headRow = document.getElementById('tableHeadRow'); const tbody = document.getElementById('usersTableBody'); const addBtn = document.getElementById('addBtnMain'); const bulkPermBtn = document.getElementById('bulkPermBtn'); tbody.innerHTML = ''; const canEditUsers = canEdit('user-management'); const actionButtons = document.getElementById('userActionButtons'); const noEditMsg = document.getElementById('noEditPermissionMsg'); if(canEditUsers) { actionButtons.style.display = 'flex'; noEditMsg.style.display = 'none'; } else { actionButtons.style.display = 'none'; noEditMsg.style.display = 'block'; } let headerHTML = `<th width="5%"><input type="checkbox" id="selectAll" class="custom-checkbox" onchange="toggleSelectAll(this)" ${canEditUsers?'':'disabled'}></th>`; if (CURRENT_TAB === 'departments') { headerHTML += `<th width="10%">الترتيب</th><th width="40%">اسم القسم</th><th width="15%">الحالة</th><th width="30%">الإدارة</th>`; addBtn.innerText = "إضافة قسم جديد"; if(bulkPermBtn) bulkPermBtn.style.display = 'none'; } else if (CURRENT_TAB === 'teachers') { headerHTML += `<th width="5%">#</th><th width="25%">الاسم</th><th width="15%">القسم</th><th width="15%">الحالة</th><th width="35%">الإجراءات</th>`; addBtn.innerText = "إضافة اسم جديد"; if(bulkPermBtn) bulkPermBtn.style.display = 'inline-flex'; } else { headerHTML += `<th width="5%">#</th><th width="25%">الاسم</th><th width="15%">الوظيفة</th><th width="15%">صلاحية إضافية</th><th width="10%">الحالة</th><th width="25%">الإجراءات</th>`; addBtn.innerText = "إضافة اسم جديد"; if(bulkPermBtn) bulkPermBtn.style.display = 'inline-flex'; } headRow.innerHTML = headerHTML; let list = filterByContext(DB[CURRENT_TAB] || []); list.forEach((u, idx) => { const isActive = u.status === 'active'; const statusBadge = isActive ? `<span class="status-badge status-active">مفعل</span>` : `<span class="status-badge status-inactive">معطل</span>`; let row = `<td><input type="checkbox" class="custom-checkbox user-select-cb" value="${u.id}" ${canEditUsers ? '' : 'disabled'}></td><td>${idx+1}</td><td>${u.name}</td>`; if (CURRENT_TAB === 'departments') { row += `<td>${statusBadge}</td><td><div style="display:flex; justify-content:center; gap:2px; flex-wrap:wrap;">`; } else if (CURRENT_TAB === 'teachers') { row += `<td>${u.dept || '-'}</td><td>${statusBadge}</td><td><div style="display:flex; justify-content:center; gap:2px; flex-wrap:wrap;">`; } else { let roleTxt = '-'; if(u.role === 'supervisor') roleTxt = '<span class="role-badge role-super">مشرف</span>'; if(u.role === 'admin_support') roleTxt = '<span class="role-badge role-admin">إداري</span>'; row += `<td>${u.job || '-'}</td><td>${roleTxt}</td><td>${statusBadge}</td><td><div style="display:flex; justify-content:center; gap:2px; flex-wrap:wrap;">`; } if(canEditUsers) { row += `<button class="action-btn btn-move" onclick="moveUser(${u.id}, 'up')" title="نقل لأعلى"><i class="fas fa-arrow-up"></i></button><button class="action-btn btn-move" onclick="moveUser(${u.id}, 'down')" title="نقل لأسفل"><i class="fas fa-arrow-down"></i></button>`; } if (CURRENT_TAB === 'departments') { if(canEditUsers) { row += `<button class="action-btn btn-toggle ${isActive?'':'off'}" onclick="toggleStatus(${u.id})"><i class="fas fa-power-off"></i> ${isActive?'تعطيل':'تفعيل'}</button><button class="action-btn btn-edit" onclick="editUser(${u.id})"><i class="fas fa-edit"></i> تعديل</button><button class="action-btn btn-delete" onclick="deleteUser(${u.id})"><i class="fas fa-trash"></i> حذف</button>`; } } else { row += `<button class="action-btn btn-view" onclick="viewUser(${u.id})"><i class="fas fa-eye"></i> معاينة</button>`; if (canEditUsers) { row += `<button class="action-btn btn-toggle ${isActive?'':'off'}" onclick="toggleStatus(${u.id})"><i class="fas fa-power-off"></i> ${isActive?'تعطيل':'تفعيل'}</button><button class="action-btn btn-edit" onclick="editUser(${u.id})"><i class="fas fa-edit"></i> تعديل</button><button class="action-btn btn-delete" onclick="deleteUser(${u.id})"><i class="fas fa-trash"></i> حذف</button><button class="action-btn btn-perm" onclick="openPerms(${u.id})"><i class="fas fa-key"></i> صلاحيات</button>`; } } row += `</div></td>`; const tr = document.createElement('tr'); tr.innerHTML = row; tbody.appendChild(tr); }); }
-        function moveUser(id, d) { const l=DB[CURRENT_TAB]; const i=l.findIndex(u=>u.id===id); if(i===-1)return; if(d==='up'&&i>0)[l[i],l[i-1]]=[l[i-1],l[i]]; if(d==='down'&&i<l.length-1)[l[i],l[i+1]]=[l[i+1],l[i]]; saveDB(); renderTable(); }
+        function renderTable() { const headRow = document.getElementById('tableHeadRow'); const tbody = document.getElementById('usersTableBody'); const addBtn = document.getElementById('addBtnMain'); const bulkPermBtn = document.getElementById('bulkPermBtn'); tbody.innerHTML = ''; const canEditUsers = canEdit('user-management'); const actionButtons = document.getElementById('userActionButtons'); const noEditMsg = document.getElementById('noEditPermissionMsg'); if(canEditUsers) { actionButtons.style.display = 'flex'; noEditMsg.style.display = 'none'; } else { actionButtons.style.display = 'none'; noEditMsg.style.display = 'block'; } let headerHTML = `<th width="5%"><input type="checkbox" id="selectAll" class="custom-checkbox" onchange="toggleSelectAll(this)" ${canEditUsers?'':'disabled'}></th>`; if (CURRENT_TAB === 'departments') { headerHTML += `<th width="10%">الترتيب</th><th width="40%">اسم القسم</th><th width="15%">الحالة</th><th width="30%">الإدارة</th>`; addBtn.innerText = "إضافة قسم جديد"; if(bulkPermBtn) bulkPermBtn.style.display = 'none'; } else if (CURRENT_TAB === 'teachers') { headerHTML += `<th width="5%">#</th><th width="25%">الاسم</th><th width="15%">القسم</th><th width="15%">الحالة</th><th width="35%">الإجراءات</th>`; addBtn.innerText = "إضافة اسم جديد"; if(bulkPermBtn) bulkPermBtn.style.display = 'inline-flex'; } else { headerHTML += `<th width="5%">#</th><th width="25%">الاسم</th><th width="15%">الوظيفة</th><th width="15%">صلاحية إضافية</th><th width="10%">الحالة</th><th width="25%">الإجراءات</th>`; addBtn.innerText = "إضافة اسم جديد"; if(bulkPermBtn) bulkPermBtn.style.display = 'inline-flex'; } headRow.innerHTML = headerHTML; let list = filterByContext(DB[CURRENT_TAB] || []); list.forEach((u, idx) => { const isActive = u.status === 'active'; const statusBadge = isActive ? `<span class="status-badge status-active">مفعل</span>` : `<span class="status-badge status-inactive">معطل</span>`; let row = `<td><input type="checkbox" class="custom-checkbox user-select-cb" value="${u.id}" ${canEditUsers ? '' : 'disabled'}></td><td>${idx+1}</td><td>${u.name}</td>`; if (CURRENT_TAB === 'departments') { row += `<td>${statusBadge}</td><td><div style="display:flex; justify-content:center; gap:2px; flex-wrap:wrap;">`; } else if (CURRENT_TAB === 'teachers') { row += `<td>${u.dept || '-'}</td><td>${statusBadge}</td><td><div style="display:flex; justify-content:center; gap:2px; flex-wrap:wrap;">`; } else { let roleTxt = '-'; if(u.role === 'supervisor') roleTxt = '<span class="role-badge role-super">مشرف</span>'; if(u.role === 'admin_support') roleTxt = '<span class="role-badge role-admin">إداري</span>'; row += `<td>${u.job || '-'}</td><td>${roleTxt}</td><td>${statusBadge}</td><td><div style="display:flex; justify-content:center; gap:2px; flex-wrap:wrap;">`; } if(canEditUsers) { row += `<button class="action-btn btn-move" onclick="moveItem('${CURRENT_TAB}', ${u.id}, 'up')" title="نقل لأعلى"><i class="fas fa-arrow-up"></i></button><button class="action-btn btn-move" onclick="moveItem('${CURRENT_TAB}', ${u.id}, 'down')" title="نقل لأسفل"><i class="fas fa-arrow-down"></i></button>`; } if (CURRENT_TAB === 'departments') { if(canEditUsers) { row += `<button class="action-btn btn-toggle ${isActive?'':'off'}" onclick="toggleStatus(${u.id})"><i class="fas fa-power-off"></i> ${isActive?'تعطيل':'تفعيل'}</button><button class="action-btn btn-edit" onclick="editUser(${u.id})"><i class="fas fa-edit"></i> تعديل</button><button class="action-btn btn-delete" onclick="deleteUser(${u.id})"><i class="fas fa-trash"></i> حذف</button>`; } } else { row += `<button class="action-btn btn-view" onclick="viewUser(${u.id})"><i class="fas fa-eye"></i> معاينة</button>`; if (canEditUsers) { row += `<button class="action-btn btn-toggle ${isActive?'':'off'}" onclick="toggleStatus(${u.id})"><i class="fas fa-power-off"></i> ${isActive?'تعطيل':'تفعيل'}</button><button class="action-btn btn-edit" onclick="editUser(${u.id})"><i class="fas fa-edit"></i> تعديل</button><button class="action-btn btn-delete" onclick="deleteUser(${u.id})"><i class="fas fa-trash"></i> حذف</button><button class="action-btn btn-perm" onclick="openPerms(${u.id})"><i class="fas fa-key"></i> صلاحيات</button>`; } } row += `</div></td>`; const tr = document.createElement('tr'); tr.innerHTML = row; tbody.appendChild(tr); }); }
+
+        function moveItem(collection, id, d) {
+            const l = DB[collection];
+            const i = l.findIndex(x => x.id === id);
+            if(i === -1) return;
+            if(d === 'up' && i > 0) [l[i], l[i-1]] = [l[i-1], l[i]];
+            if(d === 'down' && i < l.length-1) [l[i], l[i+1]] = [l[i+1], l[i]];
+            saveDB();
+            if(collection.includes('visits')) renderVisitsTable(); else renderTable();
+        }
+
         function toggleSelectAll(s) { document.querySelectorAll('.user-select-cb').forEach(c=>{if(!c.disabled)c.checked=s.checked}); }
         function deleteSelected() { const c=document.querySelectorAll('.user-select-cb:checked'); if(c.length===0)return alert('حدد عناصر'); if(confirm('حذف؟')){const ids=Array.from(c).map(x=>parseInt(x.value)); DB[CURRENT_TAB]=DB[CURRENT_TAB].filter(u=>!ids.includes(u.id)); addSystemLog('حذف جماعي', `حذف ${ids.length}`); saveDB(); renderTable(); document.getElementById('selectAll').checked=false;} }
         function toggleStatusSelected() { const c=document.querySelectorAll('.user-select-cb:checked'); if(c.length===0)return alert('حدد عناصر'); const ids=Array.from(c).map(x=>parseInt(x.value)); DB[CURRENT_TAB].forEach(u=>{if(ids.includes(u.id))u.status=u.status==='active'?'inactive':'active'}); addSystemLog('تغيير حالة جماعي', `تعديل ${ids.length}`); saveDB(); renderTable(); }
         function toggleStatus(id) { const u=DB[CURRENT_TAB].find(x=>x.id===id); if(u){u.status=u.status==='active'?'inactive':'active'; addSystemLog('تغيير حالة', u.name); saveDB(); renderTable();} }
         function exportExcel() { let list = filterByContext(DB[CURRENT_TAB] || []); let isTemplate = false; if (list.length === 0) { alert('لا توجد بيانات مسجلة حالياً. سيتم تصدير قالب فارغ يمكنك تعبئته واستخدامه للاستيراد.'); isTemplate = true; } let headers = []; let data = []; if (CURRENT_TAB === 'departments') { headers = ['الترتيب', 'اسم القسم']; list.forEach((row, index) => { data.push({ 'الترتيب': index + 1, 'اسم القسم': row.name }); }); } else if (CURRENT_TAB === 'teachers') { headers = ['الترتيب', 'الاسم', 'القسم']; list.forEach((row, index) => { data.push({ 'الترتيب': index + 1, 'الاسم': row.name, 'القسم': row.dept || '' }); }); } else { headers = ['الاسم', 'الوظيفة', 'رقم الهاتف', 'اسم المستخدم', 'كلمة المرور']; list.forEach(row => { data.push({ 'الاسم': row.name, 'الوظيفة': row.job || '', 'رقم الهاتف': row.phone || '', 'اسم المستخدم': row.login || '', 'كلمة المرور': row.pass || '' }); }); } const ws = XLSX.utils.json_to_sheet(data, { header: headers }); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Sheet1"); XLSX.writeFile(wb, `${CURRENT_TAB}${isTemplate ? '_Template' : ''}.xlsx`); }
+        
         function openAddUserModal() { if(!canEdit('user-management')) return alert('ليس لديك صلاحية لإضافة مستخدمين'); document.getElementById('editUserId').value=''; document.getElementById('addUserForm').reset(); document.getElementById('addUserModal').style.display='flex'; const d=(CURRENT_TAB==='departments'), t=(CURRENT_TAB==='teachers'); const roleWrapper = document.getElementById('roleWrapper'); if(d){document.getElementById('addUserModalTitle').innerText='إضافة قسم'; document.getElementById('userFields').style.display='none'; document.getElementById('deptWrapper').style.display='none';} else if(t){ document.getElementById('addUserModalTitle').innerText='إضافة معلمة'; document.getElementById('userFields').style.display='none'; document.getElementById('deptWrapper').style.display='block'; const s=document.getElementById('addDept'); s.innerHTML='<option value="">اختر...</option>'; filterByContext(DB.departments||[]).forEach(x=>s.innerHTML+=`<option value="${x.name}">${x.name}</option>`); } else { document.getElementById('addUserModalTitle').innerText='إضافة مستخدم'; document.getElementById('userFields').style.display='block'; document.getElementById('deptWrapper').style.display='none'; roleWrapper.style.display = 'block'; } }
-        function editUser(id) { if(!canEdit('user-management')) return; const u=DB[CURRENT_TAB].find(x=>x.id===id); if(!u)return; document.getElementById('editUserId').value=u.id; document.getElementById('addName').value=u.name; openAddUserModal(); document.getElementById('addUserModalTitle').innerText='تعديل'; if(CURRENT_TAB==='teachers'){ const s=document.getElementById('addDept'); s.innerHTML='<option value="">اختر...</option>'; filterByContext(DB.departments||[]).forEach(x=>s.innerHTML+=`<option value="${x.name}">${x.name}</option>`); document.getElementById('addDept').value=u.dept; } else if(CURRENT_TAB!=='departments'){ document.getElementById('addJob').value=u.job||''; document.getElementById('addPhone').value=u.phone||''; document.getElementById('addLogin').value=u.login||''; document.getElementById('addPass').value=u.pass||''; document.getElementById('addRole').value=u.role||''; } }
+        
+        function editUser(id) { 
+            if(!canEdit('user-management')) return; 
+            const u = DB[CURRENT_TAB].find(x => x.id === id); 
+            if(!u) return; 
+            document.getElementById('editUserId').value = u.id; 
+            document.getElementById('addName').value = u.name; 
+            openAddUserModal(); 
+            document.getElementById('addUserModalTitle').innerText = 'تعديل ' + u.name; 
+            if(CURRENT_TAB === 'teachers'){ 
+                const s = document.getElementById('addDept'); 
+                s.innerHTML = '<option value="">اختر...</option>'; 
+                filterByContext(DB.departments||[]).forEach(x => s.innerHTML += `<option value="${x.name}">${x.name}</option>`); 
+                document.getElementById('addDept').value = u.dept; 
+            } else if(CURRENT_TAB !== 'departments'){ 
+                document.getElementById('addJob').value = u.job || ''; 
+                document.getElementById('addPhone').value = u.phone || ''; 
+                document.getElementById('addLogin').value = u.login || ''; 
+                document.getElementById('addPass').value = u.pass || ''; 
+                document.getElementById('addRole').value = u.role || ''; 
+            } 
+        }
+
         function closeModal(id) { document.getElementById(id).style.display='none'; }
-        function saveUserForm() { const n=document.getElementById('addName').value.trim(); if(!n)return alert('الاسم مطلوب'); const id=document.getElementById('editUserId').value; const edit=id!==''; let u; if(edit){ u=DB[CURRENT_TAB].find(x=>x.id==id); u.name=n; u.lastUpdated=new Date().toLocaleString('en-GB'); u.lastUpdatedBy=CURRENT_USER.name; } else { u={ id:Date.now(), name:n, status:'active', lastUpdated:new Date().toLocaleString('en-GB'), lastUpdatedBy:CURRENT_USER.name, brandId: CURRENT_BRAND.id, allowedBrands: [CURRENT_BRAND.id] }; if(CURRENT_TAB!=='departments'){ u.dateAdded=new Date().toLocaleDateString('en-GB'); u.permissions=JSON.parse(JSON.stringify(DEFAULT_PERMS)); } } if(CURRENT_TAB==='teachers') u.dept=document.getElementById('addDept').value; else if(CURRENT_TAB!=='departments'){ u.job=document.getElementById('addJob').value; u.phone=document.getElementById('addPhone').value; u.login=document.getElementById('addLogin').value; u.pass=document.getElementById('addPass').value; u.role=document.getElementById('addRole').value; } if(!edit)DB[CURRENT_TAB].push(u); saveDB(); renderTable(); closeModal('addUserModal'); }
+
+        function saveUserForm() { 
+            const n = document.getElementById('addName').value.trim(); 
+            if(!n) return alert('الاسم مطلوب'); 
+            const id = document.getElementById('editUserId').value; 
+            const isEdit = (id !== ''); 
+            let u; 
+            if(isEdit){ 
+                u = DB[CURRENT_TAB].find(x => x.id.toString() === id.toString()); 
+                if(!u) return alert("خطأ في تحديد المستخدم");
+                u.name = n; 
+                u.lastUpdated = new Date().toLocaleString('en-GB'); 
+                u.lastUpdatedBy = CURRENT_USER.name; 
+            } else { 
+                u = { 
+                    id: Date.now(), 
+                    name: n, 
+                    status: 'active', 
+                    lastUpdated: new Date().toLocaleString('en-GB'), 
+                    lastUpdatedBy: CURRENT_USER.name, 
+                    brandId: CURRENT_BRAND.id, 
+                    allowedBrands: [CURRENT_BRAND.id],
+                    dateAdded: new Date().toLocaleDateString('en-GB'), 
+                    permissions: JSON.parse(JSON.stringify(DEFAULT_PERMS))
+                }; 
+            } 
+            if(CURRENT_TAB === 'teachers') u.dept = document.getElementById('addDept').value; 
+            else if(CURRENT_TAB !== 'departments'){ 
+                u.job = document.getElementById('addJob').value; 
+                u.phone = document.getElementById('addPhone').value; 
+                u.login = document.getElementById('addLogin').value; 
+                u.pass = document.getElementById('addPass').value; 
+                u.role = document.getElementById('addRole').value; 
+            } 
+            if(!isEdit) DB[CURRENT_TAB].push(u); 
+            saveDB(); renderTable(); closeModal('addUserModal'); 
+        }
+
         function deleteUser(id) { if(!canEdit('user-management')) return; if(confirm('حذف؟')){DB[CURRENT_TAB]=DB[CURRENT_TAB].filter(u=>u.id!==id); saveDB(); renderTable();} }
         function viewUser(id) { const u = DB[CURRENT_TAB].find(x => x.id === id); let roleTxt = 'مستخدم عادي'; if(u.role === 'supervisor') roleTxt = 'مشرف نظام'; if(u.role === 'admin_support') roleTxt = 'إداري نظام'; document.getElementById('viewUserContent').innerHTML = `<div class="user-view-card"><div class="user-view-avatar">${u.name.charAt(0)}</div><h3 style="color:var(--primary); margin:0;">${u.name}</h3></div><div class="info-grid"><div class="info-item"><label>الوظيفة</label><span>${u.job || u.dept || '-'}</span></div><div class="info-item"><label>رقم الهاتف</label><span>${u.phone || '-'}</span></div><div class="info-item"><label>الحالة</label><span style="color:${u.status==='active'?'green':'red'}">${u.status==='active'?'مفعل':'معطل'}</span></div><div class="info-item"><label>اسم الدخول</label><span style="background:#eee; padding:2px 5px; border-radius:4px;">${u.login || '-'}</span></div>${(CURRENT_TAB !== 'departments' && CURRENT_TAB !== 'teachers') ? `<div class="info-item"><label>الصلاحية الإضافية</label><span>${roleTxt}</span></div>` : ''}</div><div class="view-footer-info"><div>آخر تحديث بواسطة: <strong>${u.lastUpdatedBy || 'N/A'}</strong></div><div>${u.lastUpdated || '-'}</div></div>`; document.getElementById('viewUserModal').style.display = 'flex'; }
         function openPerms(id) { EDITING_PERM_ID = id; IS_BULK_PERM_MODE = false; const u = DB[CURRENT_TAB].find(x => x.id === id); if(!u) return; document.getElementById('permTargetName').innerText = `صلاحيات: ${u.name}`; renderPermList(u.permissions); document.getElementById('permModal').style.display = 'flex'; }
@@ -687,30 +757,108 @@
         function resetBrandData(brandId, silent = false) { if(!silent && !confirm('تحذير: سيتم مسح جميع البيانات والمدخلات والمستخدمين والتقارير الخاصة بهذا البراند بشكل نهائي.\nهل أنت متأكد؟')) return; const arraysToClean = [ 'senior', 'middle', 'teachers', 'departments', 'visits_senior', 'visits_middle', 'distinguished', 'care_needed', 'qualitative_reports', 'saved_reports' ]; arraysToClean.forEach(key => { if(DB[key]) { DB[key] = DB[key].filter(item => { if(item.id === 999) return true; const itemBrand = item.brandId || 1; return itemBrand !== brandId; }); } }); saveDB(); if(!silent) alert('تمت إعادة تهيئة بيانات البراند بنجاح.'); if(CURRENT_BRAND.id === brandId) location.reload(); }
 
         function setVisitTab(tab, el) { CURRENT_VISIT_TAB = tab; document.querySelectorAll('#visits .custom-tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); renderVisitsTable(); }
-        function renderVisitsTable() { const list = (CURRENT_VISIT_TAB === 'senior') ? DB.visits_senior : DB.visits_middle; const filtered = filterByContext(list); const tbody = document.getElementById('visitsTableBody'); tbody.innerHTML = ''; const filterMonth = document.getElementById('visitMonthFilter').value; filtered.forEach(v => { if(filterMonth !== 'all' && v.date.split('-')[1] !== filterMonth) return; tbody.innerHTML += `<tr><td>${v.date}</td><td>${v.dept}</td><td>${v.teacher}</td><td>${v.eval}</td><td>${v.visitor}</td><td>${v.visitorJob||'-'}</td><td><button class="action-btn btn-delete" onclick="deleteVisit(${v.id})"><i class="fas fa-trash"></i></button></td></tr>`; }); }
         
+        function renderVisitsTable() { 
+            const collection = (CURRENT_VISIT_TAB === 'senior') ? 'visits_senior' : 'visits_middle';
+            const list = DB[collection] || [];
+            const filtered = filterByContext(list); 
+            const tbody = document.getElementById('visitsTableBody'); 
+            tbody.innerHTML = ''; 
+            const filterMonth = document.getElementById('visitMonthFilter').value; 
+            const canEditVisits = canEdit('visits');
+
+            filtered.forEach(v => { 
+                if(filterMonth !== 'all' && v.date.split('-')[1] !== filterMonth) return; 
+                let row = `<tr>
+                    <td>${v.date}</td>
+                    <td>${v.dept}</td>
+                    <td>${v.teacher}</td>
+                    <td>${v.eval}</td>
+                    <td>${v.visitor}</td>
+                    <td>${v.visitorJob||'-'}</td>
+                    <td>
+                        <div style="display:flex; justify-content:center; gap:2px;">
+                            <button class="action-btn btn-view" onclick="viewVisit(${v.id})" title="معاينة"><i class="fas fa-eye"></i></button>`;
+                
+                if(canEditVisits) {
+                    row += `<button class="action-btn btn-move" onclick="moveItem('${collection}', ${v.id}, 'up')" title="نقل لأعلى"><i class="fas fa-arrow-up"></i></button>
+                            <button class="action-btn btn-move" onclick="moveItem('${collection}', ${v.id}, 'down')" title="نقل لأسفل"><i class="fas fa-arrow-down"></i></button>
+                            <button class="action-btn btn-edit" onclick="editVisit(${v.id})" title="تعديل"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn btn-delete" onclick="deleteVisit(${v.id})" title="حذف"><i class="fas fa-trash"></i></button>`;
+                }
+                
+                row += `</div></td></tr>`;
+                tbody.innerHTML += row;
+            }); 
+        }
+
         function openAddVisitModal() { 
             document.getElementById('addVisitForm').reset(); 
             document.getElementById('visitEditId').value = ''; 
             const dSelect = document.getElementById('visitDept'); 
             dSelect.innerHTML = '<option value="">اختر القسم...</option>'; 
             filterByContext(DB.departments||[]).forEach(d => dSelect.innerHTML += `<option value="${d.name}">${d.name}</option>`); 
-            
-            // التعديل المستهدف: جلب القائمة من "معايير الزيارة الصفية" بدلاً من التقديرات العامة
             const eSelect = document.getElementById('visitEval'); 
-            eSelect.innerHTML = '<option value="">اختر التقييم...</option>'; 
+            eSelect.innerHTML = '<option value="">اختر التقدير...</option>'; 
             const criteria = DB.settings.evaluation_criteria || [];
-            criteria.forEach(c => {
-                if(c.status === 'active') {
-                    eSelect.innerHTML += `<option value="${c.name}">${c.name}</option>`;
-                }
-            });
-            
+            criteria.forEach(c => { if(c.status === 'active') eSelect.innerHTML += `<option value="${c.name}">${c.name}</option>`; });
             document.getElementById('addVisitModal').style.display='flex'; 
         }
 
+        function editVisit(id) {
+            const collection = (CURRENT_VISIT_TAB === 'senior') ? DB.visits_senior : DB.visits_middle;
+            const v = collection.find(x => x.id === id);
+            if(!v) return;
+            openAddVisitModal();
+            document.getElementById('visitEditId').value = v.id;
+            document.getElementById('visitDept').value = v.dept;
+            onVisitDeptChange();
+            document.getElementById('visitTeacher').value = v.teacher;
+            document.getElementById('visitDate').value = v.date;
+            document.getElementById('visitEval').value = v.eval;
+        }
+
+        function viewVisit(id) {
+            const collection = (CURRENT_VISIT_TAB === 'senior') ? DB.visits_senior : DB.visits_middle;
+            const v = collection.find(x => x.id === id);
+            if(!v) return;
+            document.getElementById('viewVisitContent').innerHTML = `
+                <div class="info-grid" style="grid-template-columns: 1fr;">
+                    <div class="info-item"><label>التاريخ:</label> <span>${v.date}</span></div>
+                    <div class="info-item"><label>القسم:</label> <span>${v.dept}</span></div>
+                    <div class="info-item"><label>المعلمة:</label> <span>${v.teacher}</span></div>
+                    <div class="info-item"><label>التقييم:</label> <span>${v.eval}</span></div>
+                    <div class="info-item"><label>الزائر:</label> <span>${v.visitor} (${v.visitorJob})</span></div>
+                </div>`;
+            document.getElementById('viewVisitModal').style.display = 'flex';
+        }
+
         function onVisitDeptChange() { const dept = document.getElementById('visitDept').value; const tSelect = document.getElementById('visitTeacher'); tSelect.innerHTML = '<option value="">اختر المعلم/ة...</option>'; if(dept) { filterByContext(DB.teachers||[]).filter(t => t.dept === dept).forEach(t => tSelect.innerHTML += `<option value="${t.name}">${t.name}</option>`); } }
-        function saveVisit() { const dept = document.getElementById('visitDept').value; const teacher = document.getElementById('visitTeacher').value; const date = document.getElementById('visitDate').value; const ev = document.getElementById('visitEval').value; if(!dept || !teacher || !date || !ev) return alert('جميع الحقول مطلوبة'); const obj = { id: Date.now(), dept, teacher, date, eval: ev, visitor: CURRENT_USER.name, visitorJob: CURRENT_USER.job || 'مسؤول', brandId: CURRENT_BRAND.id }; if(CURRENT_VISIT_TAB === 'senior') DB.visits_senior.push(obj); else DB.visits_middle.push(obj); saveDB(); renderVisitsTable(); closeModal('addVisitModal'); }
+        
+        function saveVisit() { 
+            const id = document.getElementById('visitEditId').value;
+            const dept = document.getElementById('visitDept').value; 
+            const teacher = document.getElementById('visitTeacher').value; 
+            const date = document.getElementById('visitDate').value; 
+            const ev = document.getElementById('visitEval').value; 
+            if(!dept || !teacher || !date || !ev) return alert('جميع الحقول مطلوبة'); 
+            
+            const collection = (CURRENT_VISIT_TAB === 'senior') ? 'visits_senior' : 'visits_middle';
+            
+            if(id) {
+                const v = DB[collection].find(x => x.id.toString() === id.toString());
+                if(v) {
+                    v.dept = dept; v.teacher = teacher; v.date = date; v.eval = ev;
+                    addSystemLog('تعديل زيارة', teacher);
+                }
+            } else {
+                const obj = { id: Date.now(), dept, teacher, date, eval: ev, visitor: CURRENT_USER.name, visitorJob: CURRENT_USER.job || 'مسؤول', brandId: CURRENT_BRAND.id }; 
+                DB[collection].push(obj); 
+                addSystemLog('إضافة زيارة', teacher);
+            }
+            saveDB(); renderVisitsTable(); closeModal('addVisitModal'); 
+        }
+
         function deleteVisit(id) { if(confirm('حذف؟')) { if(CURRENT_VISIT_TAB === 'senior') DB.visits_senior = DB.visits_senior.filter(x => x.id !== id); else DB.visits_middle = DB.visits_middle.filter(x => x.id !== id); saveDB(); renderVisitsTable(); } }
         function renderDistinguishedTables() { const m = document.getElementById('distMonthFilter').value; const distList = filterByContext(DB.distinguished||[]); const careList = filterByContext(DB.care_needed||[]); const t1 = document.getElementById('distinguishedTableBody'); const t2 = document.getElementById('careTableBody'); t1.innerHTML = ''; t2.innerHTML = ''; distList.forEach((d, i) => { if(m !== 'all' && d.date.split('-')[1] !== m) return; t1.innerHTML += `<tr><td>${i+1}</td><td>${d.date}</td><td>${d.teacher}</td><td>${d.dept}</td><td>${d.eval}</td><td class="reason-cell">${d.reason}</td></tr>`; }); careList.forEach((d, i) => { if(m !== 'all' && d.date.split('-')[1] !== m) return; t2.innerHTML += `<tr><td>${i+1}</td><td>${d.date}</td><td>${d.teacher}</td><td>${d.dept}</td><td>${d.eval}</td><td class="reason-cell">${d.reason}</td></tr>`; }); }
         function openDistinguishedModal(type) { document.getElementById('distType').value = type; document.getElementById('distinguishedForm').reset(); document.getElementById('distinguishedModalTitle').innerText = (type === 'distinguished' ? 'إضافة معلم متميز' : 'إضافة معلم يحتاج رعاية'); const dSelect = document.getElementById('distDept'); dSelect.innerHTML = '<option value="">اختر القسم...</option>'; filterByContext(DB.departments||[]).forEach(d => dSelect.innerHTML += `<option value="${d.name}">${d.name}</option>`); const eSelect = document.getElementById('distEval'); eSelect.innerHTML = '<option value="">اختر التقدير...</option>'; (DB.settings.evaluation_grades||[]).forEach(g => eSelect.innerHTML += `<option value="${g.name}">${g.name}</option>`); document.getElementById('distinguishedModal').style.display='flex'; }
@@ -734,19 +882,14 @@
             const brandName = CURRENT_BRAND ? CURRENT_BRAND.name : '';
             document.getElementById('confSchool').value = savedName || brandName;
             document.getElementById('confYear').value = DB.settings.schoolYear || ''; 
-            
             if(DB.settings.ministryLogo) { document.getElementById('preview_ministry').src = DB.settings.ministryLogo; document.getElementById('preview_wrap_ministry').style.display = 'inline-block'; }
             if(DB.settings.schoolLogo) { document.getElementById('preview_school').src = DB.settings.schoolLogo; document.getElementById('preview_wrap_school').style.display = 'inline-block'; }
             if(DB.settings.schoolStamp) { document.getElementById('preview_stamp').src = DB.settings.schoolStamp; document.getElementById('preview_wrap_stamp').style.display = 'inline-block'; }
-            
             if(DB.settings.footerAlign) document.getElementById('footer_align').value = DB.settings.footerAlign;
             if(DB.settings.footerFontSize) document.getElementById('footer_fontsize').value = DB.settings.footerFontSize;
-
             renderSignatureOptions();
-
             const evalBody = document.getElementById('evalTableBody'); evalBody.innerHTML = ''; (DB.settings.evaluation_criteria||[]).forEach((c,i) => evalBody.innerHTML += `<tr><td><input type="checkbox" class="crit-cb" value="${i}"></td><td>${i+1}</td><td>${c.name}</td><td>${c.status}</td><td></td></tr>`);
             const gradeBody = document.getElementById('gradeTableBody'); gradeBody.innerHTML = ''; (DB.settings.evaluation_grades||[]).forEach((g,i) => gradeBody.innerHTML += `<tr><td><input type="checkbox" class="grade-cb" value="${i}"></td><td>${i+1}</td><td>${g.name}</td><td>${g.status}</td><td></td></tr>`);
-            
             renderVisitorSettings();
             loadSystemLogs();
         }
@@ -755,20 +898,13 @@
             const seniors = filterByContext(DB.senior||[]);
             const dirSelect = document.getElementById('sig_director');
             const asstSelect = document.getElementById('sig_assistant');
-            
             const currentDir = dirSelect.value || DB.settings.sig_director || "";
             const currentAsst = asstSelect.value || DB.settings.sig_assistant || "";
-
             dirSelect.innerHTML = '<option value="">اختر مدير المدرسة</option>';
             asstSelect.innerHTML = '<option value="">اختر المدير المساعد</option>';
-
             seniors.forEach(s => {
-                if (s.id.toString() !== currentAsst) {
-                    dirSelect.innerHTML += `<option value="${s.id}" ${s.id.toString() === currentDir ? 'selected' : ''}>${s.name}</option>`;
-                }
-                if (s.id.toString() !== currentDir) {
-                    asstSelect.innerHTML += `<option value="${s.id}" ${s.id.toString() === currentAsst ? 'selected' : ''}>${s.name}</option>`;
-                }
+                if (s.id.toString() !== currentAsst) dirSelect.innerHTML += `<option value="${s.id}" ${s.id.toString() === currentDir ? 'selected' : ''}>${s.name}</option>`;
+                if (s.id.toString() !== currentDir) asstSelect.innerHTML += `<option value="${s.id}" ${s.id.toString() === currentAsst ? 'selected' : ''}>${s.name}</option>`;
             });
         }
 
@@ -777,118 +913,40 @@
         function handleFileUpload(input, previewId, settingKey) { if(input.files && input.files[0]) { const reader = new FileReader(); reader.onload = function(e) { const res = e.target.result; document.getElementById(previewId).src = res; document.getElementById(previewId.replace('preview_', 'preview_wrap_')).style.display = 'inline-block'; DB.settings[settingKey] = res; saveDB(); }; reader.readAsDataURL(input.files[0]); } }
         function removeImage(previewId, settingKey, inputId) { document.getElementById(previewId).src = ''; document.getElementById(previewId.replace('preview_', 'preview_wrap_')).style.display = 'none'; document.getElementById(inputId).value = ''; DB.settings[settingKey] = ''; saveDB(); }
         function openImageModal(src) { document.getElementById('fullImage').src = src; document.getElementById('imageViewModal').style.display = 'flex'; }
-
-        function saveSignatureSettings() {
-            DB.settings.sig_director = document.getElementById('sig_director').value;
-            DB.settings.sig_assistant = document.getElementById('sig_assistant').value;
-            saveDB(); alert('تم حفظ التوقيعات');
-        }
+        function saveSignatureSettings() { DB.settings.sig_director = document.getElementById('sig_director').value; DB.settings.sig_assistant = document.getElementById('sig_assistant').value; saveDB(); alert('تم حفظ التوقيعات'); }
         function clearSignature(id) { document.getElementById(id).value = ''; renderSignatureOptions(); saveSignatureSettings(); }
-        function onSigChange() { renderSignatureOptions(); }
-
-        function saveFooterSettings() {
-            DB.settings.footerAlign = document.getElementById('footer_align').value;
-            DB.settings.footerFontSize = document.getElementById('footer_fontsize').value;
-            saveDB(); alert('تم حفظ إعدادات التذييل');
-        }
-
+        function saveFooterSettings() { DB.settings.footerAlign = document.getElementById('footer_align').value; DB.settings.footerFontSize = document.getElementById('footer_fontsize').value; saveDB(); alert('تم حفظ إعدادات التذييل'); }
         function openAddEvalModal() { document.getElementById('addEvalForm').reset(); document.getElementById('addEvalModal').style.display='flex'; }
-        function saveEvalForm() {
-            const name = document.getElementById('evalName').value;
-            if(!name) return alert('الاسم مطلوب');
-            if(!DB.settings.evaluation_criteria) DB.settings.evaluation_criteria = [];
-            DB.settings.evaluation_criteria.push({name: name, status:'active'});
-            saveDB(); loadSettings(); closeModal('addEvalModal');
-        }
+        function saveEvalForm() { const name = document.getElementById('evalName').value; if(!name) return alert('الاسم مطلوب'); if(!DB.settings.evaluation_criteria) DB.settings.evaluation_criteria = []; DB.settings.evaluation_criteria.push({name: name, status:'active'}); saveDB(); loadSettings(); closeModal('addEvalModal'); }
         function openAddGradeModal() { document.getElementById('addGradeForm').reset(); document.getElementById('addGradeModal').style.display='flex'; }
-        function saveGradeForm() {
-            const name = document.getElementById('gradeName').value;
-            if(!name) return alert('الاسم مطلوب');
-            if(!DB.settings.evaluation_grades) DB.settings.evaluation_grades = [];
-            DB.settings.evaluation_grades.push({name: name, status:'active'});
-            saveDB(); loadSettings(); closeModal('addGradeModal');
-        }
-        function deleteSelectedSettings(type) {
-            if(!confirm('هل أنت متأكد من الحذف؟')) return;
-            const cls = (type === 'criteria') ? '.crit-cb' : '.grade-cb';
-            const boxes = document.querySelectorAll(cls + ':checked');
-            const indices = Array.from(boxes).map(b => parseInt(b.value)).sort((a,b) => b-a); 
-            
-            if(type === 'criteria') {
-                indices.forEach(i => DB.settings.evaluation_criteria.splice(i, 1));
-            } else {
-                indices.forEach(i => DB.settings.evaluation_grades.splice(i, 1));
-            }
-            saveDB(); loadSettings();
-        }
-        function toggleSelectAllSettings(type, master) {
-            const cls = (type === 'criteria') ? '.crit-cb' : '.grade-cb';
-            document.querySelectorAll(cls).forEach(cb => cb.checked = master.checked);
-        }
-
+        function saveGradeForm() { const name = document.getElementById('gradeName').value; if(!name) return alert('الاسم مطلوب'); if(!DB.settings.evaluation_grades) DB.settings.evaluation_grades = []; DB.settings.evaluation_grades.push({name: name, status:'active'}); saveDB(); loadSettings(); closeModal('addGradeModal'); }
+        function deleteSelectedSettings(type) { if(!confirm('هل أنت متأكد من الحذف؟')) return; const cls = (type === 'criteria') ? '.crit-cb' : '.grade-cb'; const boxes = document.querySelectorAll(cls + ':checked'); const indices = Array.from(boxes).map(b => parseInt(b.value)).sort((a,b) => b-a); if(type === 'criteria') indices.forEach(i => DB.settings.evaluation_criteria.splice(i, 1)); else indices.forEach(i => DB.settings.evaluation_grades.splice(i, 1)); saveDB(); loadSettings(); }
+        function toggleSelectAllSettings(type, master) { const cls = (type === 'criteria') ? '.crit-cb' : '.grade-cb'; document.querySelectorAll(cls).forEach(cb => cb.checked = master.checked); }
         function renderVisitorSettings() {
             const sList = document.getElementById('list_visitor_senior'); sList.innerHTML = '';
             const mList = document.getElementById('list_visitor_middle'); mList.innerHTML = '';
-            
-            (DB.settings.visitor_order_senior || []).forEach((id, i) => {
-                let user = DB.senior.find(x => x.id.toString() === id.toString());
-                if(user) sList.innerHTML += `<li class="visitor-list-item"><span>${user.name}</span><span style="cursor:pointer;color:red;" onclick="removeVisitorFromSetting('senior', ${i})">&times;</span></li>`;
-            });
-
-            (DB.settings.visitor_order_middle || []).forEach((id, i) => {
-                let user = DB.middle.find(x => x.id.toString() === id.toString());
-                if(user) mList.innerHTML += `<li class="visitor-list-item"><span>${user.name}</span><span style="cursor:pointer;color:red;" onclick="removeVisitorFromSetting('middle', ${i})">&times;</span></li>`;
-            });
+            (DB.settings.visitor_order_senior || []).forEach((id, i) => { let user = DB.senior.find(x => x.id.toString() === id.toString()); if(user) sList.innerHTML += `<li class="visitor-list-item"><span>${user.name}</span><span style="cursor:pointer;color:red;" onclick="removeVisitorFromSetting('senior', ${i})">&times;</span></li>`; });
+            (DB.settings.visitor_order_middle || []).forEach((id, i) => { let user = DB.middle.find(x => x.id.toString() === id.toString()); if(user) mList.innerHTML += `<li class="visitor-list-item"><span>${user.name}</span><span style="cursor:pointer;color:red;" onclick="removeVisitorFromSetting('middle', ${i})">&times;</span></li>`; });
         }
-        function openVisitorPicker(type) {
-            CURRENT_PICKER_TYPE = type;
-            document.getElementById('visitorSearch').value = '';
-            filterPickerList();
-            document.getElementById('visitorPickerModal').style.display = 'flex';
-        }
+        function openVisitorPicker(type) { CURRENT_PICKER_TYPE = type; document.getElementById('visitorSearch').value = ''; filterPickerList(); document.getElementById('visitorPickerModal').style.display = 'flex'; }
         function filterPickerList() {
             const term = document.getElementById('visitorSearch').value.toLowerCase();
             const div = document.getElementById('pickerList'); div.innerHTML = '';
-            
-            let candidates = [];
-            let currentSelected = [];
-
-            if (CURRENT_PICKER_TYPE === 'senior') {
-                candidates = filterByContext(DB.senior || []);
-                currentSelected = (DB.settings.visitor_order_senior || []).map(id => id.toString());
-            } else {
-                candidates = filterByContext(DB.middle || []);
-                currentSelected = (DB.settings.visitor_order_middle || []).map(id => id.toString());
-            }
-
-            candidates.forEach(u => {
-                if(u.name.toLowerCase().includes(term) && !currentSelected.includes(u.id.toString())) {
-                    div.innerHTML += `<div class="picker-item" onclick="addVisitorFromPicker(${u.id})"><span>${u.name}</span><small>${u.job||''}</small></div>`;
-                }
-            });
+            let candidates = [], currentSelected = [];
+            if (CURRENT_PICKER_TYPE === 'senior') { candidates = filterByContext(DB.senior || []); currentSelected = (DB.settings.visitor_order_senior || []).map(id => id.toString()); }
+            else { candidates = filterByContext(DB.middle || []); currentSelected = (DB.settings.visitor_order_middle || []).map(id => id.toString()); }
+            candidates.forEach(u => { if(u.name.toLowerCase().includes(term) && !currentSelected.includes(u.id.toString())) div.innerHTML += `<div class="picker-item" onclick="addVisitorFromPicker(${u.id})"><span>${u.name}</span><small>${u.job||''}</small></div>`; });
         }
         function addVisitorFromPicker(id) {
-            if(CURRENT_PICKER_TYPE === 'senior') {
-                if(!DB.settings.visitor_order_senior) DB.settings.visitor_order_senior = [];
-                DB.settings.visitor_order_senior.push(id);
-            } else {
-                if(!DB.settings.visitor_order_middle) DB.settings.visitor_order_middle = [];
-                DB.settings.visitor_order_middle.push(id);
-            }
+            if(CURRENT_PICKER_TYPE === 'senior') { if(!DB.settings.visitor_order_senior) DB.settings.visitor_order_senior = []; DB.settings.visitor_order_senior.push(id); }
+            else { if(!DB.settings.visitor_order_middle) DB.settings.visitor_order_middle = []; DB.settings.visitor_order_middle.push(id); }
             renderVisitorSettings(); closeModal('visitorPickerModal');
         }
-        function removeVisitorFromSetting(type, index) {
-            if(type === 'senior') DB.settings.visitor_order_senior.splice(index, 1);
-            else DB.settings.visitor_order_middle.splice(index, 1);
-            renderVisitorSettings();
-        }
+        function removeVisitorFromSetting(type, index) { if(type === 'senior') DB.settings.visitor_order_senior.splice(index, 1); else DB.settings.visitor_order_middle.splice(index, 1); renderVisitorSettings(); }
         function saveVisitorOrder() { saveDB(); alert('تم حفظ ترتيب الزوار'); }
-
         function loadSystemLogs() { const b = document.getElementById('logTableBody'); b.innerHTML = ''; (DB.logs||[]).forEach(l => b.innerHTML += `<tr><td>${l.date}</td><td>${l.user}</td><td>${l.action}</td><td>${l.details} [${l.brand}]</td></tr>`); }
         function clearSystemLogs() { if(confirm('مسح السجل؟')) { DB.logs = []; saveDB(); loadSystemLogs(); } }
-
         window.onload = function() { initSystem(); };
-
     </script>
 </body>
 </html>
