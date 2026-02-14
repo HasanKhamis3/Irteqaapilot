@@ -193,20 +193,151 @@
         .modal-body { padding: 20px; overflow-y: auto; flex: 1; }
         .modal-footer { padding: 15px 20px; background: #f9f9f9; display: flex; gap: 10px; justify-content: flex-end; }
         
-        .report-preview-container { background: #525659; padding: 30px; overflow: auto; max-height: 800px; display: flex; justify-content: center; }
-        .a4-page { background: white; width: 210mm; min-height: 297mm; padding: 15mm; box-shadow: 0 0 10px rgba(0,0,0,0.5); margin-bottom: 20px; position: relative; color: black; font-family: 'Cairo', sans-serif; page-break-after: always; }
+        /* ========================================= */
+        /* === STRICT A4 REPORT STYLING STARTS HERE === */
+        /* ========================================= */
+        
+        .report-preview-container { 
+            background: #525659; 
+            padding: 30px; 
+            overflow: auto; 
+            max-height: 800px; 
+            display: flex; 
+            justify-content: center; 
+        }
+        
+        /* A4 Page Simulation */
+        .a4-page { 
+            background: white; 
+            width: 210mm; 
+            min-height: 297mm; 
+            padding: 2.54cm 2.54cm; /* Standard Word Margins */
+            box-shadow: 0 0 15px rgba(0,0,0,0.2); 
+            margin-bottom: 20px; 
+            position: relative; 
+            color: black; 
+            font-family: 'Times New Roman', 'Traditional Arabic', serif; /* Strict Word Font Match */
+            page-break-after: always;
+            direction: rtl;
+        }
         .a4-page:last-child { page-break-after: auto; }
-        .report-table-custom { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:14px; page-break-inside: avoid; }
-        .report-table-custom th, .report-table-custom td { border:1px solid black; padding:8px; text-align:center; vertical-align:middle; }
-        .report-table-custom th { background-color:#bfbfbf; font-weight:bold; }
-        .align-right { text-align: right !important; }
-        .bold-col { font-weight:bold; }
-        .report-header-box { background-color: #000; color: #fff; padding: 10px; text-align: center; font-weight: bold; }
-        .report-sub-header { background-color: #bfbfbf; padding: 8px; font-weight: bold; border: 1px solid #000; text-align: center; }
-        .report-row-summary { background-color: #bfbfbf; font-weight: bold; }
-        .report-row-total { background-color: #b4c6e7; font-weight: bold; }
-        .report-list { text-align: right; padding-right: 20px; margin: 0; }
-        .report-list li { margin-bottom: 5px; }
+        
+        /* Report Typography Override - High Precision */
+        .a4-page * {
+            font-family: 'Times New Roman', 'Traditional Arabic', serif !important;
+            box-sizing: border-box;
+        }
+
+        /* Report Header Table */
+        .word-header-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: none;
+            margin-bottom: 20px;
+        }
+        .word-header-table td {
+            vertical-align: middle;
+            padding: 5px;
+            border: none;
+        }
+        .header-logo-img {
+            max-width: 110px; /* Adjusted to match Ministry size usually */
+            max-height: 100px;
+            object-fit: contain;
+        }
+        .header-text-col {
+            text-align: center;
+            line-height: 1.6;
+        }
+        .header-line {
+            font-size: 14pt;
+            font-weight: bold;
+            display: block;
+        }
+        .header-school-name {
+            font-size: 16pt;
+            font-weight: bold;
+            margin-top: 5px;
+            display: block;
+            text-decoration: underline; /* Common in official docs */
+        }
+
+        /* Report Title */
+        .report-main-title {
+            text-align: center;
+            font-size: 20pt;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 10px;
+            border: 2px solid #000;
+            background-color: #f2f2f2;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Standard Word Tables */
+        .word-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            font-size: 12pt;
+            page-break-inside: auto;
+        }
+        .word-table th, .word-table td {
+            border: 1px solid #000; /* Standard Word Border */
+            padding: 6px 8px;
+            vertical-align: top;
+        }
+        .word-table th {
+            background-color: #d9d9d9; /* Standard Word Header Gray */
+            font-weight: bold;
+            text-align: center;
+            font-size: 13pt;
+        }
+        .word-table td {
+            text-align: right;
+        }
+        .word-table tr {
+            page-break-inside: avoid;
+        }
+        .word-center { text-align: center !important; }
+        
+        /* Section Titles */
+        .word-section-title {
+            font-size: 16pt;
+            font-weight: bold;
+            margin-bottom: 10px;
+            margin-top: 15px;
+            border-bottom: 2px solid #000;
+            display: inline-block;
+            padding-bottom: 2px;
+        }
+
+        /* Signature Section */
+        .signatures-container {
+            margin-top: 50px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            page-break-inside: avoid;
+        }
+        .sig-block {
+            text-align: center;
+            width: 40%;
+        }
+        .sig-title {
+            font-weight: bold;
+            font-size: 14pt;
+            margin-bottom: 40px;
+            text-decoration: underline;
+        }
+        .sig-name {
+            font-size: 12pt;
+            font-weight: bold;
+        }
+
+        /* Saved Reports List Styling */
         .saved-report-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #eee; margin-bottom: 10px; border-radius: 8px; background: #fff; }
         .saved-report-info h4 { margin: 0 0 5px 0; color: var(--primary); }
         .saved-report-info small { color: #777; }
@@ -214,11 +345,33 @@
         @media print {
             body * { visibility: hidden; }
             .a4-page, .a4-page * { visibility: visible; }
-            .a4-page { position: relative; left: 0; top: 0; margin: 0; padding: 0; width: 100%; box-shadow: none; height: auto; margin-bottom: 0; }
+            .a4-page { 
+                position: absolute; 
+                left: 0; 
+                top: 0; 
+                margin: 0; 
+                padding: 2.54cm; /* Forced Margins for Print */
+                width: 100%; 
+                min-height: 100%;
+                box-shadow: none; 
+                border: none;
+                background: white;
+            }
             .sidebar, .top-header, .filter-container, .btn, .custom-tabs, .report-preview-container { display: none !important; }
-            .report-preview-container { display: block !important; background: white !important; padding: 0 !important; overflow: visible !important; max-height: none !important; }
-            .report-preview-container > #a4-report-content { display: block !important; }
+            .report-preview-container { 
+                display: block !important; 
+                background: white !important; 
+                padding: 0 !important; 
+                overflow: visible !important; 
+                max-height: none !important; 
+            }
+            /* Hide URL headers/footers in browser settings if possible, but CSS can try */
+            @page { margin: 0; size: A4 portrait; }
         }
+
+        /* ========================================= */
+        /* === STRICT A4 REPORT STYLING ENDS HERE === */
+        /* ========================================= */
 
         .setting-content-pane { display: none; animation: fadeIn 0.3s; }
         .setting-content-pane.active { display: block; }
@@ -599,7 +752,7 @@
         function login(e) { e.preventDefault(); const errBox = document.getElementById('loginError'); errBox.style.display = 'none'; errBox.innerText = ''; const uInput = document.getElementById('loginUser').value.trim(); const pInput = document.getElementById('loginPass').value.trim(); let userFound = null; ['admins', 'senior', 'middle', 'teachers'].forEach(grp => { if(DB[grp]) { const match = DB[grp].find(x => String(x.login).trim() === uInput && String(x.pass).trim() === pInput); if(match) userFound = match; } }); if (userFound) { if (userFound.status !== 'active') { errBox.innerText = "نعتذر منك، هذا الحساب غير نشط حالياً."; errBox.style.display = 'block'; return; } CURRENT_USER = userFound; localStorage.setItem('Irteqaa_Session', userFound.id); let targetBrandId = null; if(userFound.id === 999) { targetBrandId = DB.brands[0].id; } else { const allowedIds = userFound.allowedBrands || (userFound.brandId ? [userFound.brandId] : []); if(allowedIds.length > 0) targetBrandId = allowedIds[0]; } if(targetBrandId) { const brand = DB.brands.find(b => b.id === targetBrandId); if (brand) { const today = new Date().toISOString().split('T')[0]; if (brand.startDate && brand.startDate > today) { errBox.innerText = "عذراً، لم يبدأ تاريخ تفعيل اشتراك الجهة (البراند) بعد."; errBox.style.display = 'block'; return; } if (brand.endDate && brand.endDate < today && !isAdminUser()) { errBox.innerText = "يرجى التواصل مع المشرف."; errBox.style.display = 'block'; return; } } localStorage.setItem('Irteqaa_CurrentBrand', targetBrandId); addSystemLog('تسجيل دخول', `المستخدم: ${userFound.name}`); location.reload(); } else { errBox.innerText = "لا يوجد براند مخصص لهذا المستخدم."; errBox.style.display = 'block'; } } else { errBox.innerText = "بيانات الدخول غير صحيحة."; errBox.style.display = 'block'; } }
         function togglePass(fieldId, icon) { const input = document.getElementById(fieldId); if (input.type === "password") { input.type = "text"; icon.classList.remove("fa-eye"); icon.classList.add("fa-eye-slash"); } else { input.type = "password"; icon.classList.remove("fa-eye-slash"); icon.classList.add("fa-eye"); } }
         function logout() { if(CURRENT_USER) addSystemLog('تسجيل خروج', `المستخدم: ${CURRENT_USER.name}`); localStorage.removeItem('Irteqaa_Session'); saveDB(); location.reload(); }
-        function navigate(pageId) { const perms = CURRENT_USER.permissions || DEFAULT_PERMS; if (perms[pageId] && perms[pageId].view === false) { alert("عذراً، ليس لديك صلاحية للوصول إلى هذه الصفحة."); return; } document.querySelectorAll('.section-card').forEach(d => d.classList.remove('active')); document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active')); const target = document.getElementById(pageId); const link = document.querySelector(`a[data-page="${pageId}"]`); if (target) target.classList.add('active'); if (link) link.classList.add('active'); const activeSection = SECTIONS.find(s => s.id === pageId); if(activeSection) document.getElementById('pageTitle').innerText = activeSection.name; if(pageId === 'dashboard') renderDashboard(); if(pageId === 'settings') loadSettings(); if(pageId === 'visits') { renderVisitsTable(); checkVisitButtonAuth(); } if(pageId === 'performance') renderPerformanceChart(); if(pageId === 'distinguished') renderDistinguishedTables(); if(pageId === 'qualitative') renderQualitativeTable(); if(pageId === 'quality-report') { const d = new Date(); document.getElementById('reportMonthSelect').value = String(d.getMonth()+1).padStart(2,'0'); } if(pageId === 'system-admin') renderBrandsTable(); }
+        function navigate(pageId) { const perms = CURRENT_USER.permissions || DEFAULT_PERMS; if (perms[pageId] && perms[pageId].view === false) { alert("عذراً، ليس لديك صلاحية للوصول إلى هذه الصفحة."); return; } document.querySelectorAll('.section-card').forEach(d => d.classList.remove('active')); document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active')); const target = document.getElementById(pageId); const link = document.querySelector(`a[data-page="${pageId}"]`); if (target) target.classList.add('active'); if (link) link.classList.add('active'); const activeSection = SECTIONS.find(s => s.id === pageId); if(activeSection) document.getElementById('pageTitle').innerText = activeSection.name; if(pageId === 'dashboard') renderDashboard(); if(pageId === 'settings') loadSettings(); if(pageId === 'visits') renderVisitsTable(); if(pageId === 'performance') renderPerformanceChart(); if(pageId === 'distinguished') renderDistinguishedTables(); if(pageId === 'qualitative') renderQualitativeTable(); if(pageId === 'quality-report') { const d = new Date(); document.getElementById('reportMonthSelect').value = String(d.getMonth()+1).padStart(2,'0'); } if(pageId === 'system-admin') renderBrandsTable(); }
         function showApp() { document.getElementById('loginPage').style.display = 'none'; document.getElementById('app').style.display = 'flex'; document.getElementById('headerUserName').innerText = CURRENT_USER.name; document.getElementById('headerUserJob').innerText = CURRENT_USER.job || CURRENT_USER.dept || 'مستخدم'; updateBrandUI(); const adminBtns = document.querySelectorAll('.admin-only-btn'); adminBtns.forEach(btn => { btn.style.display = isAdminUser() ? 'inline-block' : 'none'; }); applySidebarPermissions(); renderTable(); navigate('dashboard'); populateDateFilters(); }
         function applySidebarPermissions() { const perms = CURRENT_USER.permissions || DEFAULT_PERMS; SECTIONS.forEach(sec => { const el = document.getElementById('nav-' + sec.id); if(el) { if (sec.id === 'system-admin') { el.style.display = isAdminUser() ? 'block' : 'none'; } else { el.style.display = (perms[sec.id] && perms[sec.id].view === false) ? 'none' : 'block'; } } }); }
         function toggleBrandDropdown() { document.getElementById('brandDropdown').classList.toggle('show'); }
@@ -884,29 +1037,7 @@
         function deleteBrand(id) { if(confirm('هل أنت متأكد من حذف هذا البراند؟ سيتم إخفاء جميع البيانات المرتبطة به.')) { DB.brands = DB.brands.filter(x => x.id !== id); resetBrandData(id, true); saveDB(); renderBrandsTable(); updateBrandUI(); if(CURRENT_BRAND.id === id) switchBrand(1); } }
         function resetBrandData(brandId, silent = false) { if(!silent && !confirm('تحذير: سيتم مسح جميع البيانات والمدخلات والمستخدمين والتقارير الخاصة بهذا البراند بشكل نهائي.\nهل أنت متأكد؟')) return; const arraysToClean = [ 'senior', 'middle', 'teachers', 'departments', 'visits_senior', 'visits_middle', 'distinguished', 'care_needed', 'qualitative_reports', 'saved_reports' ]; arraysToClean.forEach(key => { if(DB[key]) { DB[key] = DB[key].filter(item => { if(item.id === 999) return true; const itemBrand = item.brandId || 1; return itemBrand !== brandId; }); } }); saveDB(); if(!silent) alert('تمت إعادة تهيئة بيانات البراند بنجاح.'); if(CURRENT_BRAND.id === brandId) location.reload(); }
 
-        function setVisitTab(tab, el) { 
-            CURRENT_VISIT_TAB = tab; 
-            document.querySelectorAll('#visits .custom-tab').forEach(t => t.classList.remove('active')); 
-            el.classList.add('active'); 
-            updateDateFilterOptions((CURRENT_VISIT_TAB === 'senior' ? filterByContext(DB.visits_senior) : filterByContext(DB.visits_middle)), 'visitMonthFilter'); 
-            renderVisitsTable();
-            checkVisitButtonAuth();
-        }
-        
-        function checkVisitButtonAuth() {
-            const btn = document.getElementById('btnAddVisit');
-            if(!btn) return;
-            let show = false;
-            if(isAdminUser()) {
-                show = true;
-            } else {
-                const isSenior = DB.senior.some(u => u.id === CURRENT_USER.id);
-                const isMiddle = DB.middle.some(u => u.id === CURRENT_USER.id);
-                if(CURRENT_VISIT_TAB === 'senior' && isSenior) show = true;
-                else if(CURRENT_VISIT_TAB === 'middle' && isMiddle) show = true;
-            }
-            btn.style.display = show ? 'inline-flex' : 'none';
-        }
+        function setVisitTab(tab, el) { CURRENT_VISIT_TAB = tab; document.querySelectorAll('#visits .custom-tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); updateDateFilterOptions((CURRENT_VISIT_TAB === 'senior' ? filterByContext(DB.visits_senior) : filterByContext(DB.visits_middle)), 'visitMonthFilter'); renderVisitsTable(); }
         
         function renderVisitsTable() { 
             const collection = (CURRENT_VISIT_TAB === 'senior') ? 'visits_senior' : 'visits_middle';
@@ -994,10 +1125,13 @@
             filterByContext(DB.departments||[]).forEach(d => dSelect.innerHTML += `<option value="${d.name}">${d.name}</option>`); 
             const eSelect = document.getElementById('visitEval'); 
             eSelect.innerHTML = '<option value="">اختر التقدير...</option>'; 
+            
+            // تم التعديل هنا لجلب البيانات من (الإعدادات - معايير الزيارة الصفية) بدلاً من قائمة التقديرات
             const criteria = DB.settings.evaluation_criteria || [];
             criteria.forEach(c => { 
                 if(c.status === 'active') eSelect.innerHTML += `<option value="${c.name}">${c.name}</option>`; 
             });
+            
             document.getElementById('addVisitModal').style.display='flex'; 
         }
 
@@ -1091,10 +1225,177 @@
         function openQualitativeModal() { document.getElementById('qualitativeForm').reset(); const dSelect = document.getElementById('qualDept'); dSelect.innerHTML = '<option value="">اختر القسم...</option>'; filterByContext(DB.departments||[]).forEach(d => dSelect.innerHTML += `<option value="${d.name}">${d.name}</option>`); document.getElementById('addQualitativeModal').style.display='flex'; }
         function saveQualitative() { const dept = document.getElementById('qualDept').value; const date = document.getElementById('qualDate').value; const s = document.getElementById('qualStrength').value; const i = document.getElementById('qualImprove').value; if(!dept || !date) return alert('البيانات ناقصة'); DB.qualitative_reports.push({ id: Date.now(), dept, date, strength: s, improve: i, brandId: CURRENT_BRAND.id }); saveDB(); renderQualitativeTable(); closeModal('addQualitativeModal'); }
         function deleteQualitative(id) { if(confirm('حذف؟')) { DB.qualitative_reports = DB.qualitative_reports.filter(x => x.id !== id); saveDB(); renderQualitativeTable(); } }
-        function setReportTab(tab, el) { document.querySelectorAll('#quality-report .custom-tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); if(tab === 'create') { document.getElementById('report-create-pane').style.display='block'; document.getElementById('report-saved-pane').style.display='none'; } else { document.getElementById('report-create-pane').style.display='none'; document.getElementById('report-saved-pane').style.display='block'; renderSavedReports(); } }
-        function generateQualityReport() { const m = document.getElementById('reportMonthSelect').value; const y = new Date().getFullYear(); const content = document.getElementById('a4-report-content'); let html = `<div class="a4-page"><div class="report-header-box">تقرير جودة التعليم - شهر ${m}/${y}</div><br>`; html += `<h3 style="text-align:center;">إحصائيات الزيارات لشهر ${m}</h3>`; html += `<table class="report-table-custom"><thead><tr><th>القسم</th><th>عدد الزيارات</th><th>متوسط التقييم</th></tr></thead><tbody>`; const visits = [...filterByContext(DB.visits_senior), ...filterByContext(DB.visits_middle)].filter(v => v.date.split('-')[1] === m); if(visits.length === 0) html += `<tr><td colspan="3">لا توجد زيارات مسجلة لهذا الشهر</td></tr>`; else { const depts = [...new Set(visits.map(v => v.dept))]; depts.forEach(d => { const count = visits.filter(v => v.dept === d).length; html += `<tr><td>${d}</td><td>${count}</td><td>-</td></tr>`; }); } html += `</tbody></table></div>`; content.innerHTML = html; }
+
+        function setReportTab(tab, el) { 
+            document.querySelectorAll('#quality-report .custom-tab').forEach(t => t.classList.remove('active')); 
+            el.classList.add('active'); 
+            if(tab === 'create') { 
+                document.getElementById('report-create-pane').style.display='block'; 
+                document.getElementById('report-saved-pane').style.display='none'; 
+            } else { 
+                document.getElementById('report-create-pane').style.display='none'; 
+                document.getElementById('report-saved-pane').style.display='block'; 
+                renderSavedReports(); 
+            } 
+        }
+
+        /* ========================================================================= */
+        /* === DYNAMIC REPORT GENERATION LOGIC (Word-Like Precision) === */
+        /* ========================================================================= */
+
+        function generateQualityReport() { 
+            const m = document.getElementById('reportMonthSelect').value; 
+            const y = new Date().getFullYear(); 
+            const content = document.getElementById('a4-report-content'); 
+            
+            // Gather Data
+            const allVisits = [...filterByContext(DB.visits_senior), ...filterByContext(DB.visits_middle)].filter(v => v.date.split('-')[1] === m);
+            const qualReports = filterByContext(DB.qualitative_reports).filter(q => q.date.split('-')[1] === m);
+            const distTeachers = filterByContext(DB.distinguished).filter(d => d.date.split('-')[1] === m);
+            const careTeachers = filterByContext(DB.care_needed).filter(d => d.date.split('-')[1] === m);
+            
+            const schoolName = DB.settings.schoolName || CURRENT_BRAND.name;
+            const schoolYear = DB.settings.schoolYear || `${y}/${y+1}م`;
+            const ministryLogo = DB.settings.ministryLogo || "https://upload.wikimedia.org/wikipedia/en/thumb/8/87/Ministry_of_Education_Bahrain.svg/1200px-Ministry_of_Education_Bahrain.svg.png"; // Placeholder
+            const schoolLogo = DB.settings.schoolLogo || "";
+
+            let html = `
+            <div class="a4-page">
+                <table class="word-header-table">
+                    <tr>
+                        <td width="20%" class="word-center"><img src="${ministryLogo}" class="header-logo-img" alt="شعار الوزارة"></td>
+                        <td width="60%" class="header-text-col">
+                            <span class="header-line">مملكة البحرين</span>
+                            <span class="header-line">وزارة التربية والتعليم</span>
+                            <span class="header-school-name">${schoolName}</span>
+                            <span style="display:block; margin-top:5px; font-weight:bold;">العام الدراسي ${schoolYear}</span>
+                        </td>
+                        <td width="20%" class="word-center">${schoolLogo ? `<img src="${schoolLogo}" class="header-logo-img" alt="شعار المدرسة">` : ''}</td>
+                    </tr>
+                </table>
+
+                <div class="report-main-title">تقرير جودة التعليم لشهر ${MONTH_NAMES_AR[parseInt(m)-1]} ${y}</div>
+
+                <div class="word-section-title">أولاً: إحصائيات الزيارات الصفية</div>
+                <table class="word-table">
+                    <thead><tr><th width="40%">القسم الأكاديمي</th><th width="30%">عدد الزيارات</th><th width="30%">ملاحظات</th></tr></thead>
+                    <tbody>`;
+            
+            if(allVisits.length === 0) {
+                html += `<tr><td colspan="3" class="word-center">لا توجد زيارات مسجلة لهذا الشهر</td></tr>`;
+            } else {
+                const depts = [...new Set(allVisits.map(v => v.dept))];
+                depts.forEach(d => {
+                    const count = allVisits.filter(v => v.dept === d).length;
+                    html += `<tr><td style="text-align:right; font-weight:bold;">${d}</td><td class="word-center">${count}</td><td></td></tr>`;
+                });
+                html += `<tr><td style="background:#f2f2f2; font-weight:bold; text-align:center;">المجموع الكلي</td><td style="background:#f2f2f2; font-weight:bold; text-align:center;">${allVisits.length}</td><td style="background:#f2f2f2;"></td></tr>`;
+            }
+            html += `</tbody></table>`;
+
+            html += `<div class="word-section-title">ثانياً: التقرير النوعي (جوانب القوة والتطوير)</div>
+            <table class="word-table">
+                <thead><tr><th width="15%">القسم</th><th width="42%">جوانب القوة</th><th width="43%">جوانب بحاجة إلى تطوير</th></tr></thead>
+                <tbody>`;
+            
+            if(qualReports.length === 0) {
+                html += `<tr><td colspan="3" class="word-center">لم يتم رصد تقارير نوعية لهذا الشهر</td></tr>`;
+            } else {
+                qualReports.forEach(q => {
+                    html += `<tr><td style="font-weight:bold;">${q.dept}</td><td>${q.strength}</td><td>${q.improve}</td></tr>`;
+                });
+            }
+            html += `</tbody></table>`;
+            
+            // Distinguished Table
+            html += `<div class="word-section-title">ثالثاً: المعلمون المتميزون</div>
+            <table class="word-table">
+                <thead><tr><th width="5%">#</th><th width="25%">اسم المعلم/ة</th><th width="15%">القسم</th><th width="55%">أبرز ممارسات التميز</th></tr></thead>
+                <tbody>`;
+            if(distTeachers.length === 0) {
+                 html += `<tr><td colspan="4" class="word-center">لا يوجد</td></tr>`;
+            } else {
+                distTeachers.forEach((d, i) => {
+                    html += `<tr><td class="word-center">${i+1}</td><td>${d.teacher}</td><td class="word-center">${d.dept}</td><td>${d.reason}</td></tr>`;
+                });
+            }
+            html += `</tbody></table>`;
+
+             // Care Needed Table
+             html += `<div class="word-section-title">رابعاً: المعلمون الأولى بالرعاية</div>
+             <table class="word-table">
+                 <thead><tr><th width="5%">#</th><th width="25%">اسم المعلم/ة</th><th width="15%">القسم</th><th width="55%">جوانب الدعم المقدمة</th></tr></thead>
+                 <tbody>`;
+             if(careTeachers.length === 0) {
+                  html += `<tr><td colspan="4" class="word-center">لا يوجد</td></tr>`;
+             } else {
+                careTeachers.forEach((d, i) => {
+                     html += `<tr><td class="word-center">${i+1}</td><td>${d.teacher}</td><td class="word-center">${d.dept}</td><td>${d.reason}</td></tr>`;
+                 });
+             }
+             html += `</tbody></table>`;
+
+            // Signatures Section
+            let directorName = "";
+            let asstName = "";
+            
+            if(DB.settings.sig_director) {
+                const d = DB.senior.find(s => s.id.toString() === DB.settings.sig_director);
+                if(d) directorName = d.name;
+            }
+            if(DB.settings.sig_assistant) {
+                const a = DB.senior.find(s => s.id.toString() === DB.settings.sig_assistant);
+                if(a) asstName = a.name;
+            }
+
+            html += `
+                <div class="signatures-container">
+                    <div class="sig-block">
+                        <div class="sig-title">المدير المساعد</div>
+                        <div class="sig-name">${asstName}</div>
+                    </div>
+                    <div class="sig-block">
+                        <div class="sig-title">مدير المدرسة</div>
+                        <div class="sig-name">${directorName}</div>
+                        ${DB.settings.schoolStamp ? `<img src="${DB.settings.schoolStamp}" style="max-width:120px; margin-top:10px;">` : ''}
+                    </div>
+                </div>
+            `;
+
+            html += `</div>`; // End Page
+            content.innerHTML = html; 
+        }
+
+        /* ========================================================================= */
+
         function printReport() { window.print(); }
-        function exportToWord() { const html = document.getElementById('a4-report-content').innerHTML; const blob = new Blob(['<!DOCTYPE html><html><head><meta charset="utf-8"><title>Report</title></head><body>' + html + '</body></html>'], { type: 'application/msword' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'Quality_Report.doc'; link.click(); }
+        
+        function exportToWord() { 
+            const content = document.getElementById('a4-report-content').innerHTML;
+            // Inject styles explicitly for Word
+            const header = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head><meta charset='utf-8'><title>Report</title>
+                <style>
+                    body { font-family: 'Times New Roman', serif; }
+                    table { border-collapse: collapse; width: 100%; }
+                    th, td { border: 1px solid black; padding: 5px; }
+                    th { background-color: #d9d9d9; font-weight: bold; }
+                    .header-line { font-size: 14pt; font-weight: bold; display: block; text-align: center; }
+                    .word-section-title { font-size: 16pt; font-weight: bold; text-decoration: underline; margin-top: 15px; }
+                    .signatures-container { display: flex; justify-content: space-between; margin-top: 50px; }
+                </style>
+                </head><body>`;
+            const footer = "</body></html>";
+            const sourceHTML = header + content + footer;
+            
+            const blob = new Blob(['\ufeff', sourceHTML], { type: 'application/msword' }); 
+            const link = document.createElement('a'); 
+            link.href = URL.createObjectURL(blob); 
+            link.download = `Education_Quality_Report_${new Date().toISOString().slice(0,10)}.doc`; 
+            link.click(); 
+        }
+
         function saveReport() { const m = document.getElementById('reportMonthSelect').value; DB.saved_reports.push({id: Date.now(), month: m, date: new Date().toLocaleDateString(), html: document.getElementById('a4-report-content').innerHTML, brandId: CURRENT_BRAND.id}); saveDB(); alert('تم الحفظ في الأرشيف'); }
         function renderSavedReports() { const list = document.getElementById('savedReportsList'); list.innerHTML = ''; filterByContext(DB.saved_reports).forEach(r => { list.innerHTML += `<div class="saved-report-item"><div class="saved-report-info"><h4>تقرير شهر ${r.month}</h4><small>تم الحفظ: ${r.date}</small></div><button class="btn btn-view" onclick="loadSavedReport('${r.html.replace(/'/g, "\\'")}')">عرض</button></div>`; }); }
         function loadSavedReport(html) { document.getElementById('a4-report-content').innerHTML = html; setReportTab('create', document.querySelector('#quality-report .custom-tab:first-child')); }
