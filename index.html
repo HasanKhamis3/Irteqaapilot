@@ -196,31 +196,143 @@
         
         /* === Report Specific CSS === */
         .report-preview-container { background: #525659; padding: 30px; overflow: auto; max-height: 800px; display: flex; justify-content: center; flex-direction: column; align-items: center; }
-        .a4-page { background: white; width: 210mm; height: 297mm; padding: 15mm; box-shadow: 0 0 10px rgba(0,0,0,0.5); margin-bottom: 20px; position: relative; color: black; font-family: 'Times New Roman', serif; page-break-after: always; display: flex; flex-direction: column; }
+        
+        /* A4 Page Layout Fixes */
+        .a4-page { 
+            background: white; 
+            width: 210mm; 
+            min-height: 297mm; 
+            padding: 15mm 20mm; /* Standard margins */
+            box-shadow: 0 0 10px rgba(0,0,0,0.5); 
+            margin-bottom: 20px; 
+            position: relative; 
+            color: black; 
+            font-family: 'Cairo', sans-serif; 
+            page-break-after: always; 
+            display: flex; 
+            flex-direction: column; 
+            direction: rtl;
+        }
         .a4-page:last-child { page-break-after: auto; }
-        .report-header-wrapper { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .report-logo { height: 80px; width: auto; object-fit: contain; }
-        .report-title-box { background: #f2f2f2; border-radius: 20px; padding: 20px; text-align: center; margin: 50px auto; width: 80%; }
-        .report-title-main { font-weight: bold; font-size: 24px; margin-bottom: 10px; font-family: 'Cairo', sans-serif; }
-        .report-school-name { font-size: 18px; color: #2c5aa0; font-weight: bold; margin-bottom: 10px; }
-        .report-month-red { color: red; font-weight: bold; text-decoration: underline; margin: 5px 0; }
-        .report-year { font-weight: bold; }
+        
+        /* Cover Page Styling */
+        .report-header-wrapper { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start; 
+            margin-bottom: 30px; 
+            width: 100%;
+        }
+        .report-logo { 
+            height: 90px; 
+            width: auto; 
+            object-fit: contain; 
+        }
+        .report-title-box { 
+            background: #f2f2f2; 
+            border-radius: 30px; 
+            padding: 40px 20px; 
+            text-align: center; 
+            margin: auto; /* Vertically center in the flex space if needed */
+            width: 90%; 
+            border: 1px solid #eee;
+        }
+        .report-title-main { 
+            font-weight: 800; 
+            font-size: 26px; 
+            margin-bottom: 20px; 
+            font-family: 'Tajawal', sans-serif; 
+            color: #000;
+        }
+        .report-school-name { 
+            font-size: 20px; 
+            color: #2c5aa0; 
+            font-weight: bold; 
+            margin-bottom: 15px; 
+        }
+        .report-month-red { 
+            color: #da291c; 
+            font-weight: bold; 
+            text-decoration: underline; 
+            margin: 10px 0; 
+            font-size: 18px;
+        }
+        .report-year { 
+            font-weight: bold; 
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        
+        /* Signatures on Cover */
+        .report-signatures-wrapper {
+            display: flex;
+            justify-content: space-between;
+            margin-top: auto;
+            margin-bottom: 60px;
+            padding: 0 40px;
+        }
+        .report-sig-box { 
+            text-align: center; 
+            width: 250px; 
+        }
+        .report-sig-title {
+            font-weight: bold; 
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
         
         /* Tables inside Reports */
-        .report-table-design { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px; font-family: 'Cairo', sans-serif; direction: rtl; }
-        .report-table-design th, .report-table-design td { border: 1px solid black; padding: 5px; text-align: center; vertical-align: middle; }
-        .report-table-design th { background-color: #bfbfbf; font-weight: bold; }
-        .report-section-title { font-weight: bold; text-decoration: underline; margin-bottom: 10px; font-size: 14px; font-family: 'Cairo', sans-serif; }
-        .report-footer { margin-top: auto; display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; font-family: 'Cairo', sans-serif; }
-        .report-sig-box { text-align: center; width: 200px; }
-        .report-visitor-block { border: 2px double #000; margin-bottom: 10px; }
-        .report-visitor-header { background: #d9d9d9; padding: 5px; border-bottom: 1px solid #000; font-weight: bold; font-size: 13px; display: flex; align-items: center; }
-        .report-visitor-photo { width: 60px; height: 60px; border: 1px solid #000; margin-right: 10px; display: flex; align-items: center; justify-content: center; background: white; font-size: 30px; }
+        .report-table-design { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-bottom: 20px; 
+            font-size: 13px; 
+            font-family: 'Cairo', sans-serif; 
+            direction: rtl; 
+            text-align: center;
+        }
+        .report-table-design th, .report-table-design td { 
+            border: 1px solid black; 
+            padding: 10px 5px; 
+            vertical-align: middle; 
+            line-height: 1.4;
+        }
+        .report-table-design th { 
+            background-color: #bfbfbf; 
+            font-weight: bold; 
+            color: #000;
+        }
+        
+        /* Report Sections */
+        .report-section-title { 
+            font-weight: bold; 
+            text-decoration: underline; 
+            margin-bottom: 20px; 
+            font-size: 16px; 
+            font-family: 'Cairo', sans-serif; 
+            color: #000;
+        }
+        
+        /* Footer */
+        .report-footer { 
+            margin-top: auto; 
+            display: flex; 
+            width: 100%;
+            justify-content: center; 
+            font-size: 12px; 
+            font-weight: bold; 
+            color: #555; 
+            border-top: 1px solid #ddd;
+            padding-top: 5px;
+        }
+        
+        /* Visitor Blocks */
+        .report-visitor-block { border: 2px double #000; margin-bottom: 15px; page-break-inside: avoid; }
+        .report-visitor-header { background: #d9d9d9; padding: 8px; border-bottom: 1px solid #000; font-weight: bold; font-size: 14px; display: flex; align-items: center; }
+        .report-visitor-photo { width: 50px; height: 50px; border: 1px solid #000; margin-left: 15px; display: flex; align-items: center; justify-content: center; background: white; font-size: 24px; }
         .visitor-total-row { background: #b4c6e7; font-weight: bold; }
         .grand-total-row { background: #b4c6e7; font-weight: bold; text-align: center; padding: 10px; border: 2px solid black; margin-top: 10px; }
         
-        .report-chart-container { width: 80%; margin: 20px auto; border: 1px solid #ddd; padding: 10px; height: 350px; }
-
         .report-list { text-align: right; padding-right: 20px; margin: 0; }
         .report-list li { margin-bottom: 5px; }
         .saved-report-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #eee; margin-bottom: 10px; border-radius: 8px; background: #fff; }
@@ -230,7 +342,7 @@
         @media print {
             body * { visibility: hidden; }
             .a4-page, .a4-page * { visibility: visible; }
-            .a4-page { position: relative; left: 0; top: 0; margin: 0; padding: 0; width: 100%; box-shadow: none; height: auto; margin-bottom: 0; page-break-after: always; }
+            .a4-page { position: relative; left: 0; top: 0; margin: 0; padding: 0; width: 100%; box-shadow: none; height: auto; margin-bottom: 0; page-break-after: always; border: none; }
             .sidebar, .top-header, .filter-container, .btn, .custom-tabs, .report-preview-container { display: none !important; }
             .report-preview-container { display: block !important; background: white !important; padding: 0 !important; overflow: visible !important; max-height: none !important; margin: 0 !important; }
             .report-preview-container > #a4-report-content { display: block !important; }
@@ -600,7 +712,7 @@
     <script>
         const SECTIONS = [{id: 'dashboard', name: 'لوحة التحكم'}, {id: 'visits', name: 'الزيارات الصفية'}, {id: 'performance', name: 'تقييم الأداء'}, {id: 'distinguished', name: 'المعلمين المتميزين'}, {id: 'qualitative', name: 'التقرير النوعي'}, {id: 'quality-report', name: 'تقرير جودة التعليم'}, {id: 'user-management', name: 'إدارة المستخدمين'}, {id: 'system-admin', name: 'إعدادات مدير النظام'}, {id: 'settings', name: 'الإعدادات'}];
         const DEFAULT_PERMS = {}; SECTIONS.forEach(s => DEFAULT_PERMS[s.id] = {view: true, edit: false});
-        const DB_KEY = 'Irteqaa_System_DB_V15';
+        const DB_KEY = 'Irteqaa_System_DB_V16';
         const INITIAL_DB = { admins: [{id: 999, name: 'مدير النظام', login: 'admin', pass: 'Hasan@12', status: 'active', job: 'مدير النظام', permissions: JSON.parse(JSON.stringify(DEFAULT_PERMS))}], senior: [{id: 1, name: 'علياء محمد مبارك الدوسري', job: 'مديرة المدرسة', phone: '39669118', login: '39669118', pass: '39669118', status: 'active', permissions: JSON.parse(JSON.stringify(DEFAULT_PERMS)), dateAdded: '2025/01/01', brandId: 1, allowedBrands: [1]}], middle: [], teachers: [], departments: [], visits_senior: [], visits_middle: [], distinguished: [], care_needed: [], qualitative_reports: [], saved_reports: [], settings: { schoolName: 'مدرسة مدينة حمد الابتدائية للبنات', schoolYear: '2025 / 2026م', evaluation_criteria: [], evaluation_grades: [{name:'ممتاز', status:'active'}, {name:'جيد جداً', status:'active'}, {name:'جيد', status:'active'}, {name:'مقبول', status:'active'}, {name:'ضعيف', status:'active'}, {name:'يتجاوز التوقعات كثيراً', status:'active'}, {name:'يتجاوز التوقعات', status:'active'}, {name:'يفي بالتوقعات', status:'active'}, {name:'يفي بالتوقعات جزئيا', status:'active'}], visitor_order_senior: [], visitor_order_middle: [] }, brands: [{id: 1, name: 'الفرع الرئيسي', email: 'main@school.bh', status: 'active'}], logs: [] };
         SECTIONS.forEach(sec => { INITIAL_DB.admins[0].permissions[sec.id] = {view: true, edit: true}; });
         const MONTH_NAMES_AR = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
@@ -1047,7 +1159,7 @@
             
             // --- Helper for Report Footer ---
             const footerHTML = `
-                <div class="report-footer" style="position: absolute; bottom: 15mm; width: calc(100% - 30mm); display: flex; justify-content: ${DB.settings.footerAlign || 'center'}; font-size: ${DB.settings.footerFontSize || '12'}pt;">
+                <div class="report-footer" style="justify-content: ${DB.settings.footerAlign || 'center'}; font-size: ${DB.settings.footerFontSize || '12'}pt;">
                     ${document.getElementById('footer_text').value || ''}
                 </div>`;
             
@@ -1058,10 +1170,10 @@
             const asstName = sigAsstId ? (DB.senior.find(u => u.id == sigAsstId)?.name || '') : '';
 
             let html = `
-            <div class="a4-page" style="display:flex; flex-direction:column; justify-content:center;">
-                <div class="report-header-wrapper" style="margin-bottom: 50px;">
-                    <img src="${ministryLogo}" class="report-logo" style="height: 100px;">
-                    <img src="${schoolLogo}" class="report-logo" style="height: 100px;">
+            <div class="a4-page">
+                <div class="report-header-wrapper">
+                    <img src="${ministryLogo}" class="report-logo">
+                    <img src="${schoolLogo}" class="report-logo">
                 </div>
                 
                 <div class="report-title-box">
@@ -1071,13 +1183,13 @@
                     <div class="report-year">العام الدراسي ${y}</div>
                 </div>
 
-                <div style="margin-top: auto; margin-bottom: 50px; display: flex; justify-content: space-between; padding: 0 50px;">
+                <div class="report-signatures-wrapper">
                     <div class="report-sig-box">
-                        <div style="font-weight:bold; margin-bottom:10px;">يعتمد، مديرة المدرسة</div>
+                        <div class="report-sig-title">يعتمد، مديرة المدرسة</div>
                         <div>${dirName}</div>
                     </div>
                     <div class="report-sig-box">
-                        <div style="font-weight:bold; margin-bottom:10px;">إعداد المديرة المساعدة</div>
+                        <div class="report-sig-title">إعداد المديرة المساعدة</div>
                         <div>${asstName}</div>
                     </div>
                 </div>
@@ -1090,19 +1202,16 @@
             
             let middleRows = '';
             middleLeaders.forEach(leader => {
-                // Calculate visits executed by this leader in the selected month
                 const visitsCount = middleVisits.filter(v => v.visitor === leader.name).length;
-                // Assuming "Active" status implies existence of weekly plans/minutes for demo purposes, 
-                // or ideally fetch from a dedicated module if it existed.
                 const existsText = (leader.status === 'active') ? 'يوجد' : 'لا يوجد';
                 
                 middleRows += `
                 <tr>
-                    <td>${existsText}</td>
-                    <td>${existsText}</td>
-                    <td>${existsText}</td>
+                    <td>${leader.job || leader.name}</td>
                     <td>${visitsCount}</td>
-                    <td style="text-align:right; padding-right:10px;">${leader.job || leader.name}</td>
+                    <td>${existsText}</td>
+                    <td>${existsText}</td>
+                    <td>${existsText}</td>
                 </tr>`;
             });
 
@@ -1113,14 +1222,14 @@
                 <table class="report-table-design">
                     <thead>
                         <tr>
-                            <th colspan="3">متابعة القيادة العليا للقيادة الوسطى</th>
-                            <th rowspan="2" width="25%">القسم</th>
+                            <th rowspan="2" width="20%">القسم</th>
+                            <th colspan="4" width="80%">متابعة القيادة العليا للقيادة الوسطى</th>
                         </tr>
                         <tr>
-                            <th width="20%">أسباب عدم التسليم</th>
-                            <th width="15%">توجد خطة أسبوعية</th>
-                            <th width="15%">يوجد محضر اجتماع</th>
                             <th width="15%">عدد الزيارات المنفذة</th>
+                            <th width="15%">يوجد محضر اجتماع</th>
+                            <th width="15%">توجد خطة أسبوعية</th>
+                            <th width="20%">أسباب عدم التسليم</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1134,14 +1243,13 @@
 
                 <div style="margin-top: 30px; font-weight: bold; font-size: 14px;">
                     <div style="text-decoration: underline; margin-bottom: 10px;">ثانياً: عدد الزيارات التي نُفذت خلال شهر ${mName} من قبل:</div>
-                    <div>1- القيادة العليا = ${seniorVisits.length} زيارة</div>
+                    <div style="margin-bottom:5px;">1- القيادة العليا = ${seniorVisits.length} زيارة</div>
                     <div>2- القيادة الوسطى = ${middleVisits.length} زيارة</div>
                 </div>
                 ${footerHTML}
             </div>`;
 
             // --- Page 3+: Visit Details (Grouped by Visitor) ---
-            // Combine visitors from settings order or fall back to DB list
             const seniorVisitors = DB.settings.visitor_order_senior && DB.settings.visitor_order_senior.length > 0 
                 ? DB.settings.visitor_order_senior.map(id => DB.senior.find(u => u.id == id)).filter(Boolean)
                 : filterByContext(DB.senior);
@@ -1152,15 +1260,13 @@
 
             const allVisitorsSorted = [...seniorVisitors, ...middleVisitors];
             
-            // We need to render visits grouped by these visitors
             let visitPagesHTML = `<div class="a4-page"><div class="report-section-title">ثالثاً: بيان أسماء المعلمين المُزارين من قبل القيادة العليا والوسطى خلال شهر ${mName}</div>`;
             
             let visitorBlocks = '';
             
             allVisitorsSorted.forEach(visitor => {
-                // Find visits for this visitor in this month
                 const visits = allVisits.filter(v => v.visitor === visitor.name);
-                if(visits.length === 0) return; // Skip if no visits
+                if(visits.length === 0) return; 
 
                 let rows = '';
                 visits.forEach((v, idx) => {
@@ -1210,34 +1316,7 @@
             html += visitPagesHTML;
 
             // --- Page 6: Statistics & Chart ---
-            // Prepare Data
             const departments = [...new Set(allVisits.map(v => v.dept))];
-            const evalTypes = ['يفي بالتوقعات جزئيا', 'يفي بالتوقعات', 'يتجاوز التوقعات', 'يتجاوز التوقعات بكثير', 'ممتاز']; // Order matters for columns
-            
-            let statsRows = '';
-            let deptStats = {}; // { DeptName: { total: 0, 'Excellent': 0... } }
-            
-            departments.forEach((dept, i) => {
-                const deptVisits = allVisits.filter(v => v.dept === dept);
-                let rowHTML = `<tr><td width="5%">${i+1}</td><td width="30%" style="text-align:right;">قسم ${dept}</td><td width="10%">${deptVisits.length}</td>`;
-                
-                // Count evaluations
-                evalTypes.reverse().forEach(type => { // Reverse to match image order (High to Low typically)
-                   const count = deptVisits.filter(v => v.eval === type || (type === 'يتجاوز التوقعات بكثير' && v.eval === 'ممتاز')).length;
-                   rowHTML += `<td width="10%">${count || ''}</td>`;
-                   
-                   // Collect for chart
-                   if(!deptStats[dept]) deptStats[dept] = {};
-                   deptStats[dept][type] = count;
-                });
-                // Reset reverse for next loop if needed, but forEach doesn't mutate original array in place like reverse() does... wait, reverse() DOES mutate. 
-                // Let's create a fresh array for columns order: Exceeds A Lot, Exceeds, Meets, Meets Partially
-                rowHTML += `</tr>`;
-                statsRows += rowHTML;
-            });
-            
-            // Re-define columns strictly based on Image 06
-            // Columns: Seq, Dept, Total, Exceeds A Lot, Exceeds, Meets, Meets Partially
             const colHeaders = ['يتجاوز التوقعات بكثير', 'يتجاوز التوقعات', 'يفي بالتوقعات', 'يفي بالتوقعات جزئيا'];
             
             let finalStatsRows = '';
@@ -1263,7 +1342,6 @@
                 finalStatsRows += `<tr><td>${i+1}</td><td style="text-align:right;">قسم ${dept}</td><td>${vs.length}</td>${cells}</tr>`;
              });
 
-             // Generate Chart Image
              const chartImg = await generateReportChart(chartLabels, chartDatasets);
 
             html += `
@@ -1362,7 +1440,6 @@
             return new Promise((resolve) => {
                 const canvas = document.getElementById('tempChartCanvas');
                 const ctx = canvas.getContext('2d');
-                // Clear canvas
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 
                 new Chart(ctx, {
@@ -1373,7 +1450,7 @@
                     },
                     options: {
                         responsive: false,
-                        animation: false, // Important for instant capture
+                        animation: false, 
                         scales: {
                             y: { beginAtZero: true, stacked: false },
                             x: { stacked: false }
@@ -1385,7 +1462,6 @@
                     }
                 });
                 
-                // Small delay to ensure render
                 setTimeout(() => {
                     resolve(canvas.toDataURL('image/png'));
                 }, 100);
@@ -1409,6 +1485,7 @@
             if(DB.settings.schoolStamp) { document.getElementById('preview_stamp').src = DB.settings.schoolStamp; document.getElementById('preview_wrap_stamp').style.display = 'inline-block'; }
             if(DB.settings.footerAlign) document.getElementById('footer_align').value = DB.settings.footerAlign;
             if(DB.settings.footerFontSize) document.getElementById('footer_fontsize').value = DB.settings.footerFontSize;
+            if(DB.settings.footerText) document.getElementById('footer_text').value = DB.settings.footerText;
             renderSignatureOptions();
             const evalBody = document.getElementById('evalTableBody'); evalBody.innerHTML = ''; (DB.settings.evaluation_criteria||[]).forEach((c,i) => evalBody.innerHTML += `<tr><td><input type="checkbox" class="crit-cb" value="${i}"></td><td>${i+1}</td><td>${c.name}</td><td>${c.status}</td><td></td></tr>`);
             const gradeBody = document.getElementById('gradeTableBody'); gradeBody.innerHTML = ''; (DB.settings.evaluation_grades||[]).forEach((g,i) => gradeBody.innerHTML += `<tr><td><input type="checkbox" class="grade-cb" value="${i}"></td><td>${i+1}</td><td>${g.name}</td><td>${g.status}</td><td></td></tr>`);
@@ -1437,7 +1514,7 @@
         function openImageModal(src) { document.getElementById('fullImage').src = src; document.getElementById('imageViewModal').style.display = 'flex'; }
         function saveSignatureSettings() { DB.settings.sig_director = document.getElementById('sig_director').value; DB.settings.sig_assistant = document.getElementById('sig_assistant').value; saveDB(); alert('تم حفظ التوقيعات'); }
         function clearSignature(id) { document.getElementById(id).value = ''; renderSignatureOptions(); saveSignatureSettings(); }
-        function saveFooterSettings() { DB.settings.footerAlign = document.getElementById('footer_align').value; DB.settings.footerFontSize = document.getElementById('footer_fontsize').value; saveDB(); alert('تم حفظ إعدادات التذييل'); }
+        function saveFooterSettings() { DB.settings.footerAlign = document.getElementById('footer_align').value; DB.settings.footerFontSize = document.getElementById('footer_fontsize').value; DB.settings.footerText = document.getElementById('footer_text').value; saveDB(); alert('تم حفظ إعدادات التذييل'); }
         function openAddEvalModal() { document.getElementById('addEvalForm').reset(); document.getElementById('addEvalModal').style.display='flex'; }
         function saveEvalForm() { const name = document.getElementById('evalName').value; if(!name) return alert('الاسم مطلوب'); if(!DB.settings.evaluation_criteria) DB.settings.evaluation_criteria = []; DB.settings.evaluation_criteria.push({name: name, status:'active'}); saveDB(); loadSettings(); closeModal('addEvalModal'); }
         function openAddGradeModal() { document.getElementById('addGradeForm').reset(); document.getElementById('addGradeModal').style.display='flex'; }
